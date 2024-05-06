@@ -1,5 +1,5 @@
 <h1 align="center">
-  GPTalk - Learning languages, enhanced for the modern age
+  GPTalk - AI Powered Language Learning Application
 </h1>
 
 ## Overview
