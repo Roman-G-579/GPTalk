@@ -1,0 +1,115 @@
+openapi: 3.0.3
+info:
+  title: GPTalk Backend
+  description: Backend API for GPTalk
+  contact:
+    name: Oneill19
+    email: oneill.p.19@gmail.com
+    url: https://github.com/oneill19
+  license:
+    name: MIT
+    url: https://github.com/Oneill19/GPTalk/blob/main/README.md
+  version: 1.0.0
+tags:
+  - name: General
+    description: general requests
+  - name: Users
+    description: user managment
+paths:
+  /api/ping:
+    get:
+      description: ping to check if the server is running
+      access: public
+      tags:
+        - General
+      responses:
+        '200':
+          description: 'successful response'
+  /api/user/add:
+    post:
+      description: add a user to the database
+      access: public
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          definition: user object
+  /api/user/get/{id}:
+    get:
+      description: get a user from the databse by the id
+      access: public
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: user mongo id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: user
+  /api/user/edit/{id}:
+    patch:
+      description: edit a user in the database by the id
+      access: public
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: user mongo id
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: successful edit
+  /api/user/delete/{id}:
+    delete:
+      description: delete a user from the database
+      access: public
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: user mongo id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: successful delete
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - username
+        - email
+        - age
+        - role
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        age:
+          type: number
+          format: int64
+        role:
+          type: string
+          enum:
+            - ADMIN
+            - PRO
+            - USER
