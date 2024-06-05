@@ -1,0 +1,9 @@
+# Exclude development and build artifacts
+node_modules/
+dist/
+
+# Exclude VSCode configuration
+.vscode/
+
+# Exclude env files
+.env
