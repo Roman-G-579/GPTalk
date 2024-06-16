@@ -8,13 +8,13 @@ const SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 
 /**
  * Creates a user with the given details
- * @param req
- * @param res
- * @param next
+ * @param req the registration request query
+ * @param res the response object sent by Express
+ * @param next the next middleware in the stack
  */
 export async function registerMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
-		const { firstName, lastName, email, password } = req.body;
+		const { username, password, firstName, lastName, email } = req.body;
 
 		let transporter = nodemailer.createTransport({
 			service: 'gmail',
@@ -43,7 +43,7 @@ export async function registerMiddleware(req: Request, res: Response, next: Next
 		});
 
 		const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-		await UserModel.create({firstName, lastName, email: email.toLowerCase(), password: hashedPassword});
+		await UserModel.create({username, password: hashedPassword, firstName, lastName, email: email.toLowerCase() });
 		return res.send({response: 'success', email: email.toLowerCase(), firstName, lastName});
 
 	} catch (err) {
