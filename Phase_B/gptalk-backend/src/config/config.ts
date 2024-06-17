@@ -18,4 +18,6 @@ export class Config {
 	public static ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 	public static ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+
+	public static SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 }
