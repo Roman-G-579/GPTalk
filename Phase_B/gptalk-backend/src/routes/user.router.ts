@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import {
-	addUserMiddleware,
 	deleteUserMiddleware,
 	editUserMiddleware,
 	getUserMiddleware,
@@ -8,13 +7,6 @@ import {
 import { validator } from '../middlewares/validator.middleware';
 import { validateMongoId, validateUser } from '../pipes/validator.pipe';
 const router = Router();
-
-/**
- * @route POST /api/user/add
- * @description add a user to the database
- * @access public
- */
-router.post('/add', validateUser, validator, addUserMiddleware);
 
 /**
  * @route GET /api/user/get/:id
