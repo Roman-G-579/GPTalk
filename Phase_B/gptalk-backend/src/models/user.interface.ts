@@ -1,17 +1,12 @@
 import { Schema, model } from 'mongoose';
 
-export enum Role {
-	ADMIN = 'ADMIN',
-	PRO = 'PRO',
-	USER = 'USER',
-}
-
 export interface User {
 	_id?: Schema.Types.ObjectId;
 	username: string;
+	firstName: string;
+	lastName: string;
 	email: string;
-	age: number;
-	role: Role;
+	password: string;
 }
 
 const userSchema = new Schema(
@@ -20,18 +15,21 @@ const userSchema = new Schema(
 			type: String,
 			required: true,
 		},
+		firstName: {
+			type: String,
+			required: true,
+		},
+		lastName: {
+			type: String,
+			required: true,
+		},
+		password: {
+			type: String,
+			required: true,
+		},
 		email: {
 			type: String,
 			required: true,
-		},
-		age: {
-			type: Number,
-			required: true,
-		},
-		role: {
-			type: String,
-			required: true,
-			enum: Role,
 		},
 	},
 	{
