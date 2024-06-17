@@ -1,5 +1,4 @@
 import { param, body } from 'express-validator';
-import { Role } from '../models/user.interface';
 
 export const validateMongoId = [param('id').exists().bail().isMongoId()];
 

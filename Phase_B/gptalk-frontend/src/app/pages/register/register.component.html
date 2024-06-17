@@ -22,7 +22,9 @@
 
     <label for="confirmPassword">Confirm Password:</label>
     <input type="password" spellcheck="false" name="confirmPassword" value="" id="confirmPassword" class="form-input" [(ngModel)]="confirmPassword">
-
+    @if (firstName) {
+      <ng-container>hello</ng-container>
+    }
 <!--    <ng-container *ngIf="firstName">-->
 <!--      <button class="btn-next" type="button">Next</button>-->
 <!--    </ng-container>-->

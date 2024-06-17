@@ -11,7 +11,7 @@ import { expressLogger } from './controllers/logger.controller';
 import { errorMiddleware } from './middlewares/error.middleware';
 
 // routers
-import userRouter from './routes/user.router';
+import registerRouter from './routes/register.router';
 
 // initialize express server
 const app = express();
@@ -37,7 +37,7 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.get('/api/ping', (req, res) => {
 	res.send({ name: Config.PACKAGE, port: Config.PORT, version: Config.VERSION });
 });
-app.use('/api/user', userRouter);
+app.use('/api/register', registerRouter);
 app.use(errorMiddleware);
 
 async function main() {

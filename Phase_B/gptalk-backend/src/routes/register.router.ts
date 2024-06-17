@@ -4,10 +4,10 @@ import { validator } from '../middlewares/validator.middleware';
 import { validateUser } from '../pipes/validator.pipe';
 
 /**
- * @route POST /api/user/register
+ * @route POST /api/register
  * @description register a user to the website
  * @access public
  */
-router.post('/register', validateUser, validator, registerMiddleware);
+router.post('/', validateUser, validator, registerMiddleware);
 
 export default router;
