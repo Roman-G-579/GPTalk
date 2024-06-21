@@ -1,29 +1,45 @@
 .register-content {
-  display: flex;
-  justify-content: center;
-}
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 40px;
-  width: 50%;
-
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-.form-register {
-  display: flex;
-  flex-direction: column;
-  width: 25%;
+.form-input-group {
+  margin-bottom: 26px;
 }
 
-.form-input {
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-  vertical-align: center;
+.form-input-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
-.btn-register {
-  height: 3rem;
-  font-size: large;
+//Used to avoid the password field from being larger than regular text inputs
+:host ::ng-deep .password-field input{
+    width: 15rem;
+    font-size: small;
+  }
+
+//adds hover effects for the navigation buttons at the top of the register form
+.bg-primary {
+  transition: all 0.25s ease;
 }
+.bg-primary:hover {
+  background-color: #2563eb !important;
+}
+
+.surface-border {
+  transition: all 0.25s ease;
+}
+.surface-border:hover {
+  background-color: #d2d9e8 !important;
+}
+
+.msg-password-mismatch {
+  margin-top: -15px;
+}
+
