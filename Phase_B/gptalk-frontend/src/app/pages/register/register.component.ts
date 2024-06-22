@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -16,6 +16,8 @@ import { Ripple } from 'primeng/ripple';
 import { PrimeNGConfig } from 'primeng/api';
 import { RegisterService } from '../../core/services/register.service';
 import { MessageModule } from 'primeng/message';
+import { DividerModule } from 'primeng/divider';
+import { ImageModule } from 'primeng/image';
 
 @Component({
   selector: 'app-register',
@@ -36,6 +38,8 @@ import { MessageModule } from 'primeng/message';
     ToggleButtonModule,
     Ripple,
     MessageModule,
+    DividerModule,
+    ImageModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
@@ -50,8 +54,9 @@ export class RegisterComponent implements OnInit{
   confirmPassword!: string;
 
   active: number = 0; //active page number of the registration section
+  loading: boolean = false;
 
-  constructor(private primengConfig: PrimeNGConfig, private registerService: RegisterService) {}
+  constructor(private primengConfig: PrimeNGConfig, private registerService: RegisterService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.primengConfig.ripple = true;
@@ -67,13 +72,17 @@ export class RegisterComponent implements OnInit{
       lastName: this.lastName,
       email: this.email
     };
-
+    this.loading = true;
     //calls the register service's registration function
     this.registerService.registerUser(userData).subscribe({
       next: res => {
+        this.active = 3;
+        this.loading = false;
+        this.cdr.detectChanges();
         console.log("registration successful!",res)
       },
       error: err => {
+        this.loading = false;
         console.log("registration failed ",err);
       }
     })

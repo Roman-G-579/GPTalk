@@ -1,22 +1,40 @@
+.img-logo {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  //color: #5EA0F1;
+  //filter: invert(37%) sepia(92%) saturate(4416%) hue-rotate(218deg) brightness(158%) contrast(89%);
+}
+
+//Customizes the header below the GPTalk logo
+.text-header {
+  font-family: "Inter var", sans-serif;
+  color: #4b5563;
+  text-align: center;
+  //margin-top: -30px;
+}
+
 .register-content {
-  max-width: 600px;
+  max-width: 900px;
   margin: 40px auto;
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
 
+//Customizes the floatlabel element's margins
 .form-input-group {
   margin-bottom: 26px;
 }
 
-.form-input-group input {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
+//.form-input-group input {
+//  width: 100%;
+//  padding: 8px;
+//  border: 1px solid #ccc;
+//  border-radius: 4px;
+//  box-sizing: border-box;
+//}
 
 //Used to avoid the password field from being larger than regular text inputs
 :host ::ng-deep .password-field input{
@@ -43,3 +61,12 @@
   margin-top: -15px;
 }
 
+.text-login-link {
+  margin-top: 10px;
+  font-family: "Inter var", sans-serif;
+  text-align: center;
+}
+
+a:visited {
+  color: #2563eb;
+}

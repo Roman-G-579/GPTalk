@@ -1,148 +1,167 @@
-<div class="register-content">
-<p-stepper [(activeStep)]="active">
-<!--  Step 1 - First and Last name-->
-  <p-stepperPanel>
-    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-      <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
-                <span
-                  class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
-                  [ngClass]="{
-                        'bg-primary border-primary': index <= active,
-                        'surface-border': index > active
-                    }"
-                >
-                    <i class="pi pi-user"></i>
-                </span>
-      </button>
-
-    </ng-template>
-    <ng-template pTemplate="content" let-nextCallback="nextCallback">
-      <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 16rem">
-        <div class="text-center mt-3 mb-4 text-xl font-semibold">Enter your name</div>
-
-        <div class="formgrid grid justify-content-center">
-          <p-floatLabel class="form-input-group">
-            <input pInputText name="firstName" id="firstName" autocapitalize="words" pAutoFocus  [autofocus]="true" [(ngModel)]="firstName" />
-            <label for="firstName">First Name</label>
-          </p-floatLabel>
-          <p-floatLabel class="form-input-group">
-            <input pInputText name="lastName" id="lastName" autocapitalize="words" [(ngModel)]="lastName" />
-            <label for="lastName">Last Name</label>
-          </p-floatLabel>
-        </div>
-
+ <div class="register-content flex flex-column md:flex-row">
+<!--  LEFT PANEL-->
+    <div class="w-3 flex flex-column justify-content-between">
+      <div>
+        <p-image
+          class="img-logo"
+          src="/assets/GPTalk_Logo4_no_text.png"
+          alt="GPTalk logo"
+          width="120" />
+        <h4 class="text-header">Create a GPTalk Account</h4>
       </div>
-      <div class="flex justify-content-end">
-        <p-button  (onClick)="nextCallback.emit()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
-      </div>
-    </ng-template>
-  </p-stepperPanel>
+      <p class="text-login-link">Already have an account? <a href="">Log in</a></p>
+    </div>
 
-<!--  Step 2 - Username and email-->
-  <p-stepperPanel>
-    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-      <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
-                <span
-                  class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
-                  [ngClass]="{
-                        'bg-primary border-primary': index <= active,
-                        'surface-border': index > active
-                    }"
-                >
-                    <i class="pi pi-at"></i>
-                </span>
-      </button>
-    </ng-template>
-    <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback">
-      <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 16rem">
-        <div class="text-center mt-3 mb-4 text-xl font-semibold">Enter username and email</div>
+    <p-divider layout="vertical" styleClass="hidden md:flex"/>
+<!--RIGHT PANEL-->
+    <p-stepper class="w-9" [(activeStep)]="active">
+      <!--  Step 1 - First and Last name-->
+      <p-stepperPanel>
+        <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
+                  <span
+                    class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                    [ngClass]="{
+                          'bg-primary border-primary': index <= active,
+                          'surface-border': index > active
+                      }"
+                  >
+                      <i class="pi pi-user"></i>
+                  </span>
+          </button>
 
-        <div class="formgrid grid justify-content-center">
-          <p-floatLabel class="form-input-group">
-            <input pInputText name="username" id="username" pAutoFocus  [autofocus]="true" [(ngModel)]="username" />
-            <label for="username">Username</label>
-          </p-floatLabel>
-          <p-floatLabel class="form-input-group">
-              <input pInputText name="email" id="email" [(ngModel)]="email" />
-              <label for="email">Email</label>
-            </p-floatLabel>
-        </div>
+        </ng-template>
+        <ng-template pTemplate="content" let-nextCallback="nextCallback">
+          <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 16rem">
+            <div class="text-center mt-3 mb-4 text-xl font-semibold">Enter your name</div>
 
-      </div>
+            <div class="formgrid grid justify-content-center">
+              <p-floatLabel class="form-input-group">
+                <input pInputText name="firstName" id="firstName" autocapitalize="words" pAutoFocus  [autofocus]="true" [(ngModel)]="firstName" />
+                <label for="firstName">First Name</label>
+              </p-floatLabel>
+              <p-floatLabel class="form-input-group">
+                <input pInputText name="lastName" id="lastName" autocapitalize="words" [(ngModel)]="lastName" />
+                <label for="lastName">Last Name</label>
+              </p-floatLabel>
+            </div>
 
-      <div class="flex justify-content-between">
-        <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
-        <p-button (onClick)="nextCallback.emit()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
-      </div>
-    </ng-template>
-  </p-stepperPanel>
+          </div>
+          <div class="flex justify-content-end">
+            <p-button  (onClick)="nextCallback.emit()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
+          </div>
+        </ng-template>
+      </p-stepperPanel>
 
-  <!--  Step 3 - Password-->
-  <p-stepperPanel>
-    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-      <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
-                <span
-                  class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
-                  [ngClass]="{
-                        'bg-primary border-primary': index <= active,
-                        'surface-border': index > active
-                    }"
-                >
-                    <i class="pi pi-key"></i>
-                </span>
-      </button>
-    </ng-template>
-    <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback">
-      <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 16rem">
-        <div class="text-center mt-3 mb-4 text-xl font-semibold">Create a password</div>
+      <!--  Step 2 - Username and email-->
+      <p-stepperPanel>
+        <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
+                  <span
+                    class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                    [ngClass]="{
+                          'bg-primary border-primary': index <= active,
+                          'surface-border': index > active
+                      }"
+                  >
+                      <i class="pi pi-at"></i>
+                  </span>
+          </button>
+        </ng-template>
+        <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback">
+          <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 16rem">
+            <div class="text-center mt-3 mb-4 text-xl font-semibold">Enter username and email</div>
 
-        <div class="formgrid grid justify-content-center">
-          <p-floatLabel class="form-input-group">
-            <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" [(ngModel)]="password" />
-            <label for="password">Password</label>
-          </p-floatLabel>
-          <p-floatLabel class="form-input-group ">
-            <p-password class="password-field" name="password" id="confirmPassword" [feedback]="false" [(ngModel)]="confirmPassword" />
-            <label for="confirmPassword">Confirm Password</label>
-          </p-floatLabel>
-          @if (password != confirmPassword) {
-            <p-message class="msg-password-mismatch" severity="warning" text="Passwords do not match"></p-message>
-          }
-        </div>
-      </div>
+            <div class="formgrid grid justify-content-center">
+              <p-floatLabel class="form-input-group">
+                <input pInputText name="username" id="username" pAutoFocus  [autofocus]="true" [(ngModel)]="username" />
+                <label for="username">Username</label>
+              </p-floatLabel>
+              <p-floatLabel class="form-input-group">
+                <input pInputText name="email" id="email" [(ngModel)]="email" />
+                <label for="email">Email</label>
+              </p-floatLabel>
+            </div>
 
-      <div class="flex justify-content-between">
-        <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
-        <p-button (onClick)="submitDetails()" label="Finish" icon="pi pi-check" iconPos="right" [disabled]="password!=confirmPassword" />
-      </div>
-    </ng-template>
-  </p-stepperPanel>
+          </div>
 
-  <p-stepperPanel>
-    <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-      <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2">
-                <span
-                  class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
-                  [ngClass]="{
-                        'bg-primary border-primary': index <= active,
-                        'surface-border': index > active
-                    }"
-                >
-                    <i class="pi pi-id-card"></i>
-                </span>
-      </button>
-    </ng-template>
-    <ng-template pTemplate="content" let-prevCallback="prevCallback">
-      <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 24rem">
-        <div class="text-center mt-3 mb-3 text-xl font-semibold">Account created successfully!</div>
-        <div class="text-center">
-          <img alt="logo" src="https://primefaces.org/cdn/primeng/images/stepper/content.svg" />
-        </div>
-      </div>
-      <div class="flex justify-content-start">
-        <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
-      </div>
-    </ng-template>
-  </p-stepperPanel>
-</p-stepper>
-</div>
+          <div class="flex justify-content-between">
+            <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
+            <p-button (onClick)="nextCallback.emit()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
+          </div>
+        </ng-template>
+      </p-stepperPanel>
+
+      <!--  Step 3 - Password-->
+      <p-stepperPanel>
+        <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
+                  <span
+                    class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                    [ngClass]="{
+                          'bg-primary border-primary': index <= active,
+                          'surface-border': index > active
+                      }"
+                  >
+                      <i class="pi pi-key"></i>
+                  </span>
+          </button>
+        </ng-template>
+        <ng-template pTemplate="content" let-nextCallback="nextCallback" let-prevCallback="prevCallback">
+          <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 16rem">
+            <div class="text-center mt-3 mb-4 text-xl font-semibold">Create a password</div>
+
+            <div class="formgrid grid justify-content-center">
+              <p-floatLabel class="form-input-group">
+                <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" [(ngModel)]="password" />
+                <label for="password">Password</label>
+              </p-floatLabel>
+              <p-floatLabel class="form-input-group ">
+                <p-password class="password-field" name="password" id="confirmPassword" [feedback]="false" [(ngModel)]="confirmPassword" />
+                <label for="confirmPassword">Confirm Password</label>
+              </p-floatLabel>
+              @if (password != confirmPassword) {
+                <p-message class="msg-password-mismatch" severity="warning" text="Passwords do not match"></p-message>
+              }
+            </div>
+          </div>
+
+          <div class="flex justify-content-between">
+            <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
+            <p-button (onClick)="submitDetails();" label="Finish" [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-check'" iconPos="right" [disabled]="password!=confirmPassword" />
+          </div>
+        </ng-template>
+      </p-stepperPanel>
+
+      <!--  Step 4 - "Registration complete" screen-->
+      <p-stepperPanel>
+        <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2">
+                  <span
+                    class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
+                    [ngClass]="{
+                          'bg-primary border-primary': index <= active,
+                          'surface-border': index > active
+                      }"
+                  >
+                      <i class="pi pi-id-card"></i>
+                  </span>
+          </button>
+        </ng-template>
+        <ng-template pTemplate="content" let-prevCallback="prevCallback">
+          <div class="flex flex-column gap-2 mx-auto" style="min-height: 16rem; max-width: 24rem">
+            <div class="text-center mt-3 mb-3 text-xl font-semibold">Account created successfully!</div>
+            <div class="text-center">
+              <img alt="logo" src="https://primefaces.org/cdn/primeng/images/stepper/content.svg" />
+            </div>
+            <p-button class="flex justify-content-center mb-4" label="Return To Home Screen" icon="pi pi-home" iconPos="right"/>
+          </div>
+          <div class="flex justify-content-start">
+            <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
+          </div>
+        </ng-template>
+      </p-stepperPanel>
+    </p-stepper>
+
+  </div>
+
