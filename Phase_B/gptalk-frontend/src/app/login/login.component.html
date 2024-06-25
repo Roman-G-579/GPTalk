@@ -1,0 +1,28 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+<div class="p-grid p-justify-center p-align-center" style="height: 100vh;">
+  <div class="p-col-12 p-md-6 p-lg-4">
+    <div class="p-card p-shadow-2">
+      <div class="p-card-body">
+        <h2 class="p-card-title">Login</h2>
+        <form [formGroup]="loginForm" (ngSubmit)="login()">
+          <div class="p-field">
+            <label for="email">Email</label>
+            <input id="email" type="email" pInputText formControlName="email" />
+            <div *ngIf="loginForm.controls['email'].invalid && loginForm.controls['email'].touched" class="p-error">
+              Valid email is required.
+            </div>
+          </div>
+          <div class="p-field">
+            <label for="password">Password</label>
+            <input id="password" type="password" pInputText formControlName="password" />
+            <div *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched" class="p-error">
+              Password is required.
+            </div>
+          </div>
+          <button pButton type="submit" label="Login" class="p-mt-2" [disabled]="loginForm.invalid"></button>
+        </form>
+        <p *ngIf="errorMessage" class="p-error p-mt-2">{{ errorMessage }}</p>
+      </div>
+    </div>
+  </div>
+</div>
