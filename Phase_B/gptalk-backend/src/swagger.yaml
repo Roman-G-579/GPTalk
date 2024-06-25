@@ -14,7 +14,7 @@ tags:
   - name: General
     description: general requests
   - name: Users
-    description: user managment
+    description: user management
 paths:
   /api/ping:
     get:
@@ -24,7 +24,7 @@ paths:
         - General
       responses:
         '200':
-          description: 'successful response'
+          description: successful response
   /api/user/add:
     post:
       description: add a user to the database
@@ -38,10 +38,10 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          definition: user object
+          description: user object
   /api/user/get/{id}:
     get:
-      description: get a user from the databse by the id
+      description: get a user from the database by the id
       access: public
       tags:
         - Users
@@ -88,6 +88,77 @@ paths:
       responses:
         '200':
           description: successful delete
+  /api/register:
+    post:
+      description: Register a new user
+      access: public
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '200':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                  email:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+  /api/auth/login:
+    post:
+      description: Login a user
+      access: public
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+  /api/auth/protected:
+    get:
+      description: A protected endpoint that requires JWT authentication
+      access: private
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Protected resource access successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
 components:
   schemas:
     User:
@@ -95,8 +166,9 @@ components:
       required:
         - username
         - email
-        - age
-        - role
+        - password
+        - firstName
+        - lastName
       properties:
         _id:
           type: string
@@ -104,12 +176,43 @@ components:
           type: string
         email:
           type: string
-        age:
-          type: number
-          format: int64
-        role:
+        firstName:
           type: string
-          enum:
-            - ADMIN
-            - PRO
-            - USER
+        lastName:
+          type: string
+        password:
+          type: string
+    UserRegistration:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    UserLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

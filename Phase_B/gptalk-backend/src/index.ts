@@ -1,5 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
+import passport from 'passport';
+import { jwtStrategy } from './config/passport.config';
 import cors from 'cors';
 import YAML from 'yamljs';
 import swaggerUi from 'swagger-ui-express';
@@ -12,6 +14,7 @@ import { errorMiddleware } from './middlewares/error.middleware';
 
 // routers
 import registerRouter from './routes/register.router';
+import authRouter from './routes/auth.router';
 
 // initialize express server
 const app = express();
@@ -30,6 +33,10 @@ app.use(expressLogger);
 // body parser
 app.use(express.json());
 
+// JWT
+passport.use(jwtStrategy);
+app.use(passport.initialize());
+
 // swagger
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -38,6 +45,9 @@ app.get('/api/ping', (req, res) => {
 	res.send({ name: Config.PACKAGE, port: Config.PORT, version: Config.VERSION });
 });
 app.use('/api/register', registerRouter);
+app.use('/api/auth', authRouter);
+
+// Error handler
 app.use(errorMiddleware);
 
 async function main() {
