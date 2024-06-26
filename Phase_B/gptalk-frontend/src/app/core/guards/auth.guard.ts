@@ -1,22 +1,35 @@
-/* eslint-disable */
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Injectable } from '@angular/core';
+import {
+	CanActivate,
+	ActivatedRouteSnapshot,
+	RouterStateSnapshot,
+	UrlTree,
+	Router,
+} from '@angular/router';
+import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { catchError, map, of } from 'rxjs';
 
-export const AuthGuard: CanActivateFn = (route, state) => {
-	const router = inject(Router);
-	const authService = inject(AuthService);
-	return authService.login().pipe(
-		map((loginResult) => {
-			if (!loginResult) {
-				return router.parseUrl('/error');
-			}
+@Injectable({
+	providedIn: 'root',
+})
+export class AuthGuard implements CanActivate {
+	constructor(
+		private authService: AuthService,
+		private router: Router,
+	) {}
+
+	canActivate(
+		_route: ActivatedRouteSnapshot,
+		_state: RouterStateSnapshot,
+	): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+		const token = localStorage.getItem('token');
+
+		if (token) {
 			return true;
-		}),
-		catchError((err) => {
-			router.navigateByUrl('/error');
-			return of(false);
-		}),
-	);
-};
+		} else {
+			this.router.navigate(['/login']);
+			return false;
+		}
+	}
+}

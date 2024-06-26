@@ -4,13 +4,23 @@ import { AuthGuard } from './core/guards/auth.guard';
 export default [
 	{
 		path: '',
-		redirectTo: 'pages',
+		redirectTo: 'login',
 		pathMatch: 'full',
 	},
+	// {
+	// 	path: 'pages',
+	// 	canActivate: [AuthGuard],
+	// 	loadChildren: () => import('./pages/pages.routes'),
+	// },
 	{
-		path: 'pages',
+		path: 'login',
+		loadComponent: () => import('./login/login.component').then((c) => c.LoginComponent),
+	},
+	{
+		path: 'protected',
 		canActivate: [AuthGuard],
-		loadChildren: () => import('./pages/pages.routes'),
+		loadComponent: () =>
+			import('./protected/protected.component').then((c) => c.ProtectedComponent),
 	},
 	{
 		path: 'error',
