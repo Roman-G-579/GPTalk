@@ -6,7 +6,7 @@ export const environment = {
 
 function getApiUrl(port: number) {
 	const { protocol, hostname } = window.location;
-	return `${protocol}//${hostname}:${port}/api`;
+	return `${protocol}//${hostname}:${port}/api/`;
 }
 
 function getSiteUrl() {
