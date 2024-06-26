@@ -1,7 +1,7 @@
 /* eslint-disable @angular-eslint/use-lifecycle-interface */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { AuthService } from "../core/services/auth.service";
 
 @Component({
@@ -13,18 +13,6 @@ import { AuthService } from "../core/services/auth.service";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProtectedComponent {
-  protectedData: any;
-
-  constructor(private authService: AuthService) { }
-
-  ngOnInit(): void {
-    this.authService.getProtectedData().subscribe(
-      (data) => {
-        this.protectedData = data;
-      },
-      (error) => {
-        console.error('Error fetching protected data', error);
-      }
-    );
-  }
+  private readonly authService = inject(AuthService);
+  protectedData$ = this.authService.getProtectedData();
 }
