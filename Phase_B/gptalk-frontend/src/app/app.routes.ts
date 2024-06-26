@@ -7,11 +7,14 @@ export default [
 		redirectTo: 'login',
 		pathMatch: 'full',
 	},
-	// {
-	// 	path: 'pages',
-	// 	canActivate: [AuthGuard],
-	// 	loadChildren: () => import('./pages/pages.routes'),
-	// },
+	{
+		path: 'pages',
+		loadChildren: () => import('./pages/pages.routes'),
+	},
+  {
+    path: 'register',
+    loadComponent: () => import('./register/register.component').then((c) => c.RegisterComponent),
+  },
 	{
 		path: 'login',
 		loadComponent: () => import('./login/login.component').then((c) => c.LoginComponent),
