@@ -1,4 +1,5 @@
- <div class="register-content flex flex-column md:flex-row">
+
+<form class="register-content flex flex-column md:flex-row" [formGroup]="registerForm">
 <!--  LEFT PANEL-->
     <div class="w-3 flex flex-column justify-content-between">
       <div>
@@ -7,18 +8,18 @@
           src="/assets/GPTalk_Logo4_no_text.png"
           alt="GPTalk logo"
           width="120" />
-        <h4 class="text-header">Create a GPTalk Account</h4>
+        <h4 class="text-header select-none">Create a GPTalk Account</h4>
       </div>
-      <p class="text-login-link">Already have an account? <a href="">Log in</a></p>
+      <p class="text-login-link">Already have an account? <a href="">Login</a></p>
     </div>
 
     <p-divider layout="vertical" styleClass="hidden md:flex"/>
 <!--RIGHT PANEL-->
     <p-stepper class="w-9" [(activeStep)]="active">
       <!--  Step 1 - First and Last name-->
-      <p-stepperPanel>
+      <p-stepperPanel formGroupName="fullName">
         <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
+          <button class="bg-transparent border-none inline-flex flex-column gap-2" >
                   <span
                     class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
                     [ngClass]="{
@@ -37,26 +38,26 @@
 
             <div class="formgrid grid justify-content-center">
               <p-floatLabel class="form-input-group">
-                <input pInputText name="firstName" id="firstName" autocapitalize="words" pAutoFocus  [autofocus]="true" [(ngModel)]="firstName" />
+                <input pInputText name="firstName" id="firstName" autocapitalize="words" pAutoFocus  [autofocus]="true" formControlName="firstName" />
                 <label for="firstName">First Name</label>
               </p-floatLabel>
               <p-floatLabel class="form-input-group">
-                <input pInputText name="lastName" id="lastName" autocapitalize="words" [(ngModel)]="lastName" />
+                <input pInputText name="lastName" id="lastName" autocapitalize="words" formControlName="lastName" />
                 <label for="lastName">Last Name</label>
               </p-floatLabel>
             </div>
 
           </div>
           <div class="flex justify-content-end">
-            <p-button  (onClick)="nextCallback.emit()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
+            <p-button  (onClick)="submitFullName()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
           </div>
         </ng-template>
       </p-stepperPanel>
 
       <!--  Step 2 - Username and email-->
-      <p-stepperPanel>
+      <p-stepperPanel formGroupName="usernameAndEmail">
         <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
+          <button class="bg-transparent border-none inline-flex flex-column gap-2" >
                   <span
                     class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
                     [ngClass]="{
@@ -74,11 +75,11 @@
 
             <div class="formgrid grid justify-content-center">
               <p-floatLabel class="form-input-group">
-                <input pInputText name="username" id="username" pAutoFocus  [autofocus]="true" [(ngModel)]="username" />
+                <input pInputText name="username" id="username" pAutoFocus  [autofocus]="true" formControlName="username" />
                 <label for="username">Username</label>
               </p-floatLabel>
               <p-floatLabel class="form-input-group">
-                <input pInputText name="email" id="email" [(ngModel)]="email" />
+                <input pInputText name="email" id="email" formControlName="email" />
                 <label for="email">Email</label>
               </p-floatLabel>
             </div>
@@ -87,15 +88,15 @@
 
           <div class="flex justify-content-between">
             <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
-            <p-button (onClick)="nextCallback.emit()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
+            <p-button (onClick)="submitUsernameAndEmail()" label="Next" icon="pi pi-arrow-right" iconPos="right" />
           </div>
         </ng-template>
       </p-stepperPanel>
 
       <!--  Step 3 - Password-->
-      <p-stepperPanel>
+      <p-stepperPanel formGroupName="passwordAndConfirm">
         <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2" (click)="onClick.emit()">
+          <button class="bg-transparent border-none inline-flex flex-column gap-2">
                   <span
                     class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
                     [ngClass]="{
@@ -113,22 +114,23 @@
 
             <div class="formgrid grid justify-content-center">
               <p-floatLabel class="form-input-group">
-                <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" [(ngModel)]="password" />
+                <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password" />
                 <label for="password">Password</label>
               </p-floatLabel>
               <p-floatLabel class="form-input-group ">
-                <p-password class="password-field" name="password" id="confirmPassword" [feedback]="false" [(ngModel)]="confirmPassword" />
+                <p-password class="password-field" name="password" id="confirmPassword" [feedback]="false" formControlName="confirmPassword" />
                 <label for="confirmPassword">Confirm Password</label>
               </p-floatLabel>
-              @if (password != confirmPassword) {
-                <p-message class="msg-password-mismatch" severity="warning" text="Passwords do not match"></p-message>
+              @if (passwordMismatch() || errorMsg) {
+                <p-message class="error-msg" severity="warning" [text]=errorMsg></p-message>
+<!--                <p-message class="msg-password-mismatch" severity="warning" text="Passwords do not match"></p-message>-->
               }
             </div>
           </div>
 
           <div class="flex justify-content-between">
             <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
-            <p-button (onClick)="submitDetails();" label="Finish" [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-check'" iconPos="right" [disabled]="password!=confirmPassword" />
+            <p-button type="submit" (onClick)="submitPassword();" label="Finish" [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-check'" iconPos="right" [disabled]="!registerForm.valid" />
           </div>
         </ng-template>
       </p-stepperPanel>
@@ -136,7 +138,7 @@
       <!--  Step 4 - "Registration complete" screen-->
       <p-stepperPanel>
         <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-          <button pRipple class="bg-transparent border-none inline-flex flex-column gap-2">
+          <button class="bg-transparent border-none inline-flex flex-column gap-2">
                   <span
                     class="border-round border-2 w-3rem h-3rem inline-flex align-items-center justify-content-center"
                     [ngClass]="{
@@ -156,12 +158,9 @@
             </div>
             <p-button class="flex justify-content-center mb-4" label="Return To Home Screen" icon="pi pi-home" iconPos="right"/>
           </div>
-          <div class="flex justify-content-start">
-            <p-button (onClick)="prevCallback.emit()" label="Back" severity="secondary" icon="pi pi-arrow-left" />
-          </div>
         </ng-template>
       </p-stepperPanel>
     </p-stepper>
 
-  </div>
+  </form>
 
