@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { SidebarComponent } from './layout/sidebar/sidebar.component';
+import { ContentComponent } from './layout/content/content.component';
 
 @Component({
 	selector: 'app-pages',
 	standalone: true,
-	imports: [CommonModule, RouterOutlet],
+	imports: [CommonModule, SidebarComponent, ContentComponent],
 	templateUrl: './pages.component.html',
 	styleUrls: ['./pages.component.scss'],
 	changeDetection: ChangeDetectionStrategy.OnPush,
