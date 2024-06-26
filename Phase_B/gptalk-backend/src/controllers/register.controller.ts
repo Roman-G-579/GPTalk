@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { UserModel } from '../models/user.interface';
-import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
 import { Config } from '../config/config';
 import { sendMail } from './mail.controller';
@@ -13,6 +12,13 @@ export async function registerMiddleware(req: Request, res: Response, next: Next
 	try {
 		// Get parameters from request body
 		const { username, password, firstName, lastName, email } = req.body;
+
+		// Check if a user with the given email already exists in the database
+		const emailExists = await isExist(email);
+
+		if(emailExists) {
+			throw new Error('Email already exists');
+		}
 
 		// Setting the mail options
 		const mailOptions = {
@@ -38,4 +44,12 @@ export async function registerMiddleware(req: Request, res: Response, next: Next
 	} catch (err) {
 		next(err);
 	}
+
+}
+
+// Returns true if document in the database contains the given email, otherwise returns false
+async function isExist(email: string): Promise<boolean> {
+	const exist = await UserModel.findOne({ email });
+
+	return !!exist;
 }

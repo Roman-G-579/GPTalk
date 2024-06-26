@@ -1,16 +1,18 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RegisterService {
-  private registerUrl = environment.apiUrl + '/register';
+  private readonly http = inject(HttpClient);
+  private apiUrl = environment.apiUrl;
 
-  constructor(private http: HttpClient) { }
+  registerUser(userData: unknown): Observable<object> {
+    const {href} = new URL('register', this.apiUrl);
 
-  registerUser(userData: any) {
-    return this.http.post(this.registerUrl, userData);
+    return this.http.post(href, userData);
   }
 }
