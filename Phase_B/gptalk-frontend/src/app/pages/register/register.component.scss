@@ -1,29 +1,72 @@
-.register-content {
+.img-logo {
   display: flex;
   justify-content: center;
-}
-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding-top: 40px;
-  width: 50%;
-
+  user-select: none;
+  pointer-events: none;
+  margin-top: 45%;
+  margin-bottom: 15px;
+  //color: #5EA0F1;
+  //filter: invert(37%) sepia(92%) saturate(4416%) hue-rotate(218deg) brightness(158%) contrast(89%);
 }
 
-.form-register {
-  display: flex;
-  flex-direction: column;
-  width: 25%;
+//Customizes the header below the GPTalk logo
+.text-header {
+  font-family: "Inter var", sans-serif;
+  color: #4b5563;
+  text-align: center;
 }
 
-.form-input {
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-  vertical-align: center;
+.register-content {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
-.btn-register {
-  height: 3rem;
-  font-size: large;
+//Customizes the floatlabel element's margins
+.form-input-group {
+  margin-bottom: 26px;
+}
+
+//Used to avoid the password field from being larger than regular text inputs
+:host ::ng-deep .password-field input{
+    width: 15rem;
+    font-size: small;
+  }
+
+////adds hover effects for the navigation buttons at the top of the register form
+//.bg-primary {
+//  transition: all 0.25s ease;
+//}
+//.bg-primary:hover {
+//  background-color: #2563eb !important;
+//}
+//
+//.surface-border {
+//  transition: all 0.25s ease;
+//}
+//.surface-border:hover {
+//  background-color: #d2d9e8 !important;
+//}
+
+.error-msg {
+  margin-top: -15px;
+  text-wrap: nowrap;
+}
+
+.text-login-link {
+  margin-top: 10px;
+  font-family: "Inter var", sans-serif;
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+  color: #2563eb;
+  transition: all 0.25s ease;
+
+}
+a:hover {
+  font-weight: bold;
 }

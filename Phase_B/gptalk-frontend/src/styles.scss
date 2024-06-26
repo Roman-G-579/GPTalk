@@ -1,17 +1,22 @@
 // ngx-toastr
 @import 'ngx-toastr/toastr';
+@import "primeicons/primeicons.css";
+@layer reset, primeng;
 
-* {
-	margin: 0;
-	padding: 0;
+@layer reset {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: Roboto, 'Helvetica Neue', sans-serif;
+  }
 }
 
-html,
-body {
-	height: 100%;
-}
-
-body {
-	margin: 0;
-	font-family: Roboto, 'Helvetica Neue', sans-serif;
-}
