@@ -121,9 +121,8 @@
                 <p-password class="password-field" name="password" id="confirmPassword" [feedback]="false" formControlName="confirmPassword" />
                 <label for="confirmPassword">Confirm Password</label>
               </p-floatLabel>
-              @if (passwordMismatch() || errorMsg) {
+              @if (passwordMismatch()) {
                 <p-message class="error-msg" severity="warning" [text]=errorMsg></p-message>
-<!--                <p-message class="msg-password-mismatch" severity="warning" text="Passwords do not match"></p-message>-->
               }
             </div>
           </div>
