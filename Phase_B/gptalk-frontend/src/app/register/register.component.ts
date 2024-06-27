@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
-  Component,
+  Component, inject,
   OnInit,
 } from '@angular/core';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -23,6 +23,7 @@ import { RegisterService } from '../core/services/register.service';
 import { MessageModule } from 'primeng/message';
 import { DividerModule } from 'primeng/divider';
 import { ImageModule } from 'primeng/image';
+import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -46,12 +47,19 @@ import { ImageModule } from 'primeng/image';
     DividerModule,
     ImageModule,
     ReactiveFormsModule,
+    ToastContainerDirective,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterComponent implements OnInit{
+  // Dependency injection
+  private readonly primengConfig = inject(PrimeNGConfig);
+  private readonly registerService = inject(RegisterService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly toastr = inject(ToastrService);
+
   // FormGroup object containing every field in the registration form
   registerForm = new FormGroup({
     fullName: new FormGroup({
@@ -71,8 +79,6 @@ export class RegisterComponent implements OnInit{
   active = 0; // Active page number of the registration section
   loading = false;
   errorMsg: string = "";
-
-  constructor(private primengConfig: PrimeNGConfig, private registerService: RegisterService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.primengConfig.ripple = true;
@@ -117,14 +123,13 @@ export class RegisterComponent implements OnInit{
             this.active = 3;
             this.loading = false;
             this.cdr.detectChanges();
-            console.log("registration successful!",res);
-            this.errorMsg = '';
+            // console.log("registration successful!",res);
+            // this.errorMsg = '';
           },
           error: err => {
             this.loading = false;
             this.cdr.detectChanges();
-            this.setError("Registration Failed - " + err.error.message);
-            console.log("Registration Failed - ", err.error.message);
+            this.toastr.error(err.error.message,"Registration failed");
           }
         })
   }
@@ -152,14 +157,9 @@ export class RegisterComponent implements OnInit{
 
   //Returns true if password field is different from confirmation field, returns false otherwise
   passwordMismatch() {
-    if ((this.registerForm.controls.passwordAndConfirm.controls.password.value !=
+    return (this.registerForm.controls.passwordAndConfirm.controls.password.value !=
       this.registerForm.controls.passwordAndConfirm.controls.confirmPassword.value) &&
-      this.registerForm.controls.passwordAndConfirm.controls.confirmPassword.touched) {
-      this.setError("Passwords do not match");
-      return true;
-    }
-    this.setError("");
-    return false;
+      this.registerForm.controls.passwordAndConfirm.controls.confirmPassword.touched
   }
 
   // Sets errorMsg's value based on the given string

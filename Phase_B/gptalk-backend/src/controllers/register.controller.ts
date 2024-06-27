@@ -17,7 +17,7 @@ export async function registerMiddleware(req: Request, res: Response, next: Next
 		const emailExists = await isExist(email);
 
 		if(emailExists) {
-			throw new Error('Email already exists');
+			throw new Error('Account with this Email already exists');
 		}
 
 		// Setting the mail options
