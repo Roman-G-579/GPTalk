@@ -10,6 +10,7 @@ export default [
 	{
 		path: 'pages',
 		loadChildren: () => import('./pages/pages.routes'),
+		loadComponent: () => import('./pages/pages.component').then((c) => c.PagesComponent),
 	},
   {
     path: 'register',
