@@ -8,7 +8,15 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { ButtonModule } from 'primeng/button';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule, ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { CardModule } from 'primeng/card';
 import { AutoFocus } from 'primeng/autofocus';
 import { StepperModule } from 'primeng/stepper';
@@ -24,6 +32,7 @@ import { MessageModule } from 'primeng/message';
 import { DividerModule } from 'primeng/divider';
 import { ImageModule } from 'primeng/image';
 import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
+import { ConfirmPasswordValidator } from '../core/validators/confirm-password.validator';
 
 @Component({
   selector: 'app-register',
@@ -54,6 +63,7 @@ import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RegisterComponent implements OnInit{
+
   // Dependency injection
   private readonly primengConfig = inject(PrimeNGConfig);
   private readonly registerService = inject(RegisterService);
@@ -71,11 +81,23 @@ export class RegisterComponent implements OnInit{
       email: new FormControl('', [Validators.email,Validators.required]),
     }),
     passwordAndConfirm: new FormGroup({
-      password: new FormControl('', [Validators.minLength(6), Validators.maxLength(100), Validators.required]),
-      confirmPassword: new FormControl('', Validators.required),
-    }),
+      password: new FormControl<string>('', [
+        Validators.minLength(6),
+        Validators.maxLength(100),
+        Validators.pattern('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$'),
+        Validators.required]),
+      confirmPassword: new FormControl<string>('', Validators.required),
+    },
+    {validators: ConfirmPasswordValidator.match('password', 'confirmPassword')})
   })
 
+  // Stores the validity states of the password requirements (true - valid, false - invalid)
+  validatorBooleans = {
+    hasLowerCase: false,
+    hasUpperCase: false,
+    hasNumber: false,
+    correctLength: false
+  }
   active = 0; // Active page number of the registration section
   loading = false;
   errorMsg: string = "";
@@ -155,20 +177,20 @@ export class RegisterComponent implements OnInit{
     }
   }
 
-  //Returns true if password field is different from confirmation field, returns false otherwise
+  // Returns true if password field is different from confirmation field, returns false otherwise
   passwordMismatch() {
     return (this.registerForm.controls.passwordAndConfirm.controls.password.value !=
       this.registerForm.controls.passwordAndConfirm.controls.confirmPassword.value) &&
       this.registerForm.controls.passwordAndConfirm.controls.confirmPassword.touched
   }
 
-  // Sets errorMsg's value based on the given string
-  setError(errorMessage: string): void {
-    this.errorMsg = errorMessage;
+  // Updates the values of the validator booleans based on the current password input
+  checkPasswordValidity() {
+    const pass = <string>this.registerForm.controls.passwordAndConfirm.controls.password.value;
+    this.validatorBooleans.hasLowerCase = /[a-z]/.test(pass);
+    this.validatorBooleans.hasUpperCase = /[A-Z]/.test(pass);
+    this.validatorBooleans.hasNumber = /[0-9]/.test(pass);
+    this.validatorBooleans.correctLength = pass.length >= 8 && pass.length <= 100;
   }
-  //
-  // // Gets the current errorMsg value
-  // getError(): string {
-  //   return this.errorMsg;
-  // }
+
 }
