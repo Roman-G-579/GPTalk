@@ -4,7 +4,7 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 
 /**
  * @route POST /api/login
- * @description register a user to the website
+ * @description log a user in to the website
  * @access public
  */
 router.post('/login', loginMiddleware);
