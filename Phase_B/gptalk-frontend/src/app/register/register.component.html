@@ -115,7 +115,7 @@
             <div class="formgrid grid justify-content-center">
               <p-floatLabel class="form-input-group">
 <!--                <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password" />-->
-                <p-password (input)="checkPasswordValidity()" class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password">
+                <p-password (input)="checkPasswordValidity()" class="password-field" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password">
                   <ng-template pTemplate="header">
                     <h6>Pick a password</h6>
                   </ng-template>
@@ -133,7 +133,7 @@
                 <label for="password">Password</label>
               </p-floatLabel>
               <p-floatLabel class="form-input-group ">
-                <p-password class="password-field" name="password" id="confirmPassword" [feedback]="false" formControlName="confirmPassword" />
+                <p-password class="password-field" id="confirmPassword" [feedback]="false" formControlName="confirmPassword" />
                 <label for="confirmPassword">Confirm Password</label>
               </p-floatLabel>
               @if (passwordMismatch()) {

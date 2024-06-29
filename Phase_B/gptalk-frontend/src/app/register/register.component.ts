@@ -9,12 +9,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { ButtonModule } from 'primeng/button';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
-  ReactiveFormsModule, ValidationErrors,
-  ValidatorFn,
+  ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { CardModule } from 'primeng/card';
@@ -145,8 +143,7 @@ export class RegisterComponent implements OnInit{
             this.active = 3;
             this.loading = false;
             this.cdr.detectChanges();
-            // console.log("registration successful!",res);
-            // this.errorMsg = '';
+            console.log("registration successful!",res);
           },
           error: err => {
             this.loading = false;
