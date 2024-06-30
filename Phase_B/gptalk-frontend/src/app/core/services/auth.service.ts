@@ -13,36 +13,29 @@ export class AuthService {
 
   // Stores the details of the user that is currently logged in
   userData = signal<UserResponse>({
-    message: '',
-    user: {
       __v: 0,
       _id: '',
       createdAt: new Date(),
       email: '',
       firstName: '',
       lastName: '',
-      password: '',
       username: ''
-    }
   })
 
   // Calls the login middleware function, with the given email and password as parameters
-  login(email: string, password: string): Observable<unknown> {
-    return this.http.post<unknown>(`${this.apiUrl}/login`, { email, password });
-  }
-
-  //
-  getProtectedData(): Observable<unknown> {
-    return this.http.get<unknown>(`${this.apiUrl}/protected`).pipe(
+  login(email: string, password: string): Observable<{token: string, user: UserResponse }> {
+    return this.http.post<{token: string, user: UserResponse }>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap({
-        next: (data: unknown) => {
-          const protectedData = data as UserResponse;
+        next: (data: {token: string, user: UserResponse }) => {
+          const protectedData = data.user as UserResponse;
           this.userData.set(protectedData); //stores the protected data in a signal
+          console.log(this.userData());
         },
         error: (err: any) => {
           console.log("Error fetching protected data", err);
         }
       })
-    )
+    );
   }
+
 }

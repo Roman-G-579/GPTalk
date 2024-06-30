@@ -36,8 +36,10 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
 			expiresIn: '1h',
 		});
 
+		user.password = undefined;
+
 		// Return the token
-		return res.status(HttpStatus.OK).json({ token });
+		return res.status(HttpStatus.OK).json({ token, user });
 	} catch (err) {
 		next(err);
 	}
