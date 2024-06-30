@@ -44,3 +44,12 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
 		next(err);
 	}
 }
+
+export async function getUserByTokenMiddleware(req: Request, res: Response, next: NextFunction) {
+	try {
+		req.user.password = undefined;
+		return res.status(HttpStatus.OK).json(req.user);
+	} catch (err) {
+		next(err);
+	}
+}
