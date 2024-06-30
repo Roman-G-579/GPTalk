@@ -7,7 +7,7 @@ import {
 	UrlTree,
 	Router,
 } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 @Injectable({
@@ -26,7 +26,13 @@ export class AuthGuard implements CanActivate {
 		const token = localStorage.getItem('token');
 
 		if (token) {
-			return true;
+			return this.authService.fetchUserData(token).pipe(
+				map(() => true),
+				catchError(() => {
+					this.router.navigate(['/login']);
+					return of(false);
+				}),
+			);
 		} else {
 			this.router.navigate(['/login']);
 			return false;

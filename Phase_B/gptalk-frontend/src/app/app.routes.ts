@@ -9,6 +9,7 @@ export default [
 	},
 	{
 		path: 'pages',
+    canActivate: [AuthGuard],
 		loadChildren: () => import('./pages/pages.routes'),
 		loadComponent: () => import('./pages/pages.component').then((c) => c.PagesComponent),
 	},
