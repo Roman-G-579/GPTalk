@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
 
   // Returns the currently logged user's first name
   setUserFirstName() {
-    const fName =  this.authService.userData().user.firstName;
+    const fName =  this.authService.userData().firstName;
     this.firstName.set(fName);
   }
 }

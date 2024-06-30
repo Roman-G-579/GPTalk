@@ -14,5 +14,4 @@ import { AuthService } from "../core/services/auth.service";
 })
 export class ProtectedComponent {
   private readonly authService = inject(AuthService);
-  protectedData$ = this.authService.getProtectedData();
 }
