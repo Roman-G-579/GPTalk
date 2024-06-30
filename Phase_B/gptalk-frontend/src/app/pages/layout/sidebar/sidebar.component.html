@@ -1,11 +1,20 @@
+<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
+<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
 <div class="content">
 	<img src="assets/GPTalk_Logo_Wide.svg" alt="" />
 	<nav>
 		@for (page of pages; track page) {
-			<a [routerLink]="page.route" routerLinkActive="active">
-				<i [class]="page.icon"></i>
-				<span>{{ page.name }}</span>
-			</a>
+      @if (page.name === 'Log Out') {
+        <a routerLinkActive="active" (click)="logout()" style="cursor: pointer;">
+          <i [class]="page.icon"></i>
+          <span>{{ page.name }}</span>
+        </a>
+      } @else {
+        <a [routerLink]="page.route" routerLinkActive="active">
+          <i [class]="page.icon"></i>
+          <span>{{ page.name }}</span>
+        </a>
+      }
 		}
 	</nav>
 </div>

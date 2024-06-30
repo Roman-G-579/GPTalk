@@ -6,7 +6,11 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
+import { FloatLabelModule } from 'primeng/floatlabel';
+import { DividerModule } from 'primeng/divider';
+import { ImageModule } from 'primeng/image';
+import { ToastrService } from 'ngx-toastr';
+
 import { AuthService } from '../core/services/auth.service';
 
 @Component({
@@ -14,7 +18,15 @@ import { AuthService } from '../core/services/auth.service';
 	templateUrl: './login.component.html',
 	styleUrls: ['./login.component.scss'],
 	standalone: true,
-	imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule, CardModule],
+	imports: [
+		CommonModule,
+		ReactiveFormsModule,
+		InputTextModule,
+		ButtonModule,
+		FloatLabelModule,
+		DividerModule,
+		ImageModule,
+	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
@@ -23,6 +35,7 @@ export class LoginComponent {
 	private readonly fb = inject(FormBuilder);
 	private readonly authService = inject(AuthService);
 	private readonly router = inject(Router);
+  private readonly toastr = inject(ToastrService)
 
 	loginForm = this.fb.group({
 		email: ['', [Validators.required, Validators.email]],
@@ -32,17 +45,19 @@ export class LoginComponent {
 	login() {
 		if (this.loginForm.valid) {
 			const { email, password } = this.loginForm.value;
-      if (!email || !password) {
-        return;
-      }
+			if (!email || !password) {
+				return;
+			}
 			this.authService.login(email, password).subscribe({
 				next: (res) => {
 					localStorage.setItem('token', res.token);
-					this.router.navigate(['/protected']);
+					this.router.navigate(['/pages']);
+          this.toastr.success('Logged in successfully', 'Success 🎉')
 				},
 				error: (err) => {
 					this.errorMessage = 'Invalid email or password';
-					console.error('Login error', err);
+          console.error('Could not login:', err);
+          this.toastr.error('Could not login', 'Error!');
 				},
 			});
 		}
