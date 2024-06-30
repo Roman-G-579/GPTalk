@@ -1,6 +1,4 @@
 export interface UserResponse {
-  message: string;
-  user: {
     __v: number;
     _id: string;
     createdAt: Date;
@@ -9,6 +7,4 @@ export interface UserResponse {
     username: string;
     firstName: string;
     lastName: string;
-    password: string;
-  };
 }
