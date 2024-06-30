@@ -37,7 +37,7 @@ export class LoginComponent {
       }
 			this.authService.login(email, password).subscribe({
 				next: (res) => {
-					localStorage.setItem('token', (res as any).token);
+					localStorage.setItem('token', res.token);
 					this.router.navigate(['/protected']);
 				},
 				error: (err) => {

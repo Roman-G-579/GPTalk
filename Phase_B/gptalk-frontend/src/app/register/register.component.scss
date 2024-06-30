@@ -33,6 +33,7 @@
 :host ::ng-deep .password-field input{
     width: 15rem;
     font-size: small;
+
   }
 
 ////adds hover effects for the navigation buttons at the top of the register form
@@ -70,3 +71,17 @@ a {
 a:hover {
   font-weight: bold;
 }
+
+.password-notes {
+  width: 250px;
+
+  & li.pass {
+    color: var(--blue-400);
+  }
+
+  & li.fail {
+    color: var(--red-400);
+  }
+}
+
+

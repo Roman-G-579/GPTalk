@@ -10,7 +10,7 @@
           width="120" />
         <h4 class="text-header select-none">Create a GPTalk Account</h4>
       </div>
-      <p class="text-login-link">Already have an account? <a href="">Login</a></p>
+      <p class="text-login-link">Already have an account? <a href="/login">Login</a></p>
     </div>
 
     <p-divider layout="vertical" styleClass="hidden md:flex"/>
@@ -114,15 +114,30 @@
 
             <div class="formgrid grid justify-content-center">
               <p-floatLabel class="form-input-group">
-                <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password" />
+<!--                <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password" />-->
+                <p-password (input)="checkPasswordValidity()" class="password-field" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password">
+                  <ng-template pTemplate="header">
+                    <h6>Pick a password</h6>
+                  </ng-template>
+                  <ng-template class="mb-3" pTemplate="footer">
+                    <p-divider />
+                    <p class="password-notes mt-2">Password must contain:</p>
+                    <ul class="password-notes pl-2 ml-2 mt-3" style="line-height: 1.5">
+                      <li [class.pass]="validatorBooleans.hasLowerCase" [class.fail]="!validatorBooleans.hasLowerCase">At least one lowercase letter</li>
+                      <li [class.pass]="validatorBooleans.hasUpperCase" [class.fail]="!validatorBooleans.hasUpperCase">At least one uppercase letter</li>
+                      <li [class.pass]="validatorBooleans.hasNumber" [class.fail]="!validatorBooleans.hasNumber">At least one number</li>
+                      <li [class.pass]="validatorBooleans.correctLength" [class.fail]="!validatorBooleans.correctLength">Between 8 and 100 characters</li>
+                    </ul>
+                  </ng-template>
+                </p-password>
                 <label for="password">Password</label>
               </p-floatLabel>
               <p-floatLabel class="form-input-group ">
-                <p-password class="password-field" name="password" id="confirmPassword" [feedback]="false" formControlName="confirmPassword" />
+                <p-password class="password-field" id="confirmPassword" [feedback]="false" formControlName="confirmPassword" />
                 <label for="confirmPassword">Confirm Password</label>
               </p-floatLabel>
               @if (passwordMismatch()) {
-                <p-message class="error-msg" severity="warning" [text]=errorMsg></p-message>
+                <p-message class="error-msg" severity="warning" [text]="'Passwords do not match'"/>
               }
             </div>
           </div>
