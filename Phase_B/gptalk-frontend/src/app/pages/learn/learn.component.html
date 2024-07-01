@@ -1,1 +1,10 @@
-<p>learn works!</p>,
+<div class="wrapper">
+  <p>QUESTION:</p>
+    <p>{{exerciseData().question}}</p>
+  <p>CHOICES:</p>
+    @for (item of exerciseData().choices; track item) {
+      <button id="{{item}}">{{item}}</button>
+    }
+  <p>ANSWER:</p>
+    <p>{{exerciseData().answer}}</p>
+</div>
