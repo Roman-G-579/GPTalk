@@ -10,6 +10,7 @@ export class RegisterService {
   private readonly http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
+  // Calls the register middleware function, with the given user data as parameters
   registerUser(userData: unknown): Observable<object> {
     const {href} = new URL('register', this.apiUrl);
 

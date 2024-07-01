@@ -1,3 +1,18 @@
+:host {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+}
+
+.form-wrapper {
+  position: relative;
+  background-color: #fff;
+  width: fit-content;
+  display: flex;
+  padding: 0.5rem 0.5rem;
+  border-radius: 6px;
+}
+
 .img-logo {
   display: flex;
   justify-content: center;
@@ -5,20 +20,17 @@
   pointer-events: none;
   margin-top: 45%;
   margin-bottom: 15px;
-  //color: #5EA0F1;
-  //filter: invert(37%) sepia(92%) saturate(4416%) hue-rotate(218deg) brightness(158%) contrast(89%);
 }
 
 //Customizes the header below the GPTalk logo
 .text-header {
   font-family: "Inter var", sans-serif;
-  color: #4b5563;
+  color: var(--primary-clr);
   text-align: center;
 }
 
 .register-content {
   max-width: 900px;
-  margin: 40px auto;
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -36,21 +48,6 @@
 
   }
 
-////adds hover effects for the navigation buttons at the top of the register form
-//.bg-primary {
-//  transition: all 0.25s ease;
-//}
-//.bg-primary:hover {
-//  background-color: #2563eb !important;
-//}
-//
-//.surface-border {
-//  transition: all 0.25s ease;
-//}
-//.surface-border:hover {
-//  background-color: #d2d9e8 !important;
-//}
-
 .error-msg {
   margin-top: -15px;
   text-wrap: nowrap;
@@ -60,16 +57,17 @@
   margin-top: 10px;
   font-family: "Inter var", sans-serif;
   text-align: center;
+  color: var(--primary-clr);
 }
 
 a {
   text-decoration: none;
-  color: #2563eb;
+  color: var(--blue-500);
   transition: all 0.25s ease;
 
 }
 a:hover {
-  font-weight: bold;
+  color: #1f58d7;
 }
 
 .password-notes {
@@ -83,5 +81,6 @@ a:hover {
     color: var(--red-400);
   }
 }
+
 
 
