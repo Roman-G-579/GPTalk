@@ -1,3 +1,44 @@
 :host {
-  display: block;
+  display: grid;
+  justify-items: center;
+  min-height: 100dvh;
+  font-family: Poppins, sans-serif;
+  color: var(--primary-clr)
 }
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.heading-wrapper {
+  font-size: 2.6rem;
+}
+
+.exercise-content-wrapper {
+  font-size: 1.6rem;
+}
+
+.input-field {
+  font-family: Poppins, sans-serif;
+  font-size: 1.6rem;
+  background: none;
+  border: none;
+
+  &:focus {
+    outline: none;
+    caret-color: transparent;
+  }
+}
+::ng-deep .buttons-group {
+  width: 800px;
+
+  & button {
+    font-size: 36px;
+    word-wrap:break-word;
+  }
+}
+
+
+

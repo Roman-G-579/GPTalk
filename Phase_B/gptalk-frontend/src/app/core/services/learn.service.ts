@@ -1,6 +1,5 @@
 import {inject, Injectable} from '@angular/core';
 import {environment} from "../../../environments/environment";
-import {AuthService} from "./auth.service";
 import {HttpClient} from "@angular/common/http";
 import {Observable, of} from "rxjs";
 import {Language} from "../../../models/enums/language";
@@ -21,13 +20,14 @@ export class LearnService {
     "matchTheWords" ]
 
   mockExercise_Type1 = {
-    question: "The sun rises in the _____",
-    choices: ["east","west","north","south"],
+    instructions: "Complete the sentence",
+    question: "The sun rises in the ",
+    choices: ["east","westwestwest","north","south"],
     answer: "east"
   }
 
   // Calls a random exercise generator function
-  generateExercise(language: Language, difficulty: Difficulty): Observable<object> {
+  generateLesson(language: Language, difficulty: Difficulty): Observable<object> {
     const randomIndex: number = Math.floor(Math.random() * this.exerciseTypesArr.length);
     //const chosenExercise = this.exerciseTypesArr[randomIndex];
     const chosenExercise = this.exerciseTypesArr[0];

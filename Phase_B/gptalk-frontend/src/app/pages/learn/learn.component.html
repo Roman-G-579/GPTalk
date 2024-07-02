@@ -1,10 +1,35 @@
 <div class="wrapper">
-  <p>QUESTION:</p>
-    <p>{{exerciseData().question}}</p>
-  <p>CHOICES:</p>
-    @for (item of exerciseData().choices; track item) {
-      <button id="{{item}}">{{item}}</button>
+  <div class="heading-wrapper flex justify-content-center mb-4">
+    <p>{{exerciseData().instructions}}</p>
+  </div>
+
+  <div class="exercise-content-wrapper flex justify-content-start gap-3 mb-2">
+    <p>{{exerciseData().question}} </p>
+    <input
+      #inputField
+      class="input-field flex-grow-1 flex-wrap"
+      autofocus
+      type="text"
+      id="inputForm"
+      (blur)="forceFocus()"
+      (keyup.enter)="inputForm.value?
+      submitAnswer(inputForm.value) : null"
+      [formControl]="inputForm"/>
+  </div>
+
+
+
+  <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+    @for (choice of exerciseData().choices; track choice) {
+      <div class="col-12">
+        <p-button id="{{choice}}" label="{{choice}}" [raised]="true" severity="secondary" (click)="submitAnswer(choice)"/>
+      </div>
     }
-  <p>ANSWER:</p>
-    <p>{{exerciseData().answer}}</p>
+  </div>
+
+
+  <p>{{resultString()}}</p>
+  <div class="instructions-wrapper flex justify-content-center">
+    <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
+  </div>
 </div>
