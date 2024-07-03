@@ -1,6 +1,6 @@
-<div class="wrapper">
+<ng-template #fillInTheBlank>
   <div class="heading-wrapper flex justify-content-center mb-4">
-    <p>{{exerciseData().instructions}}</p>
+    <p>{{headingText()}}</p>
   </div>
 
   <div class="exercise-content-wrapper flex justify-content-start gap-3 mb-2">
@@ -11,25 +11,59 @@
       autofocus
       type="text"
       id="inputForm"
+      title="Input Field"
       (blur)="forceFocus()"
-      (keyup.enter)="inputForm.value?
-      submitAnswer(inputForm.value) : null"
+      (keyup.enter)="inputForm.value ?
+        submitAnswer(inputForm.value) : null"
       [formControl]="inputForm"/>
   </div>
-
 
 
   <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
     @for (choice of exerciseData().choices; track choice) {
       <div class="col-12">
-        <p-button id="{{choice}}" label="{{choice}}" [raised]="true" severity="secondary" (click)="submitAnswer(choice)"/>
+        <p-button [styleClass]="isSubmitted() ? (isCorrect(choice)? 'btn-correct' : 'btn-incorrect') : ''" id="{{choice}}" label="{{choice}}" [raised]="true" severity="secondary" (click)="submitAnswer(choice)"/>
       </div>
     }
+
+    <div class="next-btn-wrapper flex justify-content-end">
+      @if (isSubmitted()) {
+        <p-button id="next-btn" label="Next" severity="primary" (click)="null"/>
+      }
+    </div>
+
   </div>
 
-
-  <p>{{resultString()}}</p>
   <div class="instructions-wrapper flex justify-content-center">
     <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
   </div>
+</ng-template>
+
+<ng-template #translateWord>
+  <p>Translate this</p>
+</ng-template>
+
+<ng-template #writeTheSentence>
+
+</ng-template>
+
+<ng-template #completeTheConversation>
+
+</ng-template>
+
+<ng-template #matchTheWords>
+  <div class="buttons-group p-fluid grid mb-3">
+    @for (pair of exerciseData().randomizedWordPairs; track pair) {
+      <div class="col-5">
+        <p-button [styleClass]="" id="{{pair[0]}}" label="{{pair[0]}}" [raised]="true" severity="secondary" (click)="null"/>
+      </div>
+      <div class="col-5 col-offset-2">
+        <p-button [styleClass]="" id="{{pair[1]}}" label="{{pair[1]}}" [raised]="true" severity="secondary" (click)="null"/>
+      </div>
+    }
+  </div>
+</ng-template>
+
+<div class="wrapper">
+  <ng-template [ngTemplateOutlet]="getTemplate()"></ng-template>
 </div>

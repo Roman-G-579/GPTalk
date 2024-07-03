@@ -1,21 +1,23 @@
 import {CommonModule} from "@angular/common";
 import {
   AfterViewInit,
-  ChangeDetectionStrategy,
+  ChangeDetectionStrategy, ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
   OnInit,
-  signal,
+  signal, TemplateRef,
   ViewChild,
 } from '@angular/core';
 import {LearnService} from "../../core/services/learn.service";
-import {Language} from "../../../models/enums/language";
-import {Difficulty} from "../../../models/enums/difficulty";
+import {Language} from "../../../models/enums/language.enum";
+import {Difficulty} from "../../../models/enums/difficulty.enum";
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { closest, distance } from 'fastest-levenshtein';
 import { Button } from 'primeng/button';
 import { PrimeNGConfig } from 'primeng/api';
+import { ExerciseType } from '../../../models/enums/exercise-type.enum';
+import { Exercise } from '../../../models/exercise.interface';
 
 @Component({
   selector: 'app-learn',
@@ -32,24 +34,60 @@ import { PrimeNGConfig } from 'primeng/api';
 export class LearnComponent implements OnInit, AfterViewInit {
   private readonly learnService = inject(LearnService);
   private readonly primengConfig = inject(PrimeNGConfig);
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  @ViewChild('fillInTheBlank') fillInTheBlankTemplate!: TemplateRef<unknown>;
+  @ViewChild('translateWord') translateWordTemplate!: TemplateRef<unknown>;
+  @ViewChild('writeTheSentence') writeTheSentenceTemplate!: TemplateRef<unknown>;
+  @ViewChild('completeTheConversation') completeTheConversationTemplate!: TemplateRef<unknown>;
+  @ViewChild('matchTheWords') matchTheWordsTemplate!: TemplateRef<unknown>;
 
   inputForm = new FormControl(''); // Answer input field
   @ViewChild("inputField") inputFieldRef!: ElementRef;
 
-  exerciseData = signal<{instructions: string, question: string,choices: string[], answer: string}>({
+  isSubmitted = signal<Boolean>(false); // Changes to true once an answer is submitted
+  chosenAnswer = signal<string>(""); // Contains the submitted answer
+  headingText = signal<string>(""); // Contains instructions or feedback
+
+  exerciseData = signal<Exercise>({
+    type:  0,
     instructions: '',
     question: '',
     choices: [],
+    wordPairs: [],
+    randomizedWordPairs: [],
     answer: ''
   })
-  resultString = signal<string>("");
+
+  // Returns a ng-template reference based on the exercise type
+  getTemplate() {
+    switch (this.exerciseData().type) {
+      case ExerciseType.FillInTheBlank:
+        return this.fillInTheBlankTemplate;
+      case ExerciseType.TranslateWord:
+        return this.translateWordTemplate;
+      case ExerciseType.WriteTheSentence:
+        return this.writeTheSentenceTemplate;
+      case ExerciseType.CompleteTheConversation:
+        return this.completeTheConversationTemplate;
+      case ExerciseType.MatchTheWords:
+        return this.matchTheWordsTemplate;
+      default:
+        return null;
+    }
+  }
+
 
   ngOnInit() {
     this.learnService.generateLesson(Language.English, Difficulty.Very_Easy).subscribe({
       next: data => {
-        const exercise = data as {instructions: string, question: string,choices: string[], answer: string}
+        const exercise = data as Exercise
 
         this.exerciseData.set(exercise);
+        this.lowerCaseAll();
+
+        console.log(this.exerciseData());
+        this.headingText.set(exercise.instructions);
       },
       error: err => {
         console.log("Error! Cannot generate exercise")
@@ -60,6 +98,9 @@ export class LearnComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
+
+    this.cdr.detectChanges();
+
     // Once the content has been loaded, force focus on the input field
     if (this.inputFieldRef) {
       this.inputFieldRef.nativeElement.focus();
@@ -70,34 +111,31 @@ export class LearnComponent implements OnInit, AfterViewInit {
   // Compares the user's chosen answer with the exercise's actual answer
   // If the answer was manually entered, the string is used in the comparison
   submitAnswer(answer: string) {
-    let chosenAnswer;
+    answer = answer.toLowerCase();
+    this.chosenAnswer.set(answer);
 
     // If the answer was submitted by manually typing it
     if (this.inputForm.value) {
 
       // Approximates the input string to the closest matching option
-      chosenAnswer = this.findClosestString(answer);
-    }
-    // If the answer was submitted by clicking on one of the choices
-    else {
-      chosenAnswer = answer;
+      this.chosenAnswer.set(<string>this.findClosestString(answer));
     }
 
-    if(chosenAnswer == this.exerciseData().answer ) {
-      this.resultString.set(`${answer}  ->  ${chosenAnswer}  is correct`);
-      return true;
+    this.isSubmitted.set(true);
+
+    if(this.chosenAnswer() == this.exerciseData().answer ) {
+      this.headingText.set(`${answer}  ->  ${this.chosenAnswer()}  is correct`)
     }
     else {
-      this.resultString.set(`${answer} is incorrect`);
-      return false;
+      this.headingText.set(`${answer} is incorrect`);
     }
   }
 
   // Finds the closest matching string (from the available choices) to the given input
   findClosestString(str: string) {
 
-    // If the given string does start with the first letter of the answer, dismiss the answer
-    if (!this.exerciseData().answer.startsWith(str[0])) {
+    // If the given string doesn't start with the first letter of the answer, dismiss the answer
+    if (!this.exerciseData().answer?.startsWith(str[0])) {
       return null;
     }
     // If the string is too different from any given choice, the answer counts as invalid
@@ -105,14 +143,14 @@ export class LearnComponent implements OnInit, AfterViewInit {
       return null;
     }
 
-    return closest(str, this.exerciseData().choices)
+    return closest(str, this.exerciseData().choices ?? []);
   }
 
   // Returns the smallest Levenshtein distance value between the given string and the strings in the choices array
   getClosestDistance(str: string) {
-    let dist = 4; // Initial distance value
+    let dist = Infinity; // Initial distance value
 
-    this.exerciseData().choices.forEach(choice => {
+    this.exerciseData().choices?.forEach(choice => {
       let curDist = distance(str, choice);
 
       //update the smallest distance value if a smaller one than the current minimum is found
@@ -123,11 +161,29 @@ export class LearnComponent implements OnInit, AfterViewInit {
     return dist;
   }
 
+  // Returns true if the HTML element that called the function contains the correct answer
+  // TODO: adjust logic to handle cases where user selects incorrect answer
+  isCorrect(choice: string): boolean {
+    return this.exerciseData().answer === choice && choice === this.chosenAnswer();
+  }
+
   // Refocuses on the text input element (used whenever the element loses focus)
   forceFocus() {
     if (this.inputFieldRef) {
       this.inputFieldRef.nativeElement.focus();
     }
+  }
+
+  lowerCaseAll() {
+    this.exerciseData.update( data => {
+      data.question = data.question?.toLowerCase();
+      data.answer = data.answer?.toLowerCase();
+      data.choices = data.choices?.map(elem => elem.toLowerCase());
+      data.wordPairs = data.wordPairs?.map(pair => [pair[0].toLowerCase(), pair[1].toLowerCase()]);
+      data.randomizedWordPairs = data.randomizedWordPairs?.map(pair => [pair[0].toLowerCase(), pair[1].toLowerCase()]);
+      return data;
+    })
+
   }
 
 

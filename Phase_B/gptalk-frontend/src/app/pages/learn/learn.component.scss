@@ -33,11 +33,35 @@
 }
 ::ng-deep .buttons-group {
   width: 800px;
+  transition: all 0.25s ease;
 
   & button {
     font-size: 36px;
     word-wrap:break-word;
+    text-transform: capitalize;
+
   }
+  & .next-btn-wrapper {
+    margin-top: 15px;
+    margin-right: 5px;
+    height: 70px;
+
+    & button {
+      width: 300px;
+    }
+  }
+
+
+  & .btn-correct {
+    background: var(--accent-text-clr);
+    border-color: var(--accent-text-clr);
+  }
+
+  & .btn-incorrect {
+    background: var(--secondary-text-clr);
+    border-color: var(--secondary-text-clr);
+  }
+
 }
 
 
