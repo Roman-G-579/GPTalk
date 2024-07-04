@@ -22,12 +22,24 @@
   <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
     @for (choice of exerciseData().choices; track choice) {
       <div class="col-12">
-        <p-button [styleClass]="isSubmitted() ? (isCorrect(choice)? 'btn-correct' : 'btn-incorrect') : ''" id="{{choice}}" label="{{choice}}" [raised]="true" severity="secondary" (click)="submitAnswer(choice)"/>
+        <p-button
+          [styleClass]="
+          isDone() ? (
+            elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+            :
+            'btn-incorrect'
+          ) : ''
+          "
+          id="{{choice}}"
+          label="{{choice}}"
+          [raised]="true"
+          severity="secondary"
+          (click)="submitAnswer(choice)"/>
       </div>
     }
 
     <div class="next-btn-wrapper flex justify-content-end">
-      @if (isSubmitted()) {
+      @if (isDone()) {
         <p-button id="next-btn" label="Next" severity="primary" (click)="null"/>
       }
     </div>
@@ -40,7 +52,29 @@
 </ng-template>
 
 <ng-template #translateWord>
-  <p>Translate this</p>
+  <div class="exercise-content-wrapper flex justify-content-center gap-3 mb-2">
+    <p style="font-size: 36px">{{exerciseData().question}} </p>
+  </div>
+
+  <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+    @for (choice of exerciseData().choices; track choice) {
+      <div class="col-12">
+        <p-button
+          [styleClass]="
+          isDone() ? (
+            elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+            :
+            'btn-incorrect'
+          ) : ''
+          "
+          id="{{choice}}"
+          label="{{choice}}"
+          [raised]="true"
+          severity="secondary"
+          (click)="submitAnswer(choice)"/>
+      </div>
+    }
+  </div>
 </ng-template>
 
 <ng-template #writeTheSentence>
@@ -53,12 +87,24 @@
 
 <ng-template #matchTheWords>
   <div class="buttons-group p-fluid grid mb-3">
-    @for (pair of exerciseData().randomizedWordPairs; track pair) {
-      <div class="col-5">
-        <p-button [styleClass]="" id="{{pair[0]}}" label="{{pair[0]}}" [raised]="true" severity="secondary" (click)="null"/>
+    @for (pair of exerciseData().randomizedWordPairs; track pair; let idx = $index) {
+      <div class="col-5 btn-matching-pairs">
+        <p-button
+          [styleClass]="matchResults()[idx][0] == true ? 'btn-correct' : ''"
+          id="{{pair[0]}}"
+          label="{{pair[0]}}"
+          [raised]="true"
+          severity="secondary"
+          (click)="!isDone() ? chooseMatch(pair[0], 0) : null"/>
       </div>
-      <div class="col-5 col-offset-2">
-        <p-button [styleClass]="" id="{{pair[1]}}" label="{{pair[1]}}" [raised]="true" severity="secondary" (click)="null"/>
+      <div class="col-5 col-offset-2 btn-matching-pairs">
+        <p-button
+          [styleClass]="matchResults()[idx][1] == true ? 'btn-correct' : ''"
+          id="{{pair[1]}}"
+          label="{{pair[1]}}"
+          [raised]="true"
+          severity="secondary"
+          (click)="!isDone() ? chooseMatch(pair[1], 1) : null"/>
       </div>
     }
   </div>

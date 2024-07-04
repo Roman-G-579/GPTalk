@@ -24,10 +24,18 @@ export class LearnService {
     answer: "East"
   }
 
+  mockExercise_Type2: Exercise = {
+    type: ExerciseType.TranslateWord,
+    instructions: "Choose the correct translation",
+    question: "תפוח",
+    choices: ["Hello","Apple","Tree"],
+    answer: "Apple"
+  }
+
   mockExercise_Type5: Exercise = {
     type: ExerciseType.MatchTheWords,
     instructions: "Match the words in english to their translations in hebrew",
-    wordPairs: [
+    correctWordPairs: [
       ["חתול", "Cat"],
       ["מים", "Water"],
       ["תפוז", "Orange"],
@@ -42,7 +50,7 @@ export class LearnService {
   generateLesson(language: Language, difficulty: Difficulty): Observable<object> {
     const randomIndex: number = Math.floor(Math.random() * (Object.keys(ExerciseType).filter(key => isNaN(Number(key))).length));
     //const chosenExercise = this.exerciseTypesArr[randomIndex];
-    const chosenExercise = ExerciseType.MatchTheWords;
+    const chosenExercise = ExerciseType.TranslateWord;
     let keyWords: string[] = [];
 
     // Parameters for very easy and easy difficulties
@@ -60,27 +68,22 @@ export class LearnService {
 
     switch (chosenExercise.valueOf()) {
       case 0:
-        console.log("type1");
         return this.generateFillInTheBlank(language, difficulty, keyWords);
 
       case 1:
-        console.log("type2");
-        return this.generateFillInTheBlank(language, difficulty, keyWords);
+        return this.generateTranslateWord(language, difficulty, keyWords);
 
       case 2:
-        console.log("type3");
         return this.generateFillInTheBlank(language, difficulty, keyWords);
 
       case 3:
-        console.log("type4");
         return this.generateFillInTheBlank(language, difficulty, keyWords);
 
       case 4:
-        console.log("type5");
         return this.generateMatchTheWords(language, difficulty, keyWords);
 
       default:
-        console.log("error");
+        console.log("generateLesson switch error");
         return this.generateFillInTheBlank(language, difficulty, keyWords);
     }
 
@@ -107,6 +110,27 @@ export class LearnService {
     return of(this.mockExercise_Type1);
   }
 
+  // Sends a query to the api to generate a "translate words" exercise, using the given parameters
+  private generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
+    // Exercise-specific parameters
+    let numOfAnswers: number;
+
+    // Parameters for very easy and easy difficulties
+    if (difficulty >= 0 && difficulty < 2) {
+      numOfAnswers = 3;
+    }
+    // Parameters for medium and hard difficulties
+    else if (difficulty >= 3 && difficulty < 4) {
+      numOfAnswers = 4;
+    }
+    // Parameters for very hard and expert difficulties
+    else {
+      numOfAnswers = 5;
+    }
+
+    return of(this.mockExercise_Type2);
+  }
+
   // Sends a query to the api to generate a "match the words to their translations" exercise, using the given parameters
   generateMatchTheWords(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
     // Exercise-specific parameters
@@ -128,7 +152,7 @@ export class LearnService {
     // Get the exercise object from the api
 
     // Randomize the word pairs
-    this.mockExercise_Type5.randomizedWordPairs = this.shuffleWordPairs(this.mockExercise_Type5.wordPairs?? []);
+    this.mockExercise_Type5.randomizedWordPairs = this.shuffleWordPairs(this.mockExercise_Type5.correctWordPairs?? []);
 
     return of(this.mockExercise_Type5);
   }

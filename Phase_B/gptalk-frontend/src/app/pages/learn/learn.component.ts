@@ -18,6 +18,7 @@ import { Button } from 'primeng/button';
 import { PrimeNGConfig } from 'primeng/api';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Exercise } from '../../../models/exercise.interface';
+import { indexOf } from 'lodash';
 
 @Component({
   selector: 'app-learn',
@@ -45,8 +46,16 @@ export class LearnComponent implements OnInit, AfterViewInit {
   inputForm = new FormControl(''); // Answer input field
   @ViewChild("inputField") inputFieldRef!: ElementRef;
 
-  isSubmitted = signal<Boolean>(false); // Changes to true once an answer is submitted
+  isDone = signal<Boolean>(false); // Changes to true once an exercise is over
+  isCorrectAnswer = signal<Boolean>(false); // Changes to true if user answers correctly
   chosenAnswer = signal<string>(""); // Contains the submitted answer
+
+  // Contains boolean pairs that signify whether the matches are correct or not
+  matchResults = signal<[Boolean,Boolean][]>([]);
+  // Contains the current chosen pair of words in the "match the words" exercise
+  chosenPair = signal<[string, string]>(["",""]);
+  mistakesCounter = signal(0); // Counts the number of wrong matches
+
   headingText = signal<string>(""); // Contains instructions or feedback
 
   exerciseData = signal<Exercise>({
@@ -54,12 +63,12 @@ export class LearnComponent implements OnInit, AfterViewInit {
     instructions: '',
     question: '',
     choices: [],
-    wordPairs: [],
+    correctWordPairs: [],
     randomizedWordPairs: [],
     answer: ''
   })
 
-  // Returns a ng-template reference based on the exercise type
+  // Returns a ng-template reference based on the current exercise type
   getTemplate() {
     switch (this.exerciseData().type) {
       case ExerciseType.FillInTheBlank:
@@ -85,8 +94,10 @@ export class LearnComponent implements OnInit, AfterViewInit {
 
         this.exerciseData.set(exercise);
         this.lowerCaseAll();
+        if (exercise.type == ExerciseType.MatchTheWords) {
+          this.initializeMatchResults();
+        }
 
-        console.log(this.exerciseData());
         this.headingText.set(exercise.instructions);
       },
       error: err => {
@@ -99,9 +110,9 @@ export class LearnComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
 
-    this.cdr.detectChanges();
+    this.cdr.detectChanges(); // Performs a detection change to update the templateRef of the current exercise
 
-    // Once the content has been loaded, force focus on the input field
+    // Once the content has been loaded, force focus on the input field, if it exists in the selected template
     if (this.inputFieldRef) {
       this.inputFieldRef.nativeElement.focus();
     }
@@ -121,14 +132,67 @@ export class LearnComponent implements OnInit, AfterViewInit {
       this.chosenAnswer.set(<string>this.findClosestString(answer));
     }
 
-    this.isSubmitted.set(true);
+    this.isDone.set(true);
 
     if(this.chosenAnswer() == this.exerciseData().answer ) {
-      this.headingText.set(`${answer}  ->  ${this.chosenAnswer()}  is correct`)
+      this.headingText.set(`Correct!`);
+      this.isCorrectAnswer.set(true);
     }
     else {
-      this.headingText.set(`${answer} is incorrect`);
+      this.headingText.set(`${answer} is incorrect.`);
+      this.isCorrectAnswer.set(false);
     }
+  }
+
+  // Saves the user's word selections in the "match the words" exercise
+  chooseMatch(str: string, indexOfPair: number) {
+    //Updates the left or right chosen element, based on the given index
+    this.chosenPair.update( pair => {
+      indexOfPair == 0 ? pair[0] = str : pair[1] = str;
+      return pair;
+    });
+
+    (this.chosenPair()[0] && this.chosenPair()[1]) ? this.verifyMatch() : null;
+  }
+
+  // Checks if the chosen pair matches a pair in the answer array
+  verifyMatch() {
+    const leftWord = this.chosenPair()[0];
+    const rightWord = this.chosenPair()[1];
+
+    // If the correct pairs array includes the pair [leftWord, rightWord], a match has been found
+    if (this.exerciseData().correctWordPairs?.some(([left,right]) => left == leftWord && right == rightWord)) {
+
+      // Update the result pairs array to reflect the found match (used to highlight a correct match on the screen)
+      this.matchResults.update(data => {
+        // Get the indices of both matching words in the words array
+        const leftIdx = this.exerciseData().randomizedWordPairs?.findIndex(([left,]) => left == leftWord) ?? -1;
+        const rightIdx = this.exerciseData().randomizedWordPairs?.findIndex(([,right]) => right == rightWord) ?? -1;
+
+        // Update the match results array at the corresponding indices
+        if (leftIdx != -1 && rightIdx != -1) {
+          data[leftIdx][0] = true;
+          data[rightIdx][1] = true;
+        }
+        return data;
+      });
+
+      // If all booleans in the match results array are 'true', the exercise is complete
+      if (!this.matchResults().some(([left,right]) => left == false || right == false)) {
+        console.log("You Win");
+        this.isDone.set(true);
+      }
+    }
+    else {
+      this.mistakesCounter.set(this.mistakesCounter() + 1);
+
+      if (this.mistakesCounter() == 3) {
+        console.log("You Lose");
+        this.isDone.set(true);
+      }
+    }
+
+    this.chosenPair.set(["",""]); // Resets the chosen pair
   }
 
   // Finds the closest matching string (from the available choices) to the given input
@@ -162,29 +226,39 @@ export class LearnComponent implements OnInit, AfterViewInit {
   }
 
   // Returns true if the HTML element that called the function contains the correct answer
-  // TODO: adjust logic to handle cases where user selects incorrect answer
-  isCorrect(choice: string): boolean {
-    return this.exerciseData().answer === choice && choice === this.chosenAnswer();
+  elemContainsAnswer(choice: string): boolean {
+    return this.exerciseData().answer === choice;
   }
 
   // Refocuses on the text input element (used whenever the element loses focus)
   forceFocus() {
-    if (this.inputFieldRef) {
+    if (this.inputFieldRef) { //If the input element is active
       this.inputFieldRef.nativeElement.focus();
     }
   }
 
+  // Converts every question and answer related string to lowercase for easier comparisons
   lowerCaseAll() {
     this.exerciseData.update( data => {
       data.question = data.question?.toLowerCase();
       data.answer = data.answer?.toLowerCase();
       data.choices = data.choices?.map(elem => elem.toLowerCase());
-      data.wordPairs = data.wordPairs?.map(pair => [pair[0].toLowerCase(), pair[1].toLowerCase()]);
+      data.correctWordPairs = data.correctWordPairs?.map(pair => [pair[0].toLowerCase(), pair[1].toLowerCase()]);
       data.randomizedWordPairs = data.randomizedWordPairs?.map(pair => [pair[0].toLowerCase(), pair[1].toLowerCase()]);
       return data;
     })
+  }
 
+  // Initializes an array of match results equal to the size of word pairs in the generated exercise
+  initializeMatchResults() {
+    this.matchResults.update(data => {
+      this.exerciseData()?.randomizedWordPairs?.forEach(item => {
+        data.push([false,false]);
+      });
+      return data;
+    })
   }
 
 
+  protected readonly indexOf = indexOf;
 }

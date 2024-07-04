@@ -51,6 +51,13 @@
     }
   }
 
+  & .btn-matching-pairs {
+      & button:active {
+        background: var(--blue-300);
+        border-color: var(--blue-300);
+      }
+  }
+
 
   & .btn-correct {
     background: var(--accent-text-clr);
@@ -60,6 +67,11 @@
   & .btn-incorrect {
     background: var(--secondary-text-clr);
     border-color: var(--secondary-text-clr);
+  }
+
+  & .btn-actual-correct {
+    background: var(--yellow-400);
+    border-color: var(--yellow-400);
   }
 
 }
