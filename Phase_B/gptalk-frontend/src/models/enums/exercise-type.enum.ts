@@ -1,7 +1,7 @@
 export enum ExerciseType {
-  FillInTheBlank,
-  TranslateWord ,
-  WriteTheSentence,
-  CompleteTheConversation,
-  MatchTheWords
+  FillInTheBlank = 'Fill In The Blank',
+  TranslateWord = 'Choose the correct translation',
+  WriteTheSentence = 'Write the sentence in ',
+  CompleteTheConversation = 'Complete the conversation',
+  MatchTheWords = 'Match the words on the left to their translations on the right'
 }
