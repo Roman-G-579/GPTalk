@@ -1,24 +1,25 @@
-import {CommonModule} from "@angular/common";
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
-  ChangeDetectionStrategy, ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   inject,
   OnInit,
-  signal, TemplateRef,
+  signal,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
-import {LearnService} from "../../core/services/learn.service";
-import {Language} from "../../../models/enums/language.enum";
-import {Difficulty} from "../../../models/enums/difficulty.enum";
+import { LearnService } from '../../core/services/learn.service';
+import { Language } from '../../../models/enums/language.enum';
+import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { closest, distance } from 'fastest-levenshtein';
 import { Button } from 'primeng/button';
 import { PrimeNGConfig } from 'primeng/api';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Exercise } from '../../../models/exercise.interface';
-import { indexOf } from 'lodash';
 
 @Component({
   selector: 'app-learn',
@@ -50,6 +51,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   isCorrectAnswer = signal<Boolean>(false); // Changes to true if user answers correctly
   chosenAnswer = signal<string>(""); // Contains the submitted answer
 
+  // -- MatchTheWords-specific variables --
   // Contains boolean pairs that signify whether the matches are correct or not
   matchResults = signal<[Boolean,Boolean][]>([]);
   // Contains the current chosen pair of words in the "match the words" exercise
@@ -59,8 +61,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   headingText = signal<string>(""); // Contains instructions or feedback
 
   exerciseData = signal<Exercise>({
-    type:  0,
-    instructions: '',
+    type: ExerciseType.FillInTheBlank,
     question: '',
     choices: [],
     correctWordPairs: [],
@@ -94,14 +95,15 @@ export class LearnComponent implements OnInit, AfterViewInit {
 
         this.exerciseData.set(exercise);
         this.lowerCaseAll();
+
         if (exercise.type == ExerciseType.MatchTheWords) {
           this.initializeMatchResults();
         }
 
-        this.headingText.set(exercise.instructions);
+        this.headingText.set(exercise.type); //Exercise type contains a relevant instruction string
       },
       error: err => {
-        console.log("Error! Cannot generate exercise")
+        console.log("Error! Cannot generate exercise. ", err)
       }
     })
     this.primengConfig.ripple = true;
@@ -119,8 +121,13 @@ export class LearnComponent implements OnInit, AfterViewInit {
   }
 
 
-  // Compares the user's chosen answer with the exercise's actual answer
-  // If the answer was manually entered, the string is used in the comparison
+  /**
+   * Compares the user's chosen answer with the exercise's actual answer
+   * If the answer was manually entered, the string is used in the comparison
+   *
+   * Used by exercise types: FillInTheBlank, TranslateWord, WriteTheSentence, CompleteTheConversation
+   * @param answer  the answer submitted by the user for verification
+   */
   submitAnswer(answer: string) {
     answer = answer.toLowerCase();
     this.chosenAnswer.set(answer);
@@ -144,7 +151,14 @@ export class LearnComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // Saves the user's word selections in the "match the words" exercise
+  /**
+   *
+   * Saves the user's word selections in the "match the words" exercise
+   *
+   * Used by exercise types: MatchTheWords
+   * @param str the word in the selected button
+   * @param indexOfPair the index of the selected word: 0 - left word, 1 - right word
+   */
   chooseMatch(str: string, indexOfPair: number) {
     //Updates the left or right chosen element, based on the given index
     this.chosenPair.update( pair => {
@@ -155,7 +169,11 @@ export class LearnComponent implements OnInit, AfterViewInit {
     (this.chosenPair()[0] && this.chosenPair()[1]) ? this.verifyMatch() : null;
   }
 
-  // Checks if the chosen pair matches a pair in the answer array
+  /**
+   * Checks if the chosen pair matches a pair in the answer array
+   *
+   * Used by exercise types: MatchTheWords
+   */
   verifyMatch() {
     const leftWord = this.chosenPair()[0];
     const rightWord = this.chosenPair()[1];
@@ -186,16 +204,19 @@ export class LearnComponent implements OnInit, AfterViewInit {
     else {
       this.mistakesCounter.set(this.mistakesCounter() + 1);
 
-      if (this.mistakesCounter() == 3) {
-        console.log("You Lose");
-        this.isDone.set(true);
-      }
+      // TODO: for each mistake deduct exp reward of current exercise
+
     }
 
     this.chosenPair.set(["",""]); // Resets the chosen pair
   }
 
-  // Finds the closest matching string (from the available choices) to the given input
+  /**
+   * Finds the closest matching string (from the available choices) to the given input
+   *
+   * Used by exercise types: FillInTheBlank, WriteTheSentence, CompleteTheConversation
+   * @param str the string that will be evaluated
+   */
   findClosestString(str: string) {
 
     // If the given string doesn't start with the first letter of the answer, dismiss the answer
@@ -210,7 +231,13 @@ export class LearnComponent implements OnInit, AfterViewInit {
     return closest(str, this.exerciseData().choices ?? []);
   }
 
-  // Returns the smallest Levenshtein distance value between the given string and the strings in the choices array
+  /**
+   * Returns the smallest Levenshtein distance value
+   * between the given string and the strings in the choices array
+   *
+   * Used by exercise types: FillInTheBlank, WriteTheSentence, CompleteTheConversation
+   * @param str the string that will be evaluated
+   */
   getClosestDistance(str: string) {
     let dist = Infinity; // Initial distance value
 
@@ -225,19 +252,26 @@ export class LearnComponent implements OnInit, AfterViewInit {
     return dist;
   }
 
-  // Returns true if the HTML element that called the function contains the correct answer
+  /**
+   * Returns true if the HTML element that called the function contains the correct answer
+   * @param choice the string displayed on the element that called the function
+   */
   elemContainsAnswer(choice: string): boolean {
     return this.exerciseData().answer === choice;
   }
 
-  // Refocuses on the text input element (used whenever the element loses focus)
+  /**
+   * Refocuses on the text input element (used whenever the element loses focus)
+   */
   forceFocus() {
     if (this.inputFieldRef) { //If the input element is active
       this.inputFieldRef.nativeElement.focus();
     }
   }
 
-  // Converts every question and answer related string to lowercase for easier comparisons
+  /**
+   * Converts every question and answer related string to lowercase for easier comparisons
+   */
   lowerCaseAll() {
     this.exerciseData.update( data => {
       data.question = data.question?.toLowerCase();
@@ -249,16 +283,15 @@ export class LearnComponent implements OnInit, AfterViewInit {
     })
   }
 
-  // Initializes an array of match results equal to the size of word pairs in the generated exercise
+  /**
+   * Initializes an array of match results equal to the size of word pairs in the generated exercise
+   */
   initializeMatchResults() {
     this.matchResults.update(data => {
-      this.exerciseData()?.randomizedWordPairs?.forEach(item => {
-        data.push([false,false]);
-      });
+      this.exerciseData()?.randomizedWordPairs?.forEach(()=>
+        data.push([false, false])
+      );
       return data;
     })
   }
-
-
-  protected readonly indexOf = indexOf;
 }

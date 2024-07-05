@@ -18,7 +18,6 @@ export class LearnService {
 
   mockExercise_Type1: Exercise = {
     type: ExerciseType.FillInTheBlank,
-    instructions: "Fill In The Blank",
     question: "The sun rises in the ",
     choices: ["East","West","North","South"],
     answer: "East"
@@ -26,7 +25,6 @@ export class LearnService {
 
   mockExercise_Type2: Exercise = {
     type: ExerciseType.TranslateWord,
-    instructions: "Choose the correct translation",
     question: "תפוח",
     choices: ["Hello","Apple","Tree"],
     answer: "Apple"
@@ -34,7 +32,6 @@ export class LearnService {
 
   mockExercise_Type5: Exercise = {
     type: ExerciseType.MatchTheWords,
-    instructions: "Match the words in english to their translations in hebrew",
     correctWordPairs: [
       ["חתול", "Cat"],
       ["מים", "Water"],
@@ -46,27 +43,24 @@ export class LearnService {
 
 
 
-  // Calls a random exercise generator function
+  /**
+   * Calls a random exercise generator function
+   * TODO: alter the function to generate an array of exercises
+   * @param language the language of the generated exercise
+   * @param difficulty difficulty the difficulty level
+   */
   generateLesson(language: Language, difficulty: Difficulty): Observable<object> {
-    const randomIndex: number = Math.floor(Math.random() * (Object.keys(ExerciseType).filter(key => isNaN(Number(key))).length));
-    //const chosenExercise = this.exerciseTypesArr[randomIndex];
-    const chosenExercise = ExerciseType.TranslateWord;
+    // Choose a random exercise index
+    //const randomIndex: number = Math.floor(Math.random() * (Object.keys(ExerciseType).filter(key => isNaN(Number(key))).length));
+    // const chosenExercise = this.exerciseTypesArr[randomIndex];
+
+    let chosenExercise = 1;
     let keyWords: string[] = [];
 
-    // Parameters for very easy and easy difficulties
-    if (difficulty >= 0 && difficulty < 2) {
-      keyWords.push("simple", "beginners");
-    }
-    // Parameters for medium and hard difficulties
-    else if (difficulty >= 3 && difficulty < 4) {
-      keyWords.push("some familiarity with the language");
-    }
-    // Parameters for very hard and expert difficulties
-    else {
-      keyWords.push("high level learners", "challenge");
-    }
+    keyWords = this.insertKeyWords(difficulty, keyWords); // Insert special keywords for the api based on the difficulty
 
-    switch (chosenExercise.valueOf()) {
+    // Generate an exercise based on the randomized exercise index
+    switch (chosenExercise) {
       case 0:
         return this.generateFillInTheBlank(language, difficulty, keyWords);
 
@@ -89,7 +83,34 @@ export class LearnService {
 
   }
 
-  // Sends a query to the api to generate a "fill in the blanks" exercise, using the given parameters
+  /**
+   * Inserts strings into the keyWords array based on the given difficulty
+   * @param difficulty the difficulty level
+   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @private
+   */
+  private insertKeyWords(difficulty: Difficulty, keyWords: Array<string>) {
+    // Parameters for very easy and easy difficulties
+    if (difficulty >= 0 && difficulty < 2) {
+      keyWords.push('simple', 'beginners');
+    }
+    // Parameters for medium and hard difficulties
+    else if (difficulty >= 3 && difficulty < 4) {
+      keyWords.push('some familiarity with the language');
+    }
+    // Parameters for very hard and expert difficulties
+    else {
+      keyWords.push('high level learners', 'challenge');
+    }
+    return keyWords;
+  }
+
+  /**
+   * Sends a query to the API to generate a "fill in the blanks" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   */
   generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
     // Exercise-specific parameters
     let numOfAnswers: number;
@@ -110,7 +131,12 @@ export class LearnService {
     return of(this.mockExercise_Type1);
   }
 
-  // Sends a query to the api to generate a "translate words" exercise, using the given parameters
+  /**
+   * Sends a query to the api to generate a "translate words" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   */
   private generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
     // Exercise-specific parameters
     let numOfAnswers: number;
@@ -131,7 +157,12 @@ export class LearnService {
     return of(this.mockExercise_Type2);
   }
 
-  // Sends a query to the api to generate a "match the words to their translations" exercise, using the given parameters
+  /**
+   * Sends a query to the api to generate a "match the words to their translations" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   */
   generateMatchTheWords(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
     // Exercise-specific parameters
     let numOfPairs: number;
@@ -157,7 +188,11 @@ export class LearnService {
     return of(this.mockExercise_Type5);
   }
 
-  // Shuffles the locations of the left words and the locations of the right words in the array
+  /**
+   * Shuffles the locations of the left words and the locations of the right words in the array
+   * @param wordPairs an array of string pairs. first element in pair - left word.
+   *                  Second element in pair - right word
+   */
   shuffleWordPairs(wordPairs: [string, string][]): [string, string][] {
     const leftWords = wordPairs.map(pair => pair[0]);
     const rightWords = wordPairs.map(pair => pair[1]);
