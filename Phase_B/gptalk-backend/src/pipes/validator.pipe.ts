@@ -9,3 +9,5 @@ export const validateUser = [
 	body('lastName').exists().isString().notEmpty(),
 	body('email').exists().isEmail(),
 ];
+
+export const validateProfile = [body('email').exists().isEmail()];

@@ -15,6 +15,7 @@ import { errorMiddleware } from './middlewares/error.middleware';
 // routers
 import registerRouter from './routes/register.router';
 import authRouter from './routes/auth.router';
+import profileRouter from './routes/profile.router';
 
 // initialize express server
 const app = express();
@@ -46,6 +47,7 @@ app.get('/api/ping', (req, res) => {
 });
 app.use('/api/register', registerRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/profile', profileRouter);
 
 // Error handler
 app.use(errorMiddleware);
