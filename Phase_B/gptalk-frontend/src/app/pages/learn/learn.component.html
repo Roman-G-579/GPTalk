@@ -1,115 +1,219 @@
-<ng-template #fillInTheBlank>
-  <div class="heading-wrapper flex justify-content-center mb-4">
-    <p>{{headingText()}}</p>
-  </div>
+<!-- TEMPLATES -->
 
-  <div class="exercise-content-wrapper flex justify-content-start gap-3 mb-2">
-    <p>{{exerciseData().question}} </p>
-    <input
-      #inputField
-      class="input-field flex-grow-1 flex-wrap"
-      autofocus
-      type="text"
-      id="inputForm"
-      title="Input Field"
-      (blur)="forceFocus()"
-      (keyup.enter)="inputForm.value ?
-        submitAnswer(inputForm.value) : null"
-      [formControl]="inputForm"/>
-  </div>
+  <!-- FILL IN THE BLANK -->
+  <ng-template #fillInTheBlank>
+    <div class="exercise-content-wrapper flex justify-content-start gap-3 mb-2">
+      <p>{{exerciseData().question}} </p>
+      <input
+        #inputField
+        class="input-field flex-grow-1 flex-wrap"
+        [style]="isDone()? 'pointer-events: none' : ''"
+        autofocus
+        type="text"
+        id="inputForm"
+        title="Input Field"
+        (blur)="!isDone() ? forceFocus() : ''"
+        (keyup.enter)="inputForm.value ?
+                       submitAnswer(inputForm.value) : ''"
+        [formControl]="inputForm"/>
+    </div>
 
-
-  <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
-    @for (choice of exerciseData().choices; track choice) {
-      <div class="col-12">
-        <p-button
-          [styleClass]="
-          isDone() ? (
-            elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
-            :
-            'btn-incorrect'
-          ) : ''
-          "
-          id="{{choice}}"
-          label="{{choice}}"
-          [raised]="true"
-          severity="secondary"
-          (click)="submitAnswer(choice)"/>
-      </div>
-    }
-
-    <div class="next-btn-wrapper flex justify-content-end">
-      @if (isDone()) {
-        <p-button id="next-btn" label="Next" severity="primary" (click)="null"/>
+    <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+      @for (choice of exerciseData().choices; track choice) {
+        <div class="col-12">
+          <p-button
+            [styleClass]="
+            isDone() ? (
+              elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+            id="{{choice}}"
+            label="{{choice}}"
+            [raised]="true"
+            severity="secondary"
+            (click)="submitAnswer(choice)"/>
+        </div>
       }
     </div>
 
+    @if (!isDone()) {
+      <div class="instructions-wrapper flex justify-content-center">
+        <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
+      </div>
+    }
+  </ng-template>
+
+  <!-- TRANSLATE THE WORD -->
+  <ng-template #translateWord>
+    <div class="exercise-content-wrapper flex justify-content-center gap-3 mb-2">
+      <p style="font-size: 36px">{{exerciseData().question}} </p>
+    </div>
+
+    <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+      @for (choice of exerciseData().choices; track choice) {
+        <div class="col-12">
+          <p-button
+            [styleClass]="
+            isDone() ? (
+              elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+            id="{{choice}}"
+            label="{{choice}}"
+            [raised]="true"
+            severity="secondary"
+            (click)="submitAnswer(choice)"/>
+        </div>
+      }
+    </div>
+  </ng-template>
+
+  <!--  WRITE THE SENTENCE -->
+  <ng-template #writeTheSentence>
+    <div class="exercise-content-wrapper flex justify-content-center">
+      <p>{{exerciseData().question}}</p>
+    </div>
+    <div class="flex justify-content-center mb-2">
+      <textarea
+        [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
+        #inputField
+        class="sentence-input-area flex-grow-1 flex-wrap"
+        id="sentenceInputForm"
+        title="Input Field"
+        [formControl]="inputForm"
+        rows="3"
+        cols="30"
+        >
+      </textarea>
+    </div>
+    <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
+      @if (!isDone()) {
+        <p-button
+          id="writSentenceSubmitBtn"
+          label="Submit"
+          severity="primary"
+          (click)="inputForm.value ?
+          submitTranslatedSentence(inputForm.value) : null"/>
+      }
+    </div>
+
+  </ng-template>
+
+  <!--  COMPLETE THE CONVERSATION -->
+  <ng-template #completeTheConversation>
+    <!--    Chat bubbles-->
+    <div class="chat-wrapper flex flex-column  mb-4">
+      <div class="bubble left  justify-content-start">
+        {{exerciseData().question}}
+      </div>
+
+        <div class="bubble right justify-content-end">
+          <input
+            [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
+            #inputField
+            class="chat-input-field flex-grow-1 flex-wrap"
+            [style]="isDone()? 'pointer-events: none' : ''"
+            id="chatInputForm"
+            title="Input Field"
+            [value]="chosenAnswer()"
+            [formControl]="inputForm"
+            (keyup.enter)="inputForm.value ?
+            submitAnswer(inputForm.value) : null"
+          />
+        </div>
+    </div>
+
+    <!--  answer choices  -->
+    <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+      @for (choice of exerciseData().choices; track choice) {
+        <div class="col-12">
+          <p-button
+            [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
+            [styleClass]="
+            isDone() ? (
+              elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+            id="{{choice}}"
+            label="{{choice}}"
+            [raised]="true"
+            severity="secondary"
+            (click)="submitAnswer(choice)"/>
+        </div>
+      }
+    </div>
+  </ng-template>
+
+  <!-- MATCH THE WORDS -->
+  <ng-template #matchTheWords>
+    <div class="buttons-group p-fluid grid mb-3">
+      @for (pair of exerciseData().randomizedWordPairs; track pair; let idx = $index) {
+        <div class="col-5 btn-matching-pairs">
+          <p-button
+            [styleClass]="matchResults()[idx][0] == true ? 'btn-correct' : ''"
+            id="{{pair[0]}}"
+            label="{{pair[0]}}"
+            [raised]="true"
+            severity="secondary"
+            (click)="!isDone() ? chooseMatch(pair[0], 0) : null"/>
+        </div>
+        <div class="col-5 col-offset-2 btn-matching-pairs">
+          <p-button
+            [styleClass]="matchResults()[idx][1] == true ? 'btn-correct' : ''"
+            id="{{pair[1]}}"
+            label="{{pair[1]}}"
+            [raised]="true"
+            severity="secondary"
+            (click)="!isDone() ? chooseMatch(pair[1], 1) : null"/>
+        </div>
+      }
+    </div>
+  </ng-template>
+
+<!-- CONTENT -->
+<div class="wrapper">
+  <div class="heading-wrapper flex justify-content-center mb-4">
+    <p>
+      {{headingText()}}
+      {{(exerciseData().type == ExerciseType.WriteTheSentence && !isDone()) ? exerciseData().language : ''}}
+    </p>
   </div>
 
-  <div class="instructions-wrapper flex justify-content-center">
-    <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
-  </div>
-</ng-template>
-
-<ng-template #translateWord>
-  <div class="exercise-content-wrapper flex justify-content-center gap-3 mb-2">
-    <p style="font-size: 36px">{{exerciseData().question}} </p>
-  </div>
+  <ng-template [ngTemplateOutlet]="getTemplate()"></ng-template>
 
   <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
-    @for (choice of exerciseData().choices; track choice) {
-      <div class="col-12">
-        <p-button
-          [styleClass]="
-          isDone() ? (
-            elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
-            :
-            'btn-incorrect'
-          ) : ''
-          "
-          id="{{choice}}"
-          label="{{choice}}"
-          [raised]="true"
-          severity="secondary"
-          (click)="submitAnswer(choice)"/>
-      </div>
-    }
+    <div class="next-btn-wrapper flex justify-content-end">
+      @if (isDone()) {
+        <p-button id="next-btn" label="Next" severity="primary" (click)="setupNextExercise()"/>
+      }
+    </div>
   </div>
-</ng-template>
 
-<ng-template #writeTheSentence>
-
-</ng-template>
-
-<ng-template #completeTheConversation>
-
-</ng-template>
-
-<ng-template #matchTheWords>
-  <div class="buttons-group p-fluid grid mb-3">
-    @for (pair of exerciseData().randomizedWordPairs; track pair; let idx = $index) {
-      <div class="col-5 btn-matching-pairs">
-        <p-button
-          [styleClass]="matchResults()[idx][0] == true ? 'btn-correct' : ''"
-          id="{{pair[0]}}"
-          label="{{pair[0]}}"
-          [raised]="true"
-          severity="secondary"
-          (click)="!isDone() ? chooseMatch(pair[0], 0) : null"/>
-      </div>
-      <div class="col-5 col-offset-2 btn-matching-pairs">
-        <p-button
-          [styleClass]="matchResults()[idx][1] == true ? 'btn-correct' : ''"
-          id="{{pair[1]}}"
-          label="{{pair[1]}}"
-          [raised]="true"
-          severity="secondary"
-          (click)="!isDone() ? chooseMatch(pair[1], 1) : null"/>
-      </div>
+  <!--  Exercise-specific instructions -->
+  @if (!isDone()) {
+    <div class="instructions-wrapper flex justify-content-center">
+    @switch (exerciseData().type) {
+      @case (ExerciseType.FillInTheBlank && ExerciseType.CompleteTheConversation) {
+        <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
+      }
+      @case (ExerciseType.MatchTheWords) {
+        <p>Match the words in {{exerciseData().language}} to their English translations </p>
+      }
+      @case (ExerciseType.TranslateWord) {
+        <p>Click on the correct translation of the given word</p>
+      }
+      @case (ExerciseType.WriteTheSentence) {
+        <p>Write the given sentence in {{exerciseData().language}}
+      }
+      @default {
+      }
     }
-  </div>
-</ng-template>
-
-<div class="wrapper">
-  <ng-template [ngTemplateOutlet]="getTemplate()"></ng-template>
+    </div>
+  }
 </div>

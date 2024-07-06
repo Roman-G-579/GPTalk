@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
@@ -30,6 +30,21 @@ export class LearnService {
     answer: "Apple"
   }
 
+  mockExercise_Type3: Exercise = {
+    type: ExerciseType.WriteTheSentence,
+    language: Language.English,
+    question: "קוראים לי דני",
+    answer: "My name is Danny"
+  }
+
+  mockExercise_Type4: Exercise = {
+    type: ExerciseType.CompleteTheConversation,
+    language: Language.Hebrew,
+    question: "בהצלחה במבחן!",
+    choices: ["תודה, גם לך!","נעים להכיר!"],
+    answer: "תודה, גם לך!"
+  }
+
   mockExercise_Type5: Exercise = {
     type: ExerciseType.MatchTheWords,
     correctWordPairs: [
@@ -41,46 +56,47 @@ export class LearnService {
     ],
   }
 
-
-
   /**
    * Calls a random exercise generator function
-   * TODO: alter the function to generate an array of exercises
+   *
    * @param language the language of the generated exercise
    * @param difficulty difficulty the difficulty level
    */
-  generateLesson(language: Language, difficulty: Difficulty): Observable<object> {
-    // Choose a random exercise index
-    //const randomIndex: number = Math.floor(Math.random() * (Object.keys(ExerciseType).filter(key => isNaN(Number(key))).length));
-    // const chosenExercise = this.exerciseTypesArr[randomIndex];
-
-    let chosenExercise = 1;
+  generateLesson(language: Language, difficulty: Difficulty): Observable<Exercise[]> {
     let keyWords: string[] = [];
-
     keyWords = this.insertKeyWords(difficulty, keyWords); // Insert special keywords for the api based on the difficulty
 
-    // Generate an exercise based on the randomized exercise index
-    switch (chosenExercise) {
-      case 0:
-        return this.generateFillInTheBlank(language, difficulty, keyWords);
+    // All functions that can be called to generate an exercise
+    const exerciseGenerators = [
+      this.generateFillInTheBlank.bind(this),
+      this.generateTranslateWord.bind(this),
+      this.generateWriteTheSentence.bind(this),
+      this.generateCompleteTheConversation.bind(this),
+      this.generateMatchTheWords.bind(this)
+    ];
 
-      case 1:
-        return this.generateTranslateWord(language, difficulty, keyWords);
+    const exerciseObservables: Observable<Exercise>[] = []; // Stores the observables returned by the exercise generators
 
-      case 2:
-        return this.generateFillInTheBlank(language, difficulty, keyWords);
+    for (let i = 0; i < 5; i++) {
+      // Choose a random exercise index
+      let randomIndex: number = Math.floor(Math.random() * (Object.keys(ExerciseType).filter(key => isNaN(Number(key))).length));
+      //let randomIndex = 0;
+      const generatorFunc = exerciseGenerators[randomIndex]; // The chosen function
 
-      case 3:
-        return this.generateFillInTheBlank(language, difficulty, keyWords);
+      // Generate an exercise based on the randomized exercise index
+      exerciseObservables.push(generatorFunc(language,difficulty,keyWords));
 
-      case 4:
-        return this.generateMatchTheWords(language, difficulty, keyWords);
-
-      default:
-        console.log("generateLesson switch error");
-        return this.generateFillInTheBlank(language, difficulty, keyWords);
     }
 
+    return forkJoin(exerciseObservables).pipe(
+      map(exercises => {
+        return exercises as Exercise[];
+      }),
+      catchError(err => {
+        console.error(err);
+        return [];
+      })
+    );
   }
 
   /**
@@ -111,7 +127,7 @@ export class LearnService {
    * @param difficulty the exercise's difficulty level
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
-  generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
+  generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     // Exercise-specific parameters
     let numOfAnswers: number;
 
@@ -132,12 +148,12 @@ export class LearnService {
   }
 
   /**
-   * Sends a query to the api to generate a "translate words" exercise, using the given parameters
+   * Sends a query to the API to generate a "translate words" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
-  private generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
+  generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     // Exercise-specific parameters
     let numOfAnswers: number;
 
@@ -158,12 +174,25 @@ export class LearnService {
   }
 
   /**
-   * Sends a query to the api to generate a "match the words to their translations" exercise, using the given parameters
+   * Sends a query to the API to generate a "write the sentence in the specified language" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
-  generateMatchTheWords(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<object> {
+  generateWriteTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    return of(this.mockExercise_Type3);
+  }
+
+  generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    return of(this.mockExercise_Type4);
+  }
+  /**
+   * Sends a query to the API to generate a "match the words to their translations" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   */
+  generateMatchTheWords(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     // Exercise-specific parameters
     let numOfPairs: number;
 

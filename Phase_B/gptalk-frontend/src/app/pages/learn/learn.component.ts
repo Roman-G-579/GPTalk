@@ -9,7 +9,7 @@ import {
   OnInit,
   signal,
   TemplateRef,
-  ViewChild,
+  ViewChild, WritableSignal,
 } from '@angular/core';
 import { LearnService } from '../../core/services/learn.service';
 import { Language } from '../../../models/enums/language.enum';
@@ -20,6 +20,12 @@ import { Button } from 'primeng/button';
 import { PrimeNGConfig } from 'primeng/api';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Exercise } from '../../../models/exercise.interface';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TimelineModule } from 'primeng/timeline';
+import { CardModule } from 'primeng/card';
+import { FieldsetModule } from 'primeng/fieldset';
+import { AvatarModule } from 'primeng/avatar';
+import { StyleClassModule } from 'primeng/styleclass';
 
 @Component({
   selector: 'app-learn',
@@ -28,6 +34,12 @@ import { Exercise } from '../../../models/exercise.interface';
     CommonModule,
     ReactiveFormsModule,
     Button,
+    InputTextareaModule,
+    TimelineModule,
+    CardModule,
+    FieldsetModule,
+    AvatarModule,
+    StyleClassModule,
   ],
   templateUrl: './learn.component.html',
   styleUrl: './learn.component.scss',
@@ -37,6 +49,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   private readonly learnService = inject(LearnService);
   private readonly primengConfig = inject(PrimeNGConfig);
   private readonly cdr = inject(ChangeDetectorRef);
+  protected readonly ExerciseType = ExerciseType; // Used by template for evaluation
 
   @ViewChild('fillInTheBlank') fillInTheBlankTemplate!: TemplateRef<unknown>;
   @ViewChild('translateWord') translateWordTemplate!: TemplateRef<unknown>;
@@ -56,12 +69,21 @@ export class LearnComponent implements OnInit, AfterViewInit {
   matchResults = signal<[Boolean,Boolean][]>([]);
   // Contains the current chosen pair of words in the "match the words" exercise
   chosenPair = signal<[string, string]>(["",""]);
-  mistakesCounter = signal(0); // Counts the number of wrong matches
+
+  // Counts the number of correct answers in the lesson
+  correctExercisesCnt = signal(0);
+
+  // Counts the number of wrong matches in the "match the words" exercise
+  matchMistakesCnt = signal(0);
 
   headingText = signal<string>(""); // Contains instructions or feedback
 
+  // Array of the generated exercises returned by the learn service
+  exerciseArr!: Exercise[];
+  // Data of the current exercise
   exerciseData = signal<Exercise>({
     type: ExerciseType.FillInTheBlank,
+    language: Language.English,
     question: '',
     choices: [],
     correctWordPairs: [],
@@ -91,16 +113,9 @@ export class LearnComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.learnService.generateLesson(Language.English, Difficulty.Very_Easy).subscribe({
       next: data => {
-        const exercise = data as Exercise
+        this.exerciseArr = data as Exercise[];
 
-        this.exerciseData.set(exercise);
-        this.lowerCaseAll();
-
-        if (exercise.type == ExerciseType.MatchTheWords) {
-          this.initializeMatchResults();
-        }
-
-        this.headingText.set(exercise.type); //Exercise type contains a relevant instruction string
+        this.setupNextExercise();
       },
       error: err => {
         console.log("Error! Cannot generate exercise. ", err)
@@ -120,26 +135,49 @@ export class LearnComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Sets up the data and parameters for the next exercise in the lesson
+   */
+  setupNextExercise() {
+    const curExercise = this.exerciseArr.pop(); // Retrieves the next exercise from the array
+
+    this.resetSignals();
+
+    // Sets the exercise data in the signal
+    if (curExercise) {
+      this.exerciseData.set(curExercise);
+    }
+
+    // Normalizes the exercise's strings for easier comparison
+    this.lowerCaseAndNormalizeAll(this.exerciseData);
+
+    // Initializes a matchResults array for the "match the words exercise"
+    if (this.exerciseData().type == ExerciseType.MatchTheWords) {
+      this.initializeMatchResults();
+    }
+
+    this.headingText.set(this.exerciseData().type); //Exercise type contains a relevant instruction string
+
+  }
 
   /**
    * Compares the user's chosen answer with the exercise's actual answer
    * If the answer was manually entered, the string is used in the comparison
    *
-   * Used by exercise types: FillInTheBlank, TranslateWord, WriteTheSentence, CompleteTheConversation
+   * Used by exercise types: FillInTheBlank, TranslateWord, CompleteTheConversation
    * @param answer  the answer submitted by the user for verification
    */
   submitAnswer(answer: string) {
-    answer = answer.toLowerCase();
+    answer = answer.toLowerCase().trim().normalize();
     this.chosenAnswer.set(answer);
+    this.isDone.set(true); // mark the exercise as "done"
 
     // If the answer was submitted by manually typing it
     if (this.inputForm.value) {
-
       // Approximates the input string to the closest matching option
       this.chosenAnswer.set(<string>this.findClosestString(answer));
     }
 
-    this.isDone.set(true);
 
     if(this.chosenAnswer() == this.exerciseData().answer ) {
       this.headingText.set(`Correct!`);
@@ -147,6 +185,37 @@ export class LearnComponent implements OnInit, AfterViewInit {
     }
     else {
       this.headingText.set(`${answer} is incorrect.`);
+      this.isCorrectAnswer.set(false);
+    }
+  }
+
+  /**
+   * Compares the user's translation of a sentence with the actual answer
+   *
+   *
+   * @param userInput the string submitted by the user for verification
+   */
+  submitTranslatedSentence(userInput: string) {
+    userInput = userInput.toLowerCase().trim().replace(/[,.!?:]/g,'').normalize();
+    const actualAnswer = this.exerciseData().answer?.replace(/[,.!?:]/g,'') ?? "";
+    this.chosenAnswer.set(userInput);
+    this.isDone.set(true);
+    console.log(userInput);
+    console.log(actualAnswer);
+    console.log(distance(userInput, actualAnswer));
+    // for (const word in userInputArr) {
+    //   //TURN ANSWER INTO ARRAY, COMPARE WORDS
+    // }
+
+    if(this.chosenAnswer() == actualAnswer ) {
+      this.headingText.set(`Correct!`);
+      this.isCorrectAnswer.set(true);
+    }
+    else if(distance(userInput, actualAnswer) < 4) {
+      this.headingText.set(`Good answer! A more accurate translation is: ${this.exerciseData().answer}`);
+    }
+    else {
+      this.headingText.set(`Incorrect. correct translation: ${this.exerciseData().answer}`);
       this.isCorrectAnswer.set(false);
     }
   }
@@ -160,12 +229,14 @@ export class LearnComponent implements OnInit, AfterViewInit {
    * @param indexOfPair the index of the selected word: 0 - left word, 1 - right word
    */
   chooseMatch(str: string, indexOfPair: number) {
+
     //Updates the left or right chosen element, based on the given index
     this.chosenPair.update( pair => {
       indexOfPair == 0 ? pair[0] = str : pair[1] = str;
       return pair;
     });
 
+    // If a left and a right word has been selected, call the verifyMatch function
     (this.chosenPair()[0] && this.chosenPair()[1]) ? this.verifyMatch() : null;
   }
 
@@ -197,12 +268,12 @@ export class LearnComponent implements OnInit, AfterViewInit {
 
       // If all booleans in the match results array are 'true', the exercise is complete
       if (!this.matchResults().some(([left,right]) => left == false || right == false)) {
-        console.log("You Win");
+        this.matchMistakesCnt() == 0 ? this.headingText.set(`Correct!`) : this.headingText.set(`Number of mistakes: ${this.matchMistakesCnt()}`);
         this.isDone.set(true);
       }
     }
     else {
-      this.mistakesCounter.set(this.mistakesCounter() + 1);
+      this.matchMistakesCnt.set(this.matchMistakesCnt() + 1);
 
       // TODO: for each mistake deduct exp reward of current exercise
 
@@ -214,7 +285,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   /**
    * Finds the closest matching string (from the available choices) to the given input
    *
-   * Used by exercise types: FillInTheBlank, WriteTheSentence, CompleteTheConversation
+   * Used by exercise types: FillInTheBlank, CompleteTheConversation
    * @param str the string that will be evaluated
    */
   findClosestString(str: string) {
@@ -223,6 +294,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
     if (!this.exerciseData().answer?.startsWith(str[0])) {
       return null;
     }
+
     // If the string is too different from any given choice, the answer counts as invalid
     if (this.getClosestDistance(str) > 2) {
       return null;
@@ -235,7 +307,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
    * Returns the smallest Levenshtein distance value
    * between the given string and the strings in the choices array
    *
-   * Used by exercise types: FillInTheBlank, WriteTheSentence, CompleteTheConversation
+   * Used by exercise types: FillInTheBlank, CompleteTheConversation
    * @param str the string that will be evaluated
    */
   getClosestDistance(str: string) {
@@ -270,15 +342,15 @@ export class LearnComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Converts every question and answer related string to lowercase for easier comparisons
+   * Converts every question and answer related string to normalized and lowercase for easier comparisons
    */
-  lowerCaseAll() {
-    this.exerciseData.update( data => {
-      data.question = data.question?.toLowerCase();
-      data.answer = data.answer?.toLowerCase();
-      data.choices = data.choices?.map(elem => elem.toLowerCase());
-      data.correctWordPairs = data.correctWordPairs?.map(pair => [pair[0].toLowerCase(), pair[1].toLowerCase()]);
-      data.randomizedWordPairs = data.randomizedWordPairs?.map(pair => [pair[0].toLowerCase(), pair[1].toLowerCase()]);
+  lowerCaseAndNormalizeAll(exercise: WritableSignal<Exercise>) {
+    exercise.update( data => {
+      data.question = data.question?.normalize().toLowerCase();
+      data.answer = data.answer?.normalize().toLowerCase();
+      data.choices = data.choices?.map(elem => elem.normalize().toLowerCase());
+      data.correctWordPairs = data.correctWordPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
+      data.randomizedWordPairs = data.randomizedWordPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
       return data;
     })
   }
@@ -294,4 +366,16 @@ export class LearnComponent implements OnInit, AfterViewInit {
       return data;
     })
   }
+
+  /**
+   * Resets the states of all exercise-data related signals
+   */
+  resetSignals() {
+    this.isDone.set(false);
+    this.isCorrectAnswer.set(false);
+    this.matchResults.set([]);
+    this.isCorrectAnswer.set(false);
+    this.inputForm.patchValue("");
+  }
+
 }
