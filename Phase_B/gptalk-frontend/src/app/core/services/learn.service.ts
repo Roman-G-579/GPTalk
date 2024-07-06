@@ -31,7 +31,7 @@ export class LearnService {
   }
 
   mockExercise_Type3: Exercise = {
-    type: ExerciseType.WriteTheSentence,
+    type: ExerciseType.TranslateTheSentence,
     language: Language.English,
     question: "קוראים לי דני",
     answer: "My name is Danny"
@@ -42,7 +42,8 @@ export class LearnService {
     language: Language.Hebrew,
     question: "בהצלחה במבחן!",
     choices: ["תודה, גם לך!","נעים להכיר!"],
-    answer: "תודה, גם לך!"
+    answer: "תודה, גם לך!",
+    translation: "Person A: Good luck on the test! Person B: Thanks, You too!"
   }
 
   mockExercise_Type5: Exercise = {
@@ -61,10 +62,10 @@ export class LearnService {
    *
    * @param language the language of the generated exercise
    * @param difficulty difficulty the difficulty level
+   * @param amount the amount of exercises to be generated
    */
-  generateLesson(language: Language, difficulty: Difficulty): Observable<Exercise[]> {
-    let keyWords: string[] = [];
-    keyWords = this.insertKeyWords(difficulty, keyWords); // Insert special keywords for the api based on the difficulty
+  generateLesson(language: Language, difficulty: Difficulty, amount: number): Observable<Exercise[]> {
+    let keyWords = this.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
 
     // All functions that can be called to generate an exercise
     const exerciseGenerators = [
@@ -77,15 +78,15 @@ export class LearnService {
 
     const exerciseObservables: Observable<Exercise>[] = []; // Stores the observables returned by the exercise generators
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
-      let randomIndex: number = Math.floor(Math.random() * (Object.keys(ExerciseType).filter(key => isNaN(Number(key))).length));
+      let randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
       //let randomIndex = 0;
       const generatorFunc = exerciseGenerators[randomIndex]; // The chosen function
 
       // Generate an exercise based on the randomized exercise index
+      // And place its result in the observables array
       exerciseObservables.push(generatorFunc(language,difficulty,keyWords));
-
     }
 
     return forkJoin(exerciseObservables).pipe(
@@ -105,7 +106,8 @@ export class LearnService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    * @private
    */
-  private insertKeyWords(difficulty: Difficulty, keyWords: Array<string>) {
+  private insertKeyWords(difficulty: Difficulty) {
+    let keyWords: string[] = [];
     // Parameters for very easy and easy difficulties
     if (difficulty >= 0 && difficulty < 2) {
       keyWords.push('simple', 'beginners');

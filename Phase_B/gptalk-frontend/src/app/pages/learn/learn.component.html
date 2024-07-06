@@ -7,11 +7,12 @@
       <input
         #inputField
         class="input-field flex-grow-1 flex-wrap"
-        [style]="isDone()? 'pointer-events: none' : ''"
+        [readOnly]="!!isDone()"
         autofocus
         type="text"
         id="inputForm"
         title="Input Field"
+        [value]="isDone() ? exerciseData().answer : ''"
         (blur)="!isDone() ? forceFocus() : ''"
         (keyup.enter)="inputForm.value ?
                        submitAnswer(inputForm.value) : ''"
@@ -72,8 +73,8 @@
     </div>
   </ng-template>
 
-  <!--  WRITE THE SENTENCE -->
-  <ng-template #writeTheSentence>
+  <!--  TRANSLATE THE SENTENCE -->
+  <ng-template #translateTheSentence>
     <div class="exercise-content-wrapper flex justify-content-center">
       <p>{{exerciseData().question}}</p>
     </div>
@@ -81,7 +82,9 @@
       <textarea
         [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
         #inputField
+        autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
+        [readOnly]="!!isDone()"
         id="sentenceInputForm"
         title="Input Field"
         [formControl]="inputForm"
@@ -101,6 +104,14 @@
       }
     </div>
 
+    @if (isDone()) {
+      <div class="translation-wrapper flex justify-content-center flex-column text-center ">
+          <p><b>Translation:</b></p>
+          <p>{{exerciseData().question}} means:</p>
+          <p>{{exerciseData().answer}}</p>
+      </div>
+    }
+
   </ng-template>
 
   <!--  COMPLETE THE CONVERSATION -->
@@ -116,10 +127,10 @@
             [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
             #inputField
             class="chat-input-field flex-grow-1 flex-wrap"
-            [style]="isDone()? 'pointer-events: none' : ''"
+            [readOnly]="!!isDone()"
             id="chatInputForm"
             title="Input Field"
-            [value]="chosenAnswer()"
+            [value]="isDone() ? exerciseData().answer : ''"
             [formControl]="inputForm"
             (keyup.enter)="inputForm.value ?
             submitAnswer(inputForm.value) : null"
@@ -128,7 +139,7 @@
     </div>
 
     <!--  answer choices  -->
-    <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+    <div class="buttons-group p-fluid grid-12 gap-2 mb-2">
       @for (choice of exerciseData().choices; track choice) {
         <div class="col-12">
           <p-button
@@ -148,6 +159,12 @@
         </div>
       }
     </div>
+
+    @if (isDone()) {
+      <div class="translation-wrapper flex justify-content-center">
+        <p><b>Translation:</b> {{exerciseData().translation}}</p>
+      </div>
+    }
   </ng-template>
 
   <!-- MATCH THE WORDS -->
@@ -178,42 +195,55 @@
 
 <!-- CONTENT -->
 <div class="wrapper">
-  <div class="heading-wrapper flex justify-content-center mb-4">
-    <p>
-      {{headingText()}}
-      {{(exerciseData().type == ExerciseType.WriteTheSentence && !isDone()) ? exerciseData().language : ''}}
-    </p>
-  </div>
-
-  <ng-template [ngTemplateOutlet]="getTemplate()"></ng-template>
-
-  <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
-    <div class="next-btn-wrapper flex justify-content-end">
-      @if (isDone()) {
-        <p-button id="next-btn" label="Next" severity="primary" (click)="setupNextExercise()"/>
-      }
+  @if (!isLessonOver()) {
+  <!--    Current lesson  -->
+    <div class="heading-wrapper flex justify-content-center mb-4">
+      <p>
+        {{headingText()}}
+      </p>
     </div>
-  </div>
 
-  <!--  Exercise-specific instructions -->
-  @if (!isDone()) {
-    <div class="instructions-wrapper flex justify-content-center">
-    @switch (exerciseData().type) {
-      @case (ExerciseType.FillInTheBlank && ExerciseType.CompleteTheConversation) {
-        <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
-      }
-      @case (ExerciseType.MatchTheWords) {
-        <p>Match the words in {{exerciseData().language}} to their English translations </p>
-      }
-      @case (ExerciseType.TranslateWord) {
-        <p>Click on the correct translation of the given word</p>
-      }
-      @case (ExerciseType.WriteTheSentence) {
-        <p>Write the given sentence in {{exerciseData().language}}
-      }
-      @default {
-      }
+    <ng-template [ngTemplateOutlet]="getTemplate()"></ng-template>
+
+    <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+      <div class="next-btn-wrapper flex justify-content-end">
+        @if (isDone()) {
+          <p-button id="next-btn" label="Next" severity="primary" (click)="setUpNextExercise()"/>
+        }
+      </div>
+    </div>
+
+    <!--  Exercise-specific instructions -->
+    @if (!isDone()) {
+      <div class="instructions-wrapper flex justify-content-center">
+        @switch (exerciseData().type) {
+          @case (ExerciseType.FillInTheBlank && ExerciseType.CompleteTheConversation) {
+            <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
+          }
+          @case (ExerciseType.MatchTheWords) {
+            <p>Match the words in {{exerciseData().language}} to their English translations </p>
+          }
+          @case (ExerciseType.TranslateWord) {
+            <p>Click on the correct translation of the given word</p>
+          }
+          @case (ExerciseType.TranslateTheSentence) {
+            <p>Write the given sentence in {{exerciseData().language}}
+              }
+          @default {
+          }
+        }
+      </div>
     }
+  }
+  @else {
+  <!--    Results Screen  -->
+    <div class="results-wrapper">
+      <p>Lesson finished</p>
+      <p>Correct answers:</p>
+      <p>{{correctAndTotalExercises()[0]}} out of {{correctAndTotalExercises()[1]}}</p>
+      <p>Experience points earned:</p>
+      <p>50 XP</p>
     </div>
   }
+
 </div>
