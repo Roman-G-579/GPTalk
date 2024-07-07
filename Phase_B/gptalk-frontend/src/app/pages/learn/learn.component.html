@@ -7,15 +7,16 @@
       <input
         #inputField
         class="input-field flex-grow-1 flex-wrap"
-        [readOnly]="!!isDone()"
+        [readOnly]="isDone()"
         autofocus
         type="text"
         id="inputForm"
         title="Input Field"
         [value]="isDone() ? exerciseData().answer : ''"
-        (blur)="!isDone() ? forceFocus() : ''"
+        (blur)="!isDone() ? utilHtml.forceFocus(inputFieldRef) : ''"
         (keyup.enter)="inputForm.value ?
-                       submitAnswer(inputForm.value) : ''"
+                       setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData))
+                       : ''"
         [formControl]="inputForm"/>
     </div>
 
@@ -25,16 +26,17 @@
           <p-button
             [styleClass]="
             isDone() ? (
-              elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
             ) : ''
             "
+
             id="{{choice}}"
             label="{{choice}}"
             [raised]="true"
             severity="secondary"
-            (click)="submitAnswer(choice)"/>
+            (onClick)="setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
         </div>
       }
     </div>
@@ -52,7 +54,7 @@
           <p-button
             [styleClass]="
             isDone() ? (
-              elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
             ) : ''
@@ -61,7 +63,7 @@
             label="{{choice}}"
             [raised]="true"
             severity="secondary"
-            (click)="submitAnswer(choice)"/>
+            (onClick)="setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
         </div>
       }
     </div>
@@ -74,11 +76,11 @@
     </div>
     <div class="flex justify-content-center mb-2">
       <textarea
-        [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
+        [dir]="exerciseData().language?.toString() === 'hebrew' ? 'rtl' : ''"
         #inputField
         autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
-        [readOnly]="!!isDone()"
+        [readOnly]="isDone()"
         id="sentenceInputForm"
         title="Input Field"
         [formControl]="inputForm"
@@ -93,8 +95,8 @@
           id="writSentenceSubmitBtn"
           label="Submit"
           severity="primary"
-          (click)="inputForm.value ?
-          submitTranslatedSentence(inputForm.value) : null"/>
+          (onClick)="inputForm.value ?
+          setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"/>
       }
     </div>
 
@@ -118,16 +120,16 @@
 
         <div class="bubble right justify-content-end">
           <input
-            [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
+            [dir]="exerciseData().language?.toString() === 'hebrew' ? 'rtl' : ''"
             #inputField
             class="chat-input-field flex-grow-1 flex-wrap"
-            [readOnly]="!!isDone()"
+            [readOnly]="isDone()"
             id="chatInputForm"
             title="Input Field"
             [value]="isDone() ? exerciseData().answer : ''"
             [formControl]="inputForm"
             (keyup.enter)="inputForm.value ?
-            submitAnswer(inputForm.value) : null"
+            setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"
           />
         </div>
     </div>
@@ -137,10 +139,10 @@
       @for (choice of exerciseData().choices; track choice) {
         <div class="col-12">
           <p-button
-            [dir]="exerciseData().language?.toString() == 'hebrew' ? 'rtl' : ''"
+            [dir]="exerciseData().language?.toString() === 'hebrew' ? 'rtl' : ''"
             [styleClass]="
             isDone() ? (
-              elemContainsAnswer(choice) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
             ) : ''
@@ -149,7 +151,7 @@
             label="{{choice}}"
             [raised]="true"
             severity="secondary"
-            (click)="submitAnswer(choice)"/>
+            (onClick)="setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
         </div>
       }
     </div>
@@ -167,21 +169,21 @@
       @for (pair of exerciseData().randomizedWordPairs; track pair; let idx = $index) {
         <div class="col-5 btn-matching-pairs">
           <p-button
-            [styleClass]="matchResults()[idx][0] == true ? 'btn-correct' : ''"
+            [styleClass]="matchResults()[idx][0] ? 'btn-correct' : ''"
             id="{{pair[0]}}"
             label="{{pair[0]}}"
             [raised]="true"
             severity="secondary"
-            (click)="!isDone() ? chooseMatch(pair[0], 0) : null"/>
+            (onClick)="!isDone() ? chooseMatch(pair[0], 0) : null"/>
         </div>
         <div class="col-5 col-offset-2 btn-matching-pairs">
           <p-button
-            [styleClass]="matchResults()[idx][1] == true ? 'btn-correct' : ''"
+            [styleClass]="matchResults()[idx][1] ? 'btn-correct' : ''"
             id="{{pair[1]}}"
             label="{{pair[1]}}"
             [raised]="true"
             severity="secondary"
-            (click)="!isDone() ? chooseMatch(pair[1], 1) : null"/>
+            (onClick)="!isDone() ? chooseMatch(pair[1], 1) : null"/>
         </div>
       }
     </div>
@@ -202,7 +204,7 @@
     <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
       <div class="next-btn-wrapper flex justify-content-end">
         @if (isDone()) {
-          <p-button id="next-btn" label="Next" severity="primary" (click)="setUpNextExercise()"/>
+          <p-button id="next-btn" label="Next" severity="primary" (onClick)="setUpNextExercise()"/>
         }
       </div>
     </div>

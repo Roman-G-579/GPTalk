@@ -6,7 +6,7 @@ import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Exercise } from '../../../models/exercise.interface';
-import _ from 'lodash';
+import {LearnMiscUtils as util} from '../utils/learn-misc-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -69,7 +69,7 @@ export class LearnService {
    * @param amount the amount of exercises to be generated
    */
   generateLesson(language: Language, difficulty: Difficulty, amount: number): Observable<Exercise[]> {
-    let keyWords = this.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
+    const keyWords = this.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
 
     // All functions that can be called to generate an exercise
     const exerciseGenerators = [
@@ -84,7 +84,7 @@ export class LearnService {
 
     for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
-      let randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
+      const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
       //let randomIndex = 0;
       const generatorFunc = exerciseGenerators[randomIndex]; // The chosen function
 
@@ -110,7 +110,7 @@ export class LearnService {
    * @private
    */
   private insertKeyWords(difficulty: Difficulty) {
-    let keyWords: string[] = [];
+    const keyWords: string[] = [];
     // Parameters for very easy and easy difficulties
     if (difficulty >= 0 && difficulty < 2) {
       keyWords.push('simple', 'beginners');
@@ -225,27 +225,12 @@ export class LearnService {
     // Get the exercise object from the api
 
     // Randomize the word pairs
-    this.mockExercise_MatchTheWords.randomizedWordPairs = this.shuffleWordPairs(this.mockExercise_MatchTheWords.correctWordPairs?? []);
+    this.mockExercise_MatchTheWords.randomizedWordPairs = util.shuffleWordPairs(this.mockExercise_MatchTheWords.correctWordPairs?? []);
 
     return of(this.mockExercise_MatchTheWords);
   }
 
-  /**
-   * Shuffles the locations of the left words and the locations of the right words in the array
-   * @param wordPairs an array of string pairs. first element in pair - left word.
-   *                  Second element in pair - right word
-   */
-  shuffleWordPairs(wordPairs: [string, string][]): [string, string][] {
-    const leftWords = wordPairs.map(pair => pair[0]);
-    const rightWords = wordPairs.map(pair => pair[1]);
 
-    // Shuffle each array independently
-    const shuffledLeftWords = _.shuffle(leftWords);
-    const shuffledRightWords = _.shuffle(rightWords);
-
-    // Re-pair the shuffled words
-    return shuffledLeftWords.map((leftWord, index) => [leftWord, shuffledRightWords[index]])
-  }
 
 
 }

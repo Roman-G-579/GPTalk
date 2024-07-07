@@ -134,16 +134,19 @@ translation-wrapper {
   & .btn-correct {
     background: var(--accent-text-clr);
     border-color: var(--accent-text-clr);
+    pointer-events: none;
   }
 
   & .btn-incorrect {
     background: var(--secondary-text-clr);
     border-color: var(--secondary-text-clr);
+    pointer-events: none;
   }
 
   & .btn-actual-correct {
     background: var(--yellow-400);
     border-color: var(--yellow-400);
+    pointer-events: none;
   }
 }
 
