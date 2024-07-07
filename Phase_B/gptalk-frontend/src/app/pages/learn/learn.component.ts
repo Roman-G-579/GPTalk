@@ -26,6 +26,7 @@ import { CardModule } from 'primeng/card';
 import { FieldsetModule } from 'primeng/fieldset';
 import { AvatarModule } from 'primeng/avatar';
 import { StyleClassModule } from 'primeng/styleclass';
+import { BypassSecurityPipe } from '../../../pipes/bypass-security.pipe';
 
 @Component({
   selector: 'app-learn',
@@ -40,6 +41,7 @@ import { StyleClassModule } from 'primeng/styleclass';
     FieldsetModule,
     AvatarModule,
     StyleClassModule,
+    BypassSecurityPipe,
   ],
   templateUrl: './learn.component.html',
   styleUrl: './learn.component.scss',
@@ -49,7 +51,6 @@ export class LearnComponent implements OnInit, AfterViewInit {
   private readonly learnService = inject(LearnService);
   private readonly primengConfig = inject(PrimeNGConfig);
   private readonly cdr = inject(ChangeDetectorRef);
-  protected readonly ExerciseType = ExerciseType; // Used by template for evaluation
 
   @ViewChild('fillInTheBlank') fillInTheBlankTemplate!: TemplateRef<unknown>;
   @ViewChild('translateWord') translateWordTemplate!: TemplateRef<unknown>;
@@ -84,6 +85,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   exerciseData = signal<Exercise>({
     type: ExerciseType.FillInTheBlank,
     language: Language.English,
+    instructions: '',
     question: '',
     choices: [],
     correctWordPairs: [],
@@ -394,5 +396,4 @@ export class LearnComponent implements OnInit, AfterViewInit {
     this.inputForm.patchValue("");
   }
 
-  protected readonly distance = distance;
 }

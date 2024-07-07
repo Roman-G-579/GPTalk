@@ -38,12 +38,6 @@
         </div>
       }
     </div>
-
-    @if (!isDone()) {
-      <div class="instructions-wrapper flex justify-content-center">
-        <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
-      </div>
-    }
   </ng-template>
 
   <!-- TRANSLATE THE WORD -->
@@ -216,22 +210,8 @@
     <!--  Exercise-specific instructions -->
     @if (!isDone()) {
       <div class="instructions-wrapper flex justify-content-center">
-        @switch (exerciseData().type) {
-          @case (ExerciseType.FillInTheBlank && ExerciseType.CompleteTheConversation) {
-            <p>Click on an answer or type it and hit the <i>enter</i> key to submit</p>
-          }
-          @case (ExerciseType.MatchTheWords) {
-            <p>Match the words in {{exerciseData().language}} to their English translations </p>
-          }
-          @case (ExerciseType.TranslateWord) {
-            <p>Click on the correct translation of the given word</p>
-          }
-          @case (ExerciseType.TranslateTheSentence) {
-            <p>Write the given sentence in {{exerciseData().language}}
-              }
-          @default {
-          }
-        }
+        <!-- bypassSecurity pipe is used to utilize the string's HTML tags if they exist in the string     -->
+        <p [innerHTML]="exerciseData().instructions | bypassSecurity"></p>
       </div>
     }
   }

@@ -15,39 +15,43 @@ export class LearnService {
   private readonly apiUrl = environment.apiUrl;
   private readonly http = inject(HttpClient);
 
-
-  mockExercise_Type1: Exercise = {
+  mockExercise_FillInTheBlank: Exercise = {
     type: ExerciseType.FillInTheBlank,
+    instructions: '',
     question: "The sun rises in the ",
     choices: ["East","West","North","South"],
     answer: "East"
   }
 
-  mockExercise_Type2: Exercise = {
+  mockExercise_TranslateWord: Exercise = {
     type: ExerciseType.TranslateWord,
+    instructions: '',
     question: "תפוח",
     choices: ["Hello","Apple","Tree"],
     answer: "Apple"
   }
 
-  mockExercise_Type3: Exercise = {
+  mockExercise_TranslateSentence: Exercise = {
     type: ExerciseType.TranslateTheSentence,
+    instructions: '',
     language: Language.English,
     question: "קוראים לי דני",
     answer: "My name is Danny"
   }
 
-  mockExercise_Type4: Exercise = {
+  mockExercise_CompleteTheConversation: Exercise = {
     type: ExerciseType.CompleteTheConversation,
     language: Language.Hebrew,
+    instructions: '',
     question: "בהצלחה במבחן!",
     choices: ["תודה, גם לך!","נעים להכיר!"],
     answer: "תודה, גם לך!",
     translation: "Person A: Good luck on the test! Person B: Thanks, You too!"
   }
 
-  mockExercise_Type5: Exercise = {
+  mockExercise_MatchTheWords: Exercise = {
     type: ExerciseType.MatchTheWords,
+    instructions: '',
     correctWordPairs: [
       ["חתול", "Cat"],
       ["מים", "Water"],
@@ -71,7 +75,7 @@ export class LearnService {
     const exerciseGenerators = [
       this.generateFillInTheBlank.bind(this),
       this.generateTranslateWord.bind(this),
-      this.generateWriteTheSentence.bind(this),
+      this.generateTranslateTheSentence.bind(this),
       this.generateCompleteTheConversation.bind(this),
       this.generateMatchTheWords.bind(this)
     ];
@@ -103,7 +107,6 @@ export class LearnService {
   /**
    * Inserts strings into the keyWords array based on the given difficulty
    * @param difficulty the difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    * @private
    */
   private insertKeyWords(difficulty: Difficulty) {
@@ -132,6 +135,7 @@ export class LearnService {
   generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     // Exercise-specific parameters
     let numOfAnswers: number;
+    this.mockExercise_FillInTheBlank.instructions = 'Click on an answer or type it and hit the <i>enter</i> key to submit';
 
     // Parameters for very easy and easy difficulties
     if (difficulty >= 0 && difficulty < 2) {
@@ -146,7 +150,7 @@ export class LearnService {
       numOfAnswers = 5;
     }
 
-    return of(this.mockExercise_Type1);
+    return of(this.mockExercise_FillInTheBlank);
   }
 
   /**
@@ -158,6 +162,7 @@ export class LearnService {
   generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     // Exercise-specific parameters
     let numOfAnswers: number;
+    this.mockExercise_TranslateWord.instructions = 'Click on the correct translation of the given word';
 
     // Parameters for very easy and easy difficulties
     if (difficulty >= 0 && difficulty < 2) {
@@ -172,7 +177,7 @@ export class LearnService {
       numOfAnswers = 5;
     }
 
-    return of(this.mockExercise_Type2);
+    return of(this.mockExercise_TranslateWord);
   }
 
   /**
@@ -181,12 +186,16 @@ export class LearnService {
    * @param difficulty the exercise's difficulty level
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
-  generateWriteTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
-    return of(this.mockExercise_Type3);
+  generateTranslateTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    this.mockExercise_TranslateSentence.instructions =`Write the given sentence in ${language}`;
+
+    return of(this.mockExercise_TranslateSentence);
   }
 
   generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
-    return of(this.mockExercise_Type4);
+    this.mockExercise_CompleteTheConversation.instructions = `Click on an answer or type it and hit the <i>enter</i> key to submit`;
+
+    return of(this.mockExercise_CompleteTheConversation);
   }
   /**
    * Sends a query to the API to generate a "match the words to their translations" exercise, using the given parameters
@@ -195,6 +204,8 @@ export class LearnService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateMatchTheWords(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    this.mockExercise_MatchTheWords.instructions = `Match the words in ${language} to their English translations`;
+
     // Exercise-specific parameters
     let numOfPairs: number;
 
@@ -214,9 +225,9 @@ export class LearnService {
     // Get the exercise object from the api
 
     // Randomize the word pairs
-    this.mockExercise_Type5.randomizedWordPairs = this.shuffleWordPairs(this.mockExercise_Type5.correctWordPairs?? []);
+    this.mockExercise_MatchTheWords.randomizedWordPairs = this.shuffleWordPairs(this.mockExercise_MatchTheWords.correctWordPairs?? []);
 
-    return of(this.mockExercise_Type5);
+    return of(this.mockExercise_MatchTheWords);
   }
 
   /**
@@ -235,5 +246,6 @@ export class LearnService {
     // Re-pair the shuffled words
     return shuffledLeftWords.map((leftWord, index) => [leftWord, shuffledRightWords[index]])
   }
+
 
 }
