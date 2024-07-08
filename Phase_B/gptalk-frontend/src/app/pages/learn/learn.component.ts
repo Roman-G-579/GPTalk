@@ -29,6 +29,7 @@ import { BypassSecurityPipe } from '../../../pipes/bypass-security.pipe';
 import { LearnMiscUtils as util } from '../../core/utils/learn-misc-utils';
 import { LearnHtmlUtils } from '../../core/utils/learn-html-utils';
 import { LearnVerificationUtils, LearnVerificationUtils as vrf } from '../../core/utils/learn-verification-utils';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-learn',
@@ -44,6 +45,7 @@ import { LearnVerificationUtils, LearnVerificationUtils as vrf } from '../../cor
     AvatarModule,
     StyleClassModule,
     BypassSecurityPipe,
+    RouterLink,
   ],
   templateUrl: './learn.component.html',
   styleUrl: './learn.component.scss',
@@ -76,7 +78,6 @@ export class LearnComponent implements OnInit, AfterViewInit {
   chosenPair = signal<[string, string]>(["",""]);
 
 
-  // TODO: combine all counters into a single counter object signal
   counters = signal<{correctAnswers: number, totalExercises: number, matchMistakes: number}>({
     correctAnswers: 0,
     totalExercises: 0,
@@ -96,6 +97,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   exerciseData = signal<Exercise>({
     type: ExerciseType.FillInTheBlank,
     language: Language.English,
+    heading: '',
     instructions: '',
     question: '',
     choices: [],
@@ -106,21 +108,24 @@ export class LearnComponent implements OnInit, AfterViewInit {
   })
 
   // Contains mapping to every exercise template in the Learn component
-  private templateMap = {
-    [ExerciseType.FillInTheBlank]: this.fillInTheBlankTemplate,
-    [ExerciseType.TranslateWord]: this.translateWordTemplate,
-    [ExerciseType.TranslateTheSentence]: this.translateTheSentenceTemplate,
-    [ExerciseType.CompleteTheConversation]: this.completeTheConversationTemplate,
-    [ExerciseType.MatchTheWords]: this.matchTheWordsTemplate,
-  };
+  private getTemplateMap(): {[key: number]: TemplateRef<any> } {
+    return {
+      0: this.fillInTheBlankTemplate,
+      1: this.translateWordTemplate,
+      2: this.translateTheSentenceTemplate,
+      3: this.completeTheConversationTemplate,
+      4: this.matchTheWordsTemplate,
+    };
+  }
 
-  // Returns a ng-template reference based on the current exercise type
-  getTemplate() {
-    return this.templateMap[this.exerciseData().type] || null;
+  // Returns a TemplateRef based on the current exercise type
+  getTemplate(): TemplateRef<any> | null {
+    const templateMap = this.getTemplateMap();
+    return templateMap[this.exerciseData().type] || null;
   }
 
   ngOnInit() {
-    this.learnService.generateLesson(Language.English, Difficulty.Very_Easy, 3).subscribe({
+    this.learnService.generateLesson(Language.English, Difficulty.Very_Easy, 1).subscribe({
       next: data => {
         this.exerciseArr = data as Exercise[];
         this.counters.set({correctAnswers: 0, totalExercises: data.length, matchMistakes: 0});
@@ -163,7 +168,8 @@ export class LearnComponent implements OnInit, AfterViewInit {
       util.initializeMatchResults(this.matchResults, this.exerciseData);
     }
 
-    this.headingText.set(this.exerciseData().type); //Exercise type contains a relevant header string
+    // Sets the current exercise's heading string
+    this.headingText.set(this.exerciseData().heading ?? '');
 
     // Once the content has been loaded, force focus on the input field, if it exists in the selected template
     if (this.inputFieldRef) {

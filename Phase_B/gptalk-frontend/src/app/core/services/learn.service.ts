@@ -135,6 +135,7 @@ export class LearnService {
   generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     // Exercise-specific parameters
     let numOfAnswers: number;
+    this.mockExercise_FillInTheBlank.heading = 'Fill in the blank';
     this.mockExercise_FillInTheBlank.instructions = 'Click on an answer or type it and hit the <i>enter</i> key to submit';
 
     // Parameters for very easy and easy difficulties
@@ -162,6 +163,7 @@ export class LearnService {
   generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     // Exercise-specific parameters
     let numOfAnswers: number;
+    this.mockExercise_TranslateWord.heading = 'Choose the correct translation';
     this.mockExercise_TranslateWord.instructions = 'Click on the correct translation of the given word';
 
     // Parameters for very easy and easy difficulties
@@ -187,12 +189,14 @@ export class LearnService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateTranslateTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    this.mockExercise_TranslateWord.heading = 'Translate the sentence';
     this.mockExercise_TranslateSentence.instructions =`Write the given sentence in ${language}`;
 
     return of(this.mockExercise_TranslateSentence);
   }
 
   generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    this.mockExercise_CompleteTheConversation.heading = 'Complete the conversation';
     this.mockExercise_CompleteTheConversation.instructions = `Click on an answer or type it and hit the <i>enter</i> key to submit`;
 
     return of(this.mockExercise_CompleteTheConversation);
@@ -204,6 +208,7 @@ export class LearnService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateMatchTheWords(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    this.mockExercise_MatchTheWords.heading = 'Match the words';
     this.mockExercise_MatchTheWords.instructions = `Match the words in ${language} to their English translations`;
 
     // Exercise-specific parameters
