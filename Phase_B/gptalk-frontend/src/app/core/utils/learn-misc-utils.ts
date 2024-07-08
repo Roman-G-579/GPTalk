@@ -95,6 +95,24 @@ export class LearnMiscUtils {
   }
 
   /**
+   * Increments the correct answers and the match mistakes counters based on the given data
+   * @param counters signal containing the counter data
+   * @param correctIncr counts correct answers in the lesson. 0 - do not increment, 1 - increment
+   * @param matchMistakesIncr counts mistakes in the "match the words" exercise. 0 - do not increment, 1 - increment
+   */
+  static incrementCounters(
+    counters: WritableSignal<{correctAnswers: number, totalExercises: number, matchMistakes: number}>,
+    correctIncr: number = 0,
+    matchMistakesIncr: number = 0)
+  {
+    counters.update(counters => {
+      counters.correctAnswers += correctIncr;
+      counters.matchMistakes += matchMistakesIncr;
+      return counters;
+    });
+  }
+
+  /**
    * Changes the state of the isLessonOver boolean signal to true.
    * signalling the HTML template to display the results screen
    * @param isLessonOver the signal that contains the boolean

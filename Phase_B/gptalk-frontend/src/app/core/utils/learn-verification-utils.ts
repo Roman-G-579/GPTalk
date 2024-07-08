@@ -39,6 +39,9 @@ export class LearnVerificationUtils {
 
   /**
    * Checks if the chosen pair matches a pair in the answer array
+   * If the pair is a match, returns "matchFound"
+   * If the pair is not a match, returns "wrongMatch"
+   * If the pair is the final match, returns "allMatchesFound"
    *
    * Used by exercise types: MatchTheWords
    * @param chosenPair the signal containing the currently chosen pair ow words
@@ -67,13 +70,18 @@ export class LearnVerificationUtils {
       });
 
       // If all booleans in the match results array are 'true', the exercise is complete
-      return !matchResults().some(([left, right]) => !left || !right);
+      if (!matchResults().some(([left, right]) => !left || !right)) {
+        return "allMatchesFound";
+      }
+      else {
+        return "matchFound"
+      }
     }
-    else {
+
       // this.matchMistakesCnt.set(this.matchMistakesCnt() + 1);
-      return false;
+      return "wrongMatch";
       // TODO: for each mistake deduct exp reward of current exercise
-    }
+
   }
 
 }

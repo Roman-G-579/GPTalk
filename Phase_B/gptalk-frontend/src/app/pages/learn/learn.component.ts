@@ -75,6 +75,13 @@ export class LearnComponent implements OnInit, AfterViewInit {
   // Contains the current chosen pair of words in the "match the words" exercise
   chosenPair = signal<[string, string]>(["",""]);
 
+
+  // TODO: combine all counters into a single counter object signal
+  counters = signal<{correctAnswers: number, totalExercises: number, matchMistakes: number}>({
+    correctAnswers: 0,
+    totalExercises: 0,
+    matchMistakes: 0
+  })
   // Counts the number of correct answers in the lesson
   correctAndTotalExercises = signal<[number,number]>([0,0]);
 
@@ -98,29 +105,26 @@ export class LearnComponent implements OnInit, AfterViewInit {
     translation: ''
   })
 
+  // Contains mapping to every exercise template in the Learn component
+  private templateMap = {
+    [ExerciseType.FillInTheBlank]: this.fillInTheBlankTemplate,
+    [ExerciseType.TranslateWord]: this.translateWordTemplate,
+    [ExerciseType.TranslateTheSentence]: this.translateTheSentenceTemplate,
+    [ExerciseType.CompleteTheConversation]: this.completeTheConversationTemplate,
+    [ExerciseType.MatchTheWords]: this.matchTheWordsTemplate,
+  };
+
   // Returns a ng-template reference based on the current exercise type
   getTemplate() {
-    switch (this.exerciseData().type) {
-      case ExerciseType.FillInTheBlank:
-        return this.fillInTheBlankTemplate;
-      case ExerciseType.TranslateWord:
-        return this.translateWordTemplate;
-      case ExerciseType.TranslateTheSentence:
-        return this.translateTheSentenceTemplate;
-      case ExerciseType.CompleteTheConversation:
-        return this.completeTheConversationTemplate;
-      case ExerciseType.MatchTheWords:
-        return this.matchTheWordsTemplate;
-      default:
-        return null;
-    }
+    return this.templateMap[this.exerciseData().type] || null;
   }
 
   ngOnInit() {
     this.learnService.generateLesson(Language.English, Difficulty.Very_Easy, 3).subscribe({
       next: data => {
         this.exerciseArr = data as Exercise[];
-        this.correctAndTotalExercises.set([0,data.length]); // Initialize the total exercise amount
+        this.counters.set({correctAnswers: 0, totalExercises: data.length, matchMistakes: 0});
+        //this.correctAndTotalExercises.set([0,data.length]); // Initialize the total exercise amount
 
         this.setUpNextExercise();
       },
@@ -184,11 +188,18 @@ export class LearnComponent implements OnInit, AfterViewInit {
 
     // If a left and a right word has been selected, call the verifyMatch function
     if (this.chosenPair()[0] && this.chosenPair()[1]) {
-      // If the verifyMatch function returns true, the exercise is done
-      vrf.verifyMatch(this.chosenPair, this.matchResults, this.exerciseData) ? this.setExerciseResult(true) : null;
+      // Get a verify result string from the verifyMatch function
+      const matchResult = vrf.verifyMatch(this.chosenPair, this.matchResults, this.exerciseData);
+      // Exercise complete
+      if ( matchResult == "allMatchesFound") {
+        this.setExerciseResult(true)
+      }
+      // The match was incorrect
+      else if (matchResult == "wrongMatch") {
+        util.incrementCounters(this.counters, 0, 1);
+      }
       this.chosenPair.set(["",""]); // Resets the chosen pair
     }
-
   }
 
   /**
@@ -204,7 +215,8 @@ export class LearnComponent implements OnInit, AfterViewInit {
     if (status) {
       this.headingText.set(`Correct!`);
       //TODO: Add XP for correct answer
-      util.incrementCorrectAnswers(this.correctAndTotalExercises);
+      //util.incrementCorrectAnswers(this.correctAndTotalExercises);
+      util.incrementCounters(this.counters, 1, 0);
     }
     else {
       this.headingText.set(`Incorrect.`);
