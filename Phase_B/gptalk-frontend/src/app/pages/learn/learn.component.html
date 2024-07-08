@@ -76,7 +76,7 @@
     </div>
     <div class="flex justify-content-center mb-2">
       <textarea
-        [dir]="exerciseData().language?.toString() === 'hebrew' ? 'rtl' : ''"
+        [dir]="utilHtml.isRtl(exerciseData)"
         #inputField
         autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
@@ -120,7 +120,7 @@
 
         <div class="bubble right justify-content-end">
           <input
-            [dir]="exerciseData().language?.toString() === 'hebrew' ? 'rtl' : ''"
+            [dir]="utilHtml.isRtl(exerciseData)"
             #inputField
             class="chat-input-field flex-grow-1 flex-wrap"
             [readOnly]="isDone()"
@@ -139,7 +139,7 @@
       @for (choice of exerciseData().choices; track choice) {
         <div class="col-12">
           <p-button
-            [dir]="exerciseData().language?.toString() === 'hebrew' ? 'rtl' : ''"
+            [dir]="utilHtml.isRtl(exerciseData)"
             [styleClass]="
             isDone() ? (
               utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
@@ -225,6 +225,15 @@
       <p>{{counters().correctAnswers}} out of {{counters().totalExercises}}</p>
       <p>Experience points earned:</p>
       <p>50 XP</p>
+
+      <!-- Returns the user to the home page -->
+      <div class="buttons-group flex justify-content-center mt-4">
+        <a routerLink="../home">
+          <div class="finish-btn-wrapper">
+            <p-button id="home-btn" label="Finish" severity="primary"/>
+          </div>
+        </a>
+      </div>
     </div>
   }
 
