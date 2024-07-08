@@ -9,13 +9,12 @@ import {
   OnInit,
   signal,
   TemplateRef,
-  ViewChild, WritableSignal,
+  ViewChild,
 } from '@angular/core';
 import { LearnService } from '../../core/services/learn.service';
 import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { distance } from 'fastest-levenshtein';
 import { Button } from 'primeng/button';
 import { PrimeNGConfig } from 'primeng/api';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
