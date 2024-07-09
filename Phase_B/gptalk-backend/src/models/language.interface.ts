@@ -1,34 +1,28 @@
 import { Schema, model } from 'mongoose';
 
-export interface Result {
-	_id?: Schema.Types.ObjectId;
-	exp: number;
-	date: Date;
-	user: Schema.Types.ObjectId;
+export interface Language {
+	_id?: Schema.Types.ObjectId,
+	user: Schema.Types.ObjectId,
+	language: 'English' | 'Spanish' | 'Russian' | 'Hebrew',
+	rank: 'Novice' | 'Expert' | 'Master',
 }
 
-const resultSchema = new Schema(
+const languageSchema = new Schema(
 	{
-		exp: {
-			type: Number,
-			required: true,
-		},
-		date: {
-			type: Date,
-			required: true,
-			default: new Date(),
-		},
 		user: {
 			type: Schema.Types.ObjectId,
 			ref: 'User',
 			required: true,
 		},
-	},
-	{
-		timestamps: true,
-		toJSON: { virtuals: true },
-		toObject: { virtuals: true },
-	},
+		language: {
+			type: String,
+			required: true,
+		},
+		rank: {
+			type: String,
+			default: 'Novice',
+		},
+	}
 );
 
-export const ResultModel = model<Result>('Result', resultSchema);
+export const LanguageModel = model<Language>('Language', languageSchema);

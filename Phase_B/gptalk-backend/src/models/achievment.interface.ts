@@ -1,10 +1,12 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-export interface Achievement extends Document {
+export interface Achievement {
+  _id?: Schema.Types.ObjectId,
   title: string;
   level: number;
   goal: number;
   icon: string;
+  type: 'streak' | 'exp' | 'mistakes' | 'challenges' | 'languages';
 }
 
 const achievementSchema = new Schema<Achievement>({
@@ -21,6 +23,10 @@ const achievementSchema = new Schema<Achievement>({
     required: true,
   },
   icon: {
+    type: String,
+    required: true,
+  },
+  type: {
     type: String,
     required: true,
   },

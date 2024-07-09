@@ -15,7 +15,6 @@ const visitLogSchema = new Schema(
 		},
 		date: {
 			type: Date,
-			reuired: true,
 			default: new Date(),
 		},
 	},

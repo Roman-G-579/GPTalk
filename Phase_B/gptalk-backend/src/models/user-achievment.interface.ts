@@ -1,19 +1,13 @@
 import { Schema, model, Document } from 'mongoose';
+import { Achievement } from './achievment.interface';
 
-export interface UserAchievement {
-	achievement: Schema.Types.ObjectId;
+export interface UserAchievement extends Achievement {
 	progress: number;
 }
 
 export const userAchievementSchema = new Schema<UserAchievement>({
-	achievement: {
-		type: Schema.Types.ObjectId,
-		ref: 'Achievement',
-		required: true,
-	},
 	progress: {
 		type: Number,
-		required: true,
 		default: 0,
 	},
 });

@@ -1,5 +1,7 @@
 import { Schema } from 'mongoose';
-import { Result } from './language.interface';
+import { Result } from './result.interface';
+import { Language } from './language.interface';
+import { UserAchievement } from './user-achievment.interface';
 
 export interface UserProfile {
 	_id?: Schema.Types.ObjectId;
@@ -16,15 +18,7 @@ export interface UserProfile {
 	totalExp: number;
 	country: string;
 	bio: string;
-	achievements: {
-		title: string;
-		level: number;
-		progress: number;
-		goal: number;
-	}[];
-	languages: {
-		language: string;
-		level: string;
-	}[];
+	achievements: UserAchievement[];
+	languages: Language[];
 	latestResults: Result[];
 }
