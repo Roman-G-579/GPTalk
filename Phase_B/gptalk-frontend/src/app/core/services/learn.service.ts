@@ -6,7 +6,7 @@ import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Exercise } from '../../../models/exercise.interface';
-import {LearnMiscUtils as util} from '../utils/learn-misc-utils';
+import { LearnMiscUtils as util } from '../utils/learn-misc-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -52,7 +52,7 @@ export class LearnService {
   mockExercise_MatchTheWords: Exercise = {
     type: ExerciseType.MatchTheWords,
     instructions: '',
-    correctWordPairs: [
+    correctPairs: [
       ["חתול", "Cat"],
       ["מים", "Water"],
       ["תפוז", "Orange"],
@@ -61,6 +61,28 @@ export class LearnService {
     ],
   }
 
+  mockExercise_ReorderSentence: Exercise = {
+    type: ExerciseType.ReorderSentence,
+    language: Language.Hebrew,
+    instructions: '',
+    choices: ['יוסי','רוכב','על','האופניים'],
+    answer: 'יוסי רוכב על האופניים',
+    translation: 'Yossi is riding the bicycle'
+  }
+
+  mockExercise_MatchTheCategory: Exercise = {
+    type: ExerciseType.MatchTheCategory,
+    language: Language.Hebrew,
+    instructions: '',
+    correctPairs: [
+      ["כדורסל", "ספורט"],
+      ["טניס", "ספורט"],
+      ["עוגה", "אוכל"],
+      ["עגבניה", "אוכל"],
+      ["כדורגל", "ספורט"],
+      ["תפוח","אוכל"]
+    ],
+  }
   /**
    * Calls a random exercise generator function
    *
@@ -77,7 +99,9 @@ export class LearnService {
       this.generateTranslateWord.bind(this),
       this.generateTranslateTheSentence.bind(this),
       this.generateCompleteTheConversation.bind(this),
-      this.generateMatchTheWords.bind(this)
+      this.generateMatchTheWords.bind(this),
+      this.generateReorderSentence.bind(this),
+      this.generateMatchTheCategory.bind(this)
     ];
 
     const exerciseObservables: Observable<Exercise>[] = []; // Stores the observables returned by the exercise generators
@@ -189,12 +213,18 @@ export class LearnService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateTranslateTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
-    this.mockExercise_TranslateWord.heading = 'Translate the sentence';
+    this.mockExercise_TranslateSentence.heading = 'Translate the sentence';
     this.mockExercise_TranslateSentence.instructions =`Write the given sentence in ${language}`;
 
     return of(this.mockExercise_TranslateSentence);
   }
 
+  /**
+   * Sends a query to the API to generate a "complete the conversation" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   */
   generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     this.mockExercise_CompleteTheConversation.heading = 'Complete the conversation';
     this.mockExercise_CompleteTheConversation.instructions = `Click on an answer or type it and hit the <i>enter</i> key to submit`;
@@ -230,9 +260,43 @@ export class LearnService {
     // Get the exercise object from the api
 
     // Randomize the word pairs
-    this.mockExercise_MatchTheWords.randomizedWordPairs = util.shuffleWordPairs(this.mockExercise_MatchTheWords.correctWordPairs?? []);
+    this.mockExercise_MatchTheWords.randomizedPairs = util.shuffleWordPairs(this.mockExercise_MatchTheWords.correctPairs?? []);
 
     return of(this.mockExercise_MatchTheWords);
+  }
+
+  /**
+   * Sends a query to the API to generate a "reorder the words into a proper sentence" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   */
+  generateReorderSentence(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    let sentenceLength: number;
+    this.mockExercise_ReorderSentence.heading = 'Arrange the words to form a correct sentence';
+    this.mockExercise_ReorderSentence.instructions = `Click the words sequentially to place them onto the board. Click submit when finished.`;
+
+    // Parameters for very easy and easy difficulties
+    if (difficulty >= 0 && difficulty < 2) {
+      sentenceLength = 4;
+    }
+    // Parameters for medium and hard difficulties
+    else if (difficulty >= 3 && difficulty < 4) {
+      sentenceLength = 5;
+    }
+    // Parameters for very hard and expert difficulties
+    else {
+      sentenceLength = 6;
+    }
+
+    return of(this.mockExercise_ReorderSentence);
+  }
+
+  generateMatchTheCategory(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
+    this.mockExercise_MatchTheCategory.heading = 'Match the words to their correct category';
+    this.mockExercise_MatchTheCategory.instructions = 'Drag and drop the words to their category container. Click submit when finished.'
+
+    return of(this.mockExercise_MatchTheCategory);
   }
 
 

@@ -53,13 +53,13 @@ export class LearnVerificationUtils {
     const rightWord = chosenPair()[1];
 
     // If the correct pairs array includes the pair [leftWord, rightWord], a match has been found
-    if (exercise().correctWordPairs?.some(([left,right]) => left == leftWord && right == rightWord)) {
+    if (exercise().correctPairs?.some(([left,right]) => left == leftWord && right == rightWord)) {
 
       // Update the result pairs array to reflect the found match (used to highlight a correct match on the screen)
       matchResults.update(data => {
         // Get the indices of both matching words in the words array
-        const leftIdx = exercise().randomizedWordPairs?.findIndex(([left,]) => left == leftWord) ?? -1;
-        const rightIdx = exercise().randomizedWordPairs?.findIndex(([,right]) => right == rightWord) ?? -1;
+        const leftIdx = exercise().randomizedPairs?.findIndex(([left,]) => left == leftWord) ?? -1;
+        const rightIdx = exercise().randomizedPairs?.findIndex(([,right]) => right == rightWord) ?? -1;
 
         // Update the match results array at the corresponding indices
         if (leftIdx != -1 && rightIdx != -1) {
@@ -82,6 +82,30 @@ export class LearnVerificationUtils {
       return "wrongMatch";
       // TODO: for each mistake deduct exp reward of current exercise
 
+  }
+
+  /**
+   * Checks if all words were matched to the correct categories
+   * @param categoryMatches the signal containing the categories and the categorized word arrays
+   * @param exercise the data of the currently active exercise
+   */
+  static verifyCategories(
+    categoryMatches: WritableSignal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>,
+    exercise: WritableSignal<Exercise>)
+  {
+    const correctPairsArr = exercise().correctPairs ?? [];
+
+    // Creates a map from the pairs array: key - word, value - word's category
+    const correctPairsMap = new Map(correctPairsArr.map(([word, category]) => [word, category]));
+
+    // Checks if all elements in a given array appear with the correct category in correctPairsMap
+    const checkCategory = (arr: string[], category: string) => arr.every(item => correctPairsMap.get(item) === category);
+
+    // Calls the checkCategory method to verify the word placements in the arrays
+    const isCat1Correct = checkCategory(categoryMatches().cat1, categoryMatches().categories[0]);
+    const isCat2Correct = checkCategory(categoryMatches().cat2, categoryMatches().categories[1]);
+
+    return isCat1Correct && isCat2Correct;
   }
 
 }

@@ -67,21 +67,11 @@ translation-wrapper {
   font-size: 1.6rem;
 }
 
-//::ng-deep .chat-option-btn {
-//  width: 300px;
-//  display: flex;
-//  justify-content: center;
-//}
+
 .chat-input-field {
   background-color: transparent;
   color: white;
 }
-
-//::ng-deep textarea {
-//  color: white;
-//}
-
-
 
 .bubble {
   --r: 1em;  /* the radius */
@@ -111,7 +101,6 @@ translation-wrapper {
 }
 
 ::ng-deep .buttons-group {
-  width: 800px;
   transition: all 0.25s ease;
 
   & button {
@@ -148,6 +137,11 @@ translation-wrapper {
     border-color: var(--yellow-400);
     pointer-events: none;
   }
+
+  & .btn-selected {
+    background: var(--blue-400);
+    border-color: var(--blue-400);
+  }
 }
 
 .results-wrapper {
@@ -155,3 +149,21 @@ translation-wrapper {
   font-size: 2.6rem;
 }
 
+.match-the-category-wrapper {
+  & li {
+    text-align: center;
+    &:hover {
+      cursor: grab;
+    }
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.p-draggable-enter {
+  border: 2px solid var(--blue-400);
+  border-radius: 15px;
+  background: var(--blue-100);
+  transition: background 0.25s ease;
+}

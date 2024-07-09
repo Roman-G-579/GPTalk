@@ -3,5 +3,7 @@ export enum ExerciseType {
   TranslateWord,
   TranslateTheSentence,
   CompleteTheConversation,
-  MatchTheWords
+  MatchTheWords,
+  ReorderSentence,
+  MatchTheCategory
 }

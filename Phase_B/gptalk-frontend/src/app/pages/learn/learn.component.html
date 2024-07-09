@@ -1,3 +1,4 @@
+<!--TODO: remove isDone where unnecessary-->
 <!-- TEMPLATES -->
 
   <!-- FILL IN THE BLANK -->
@@ -166,10 +167,13 @@
   <!-- MATCH THE WORDS -->
   <ng-template #matchTheWords>
     <div class="buttons-group p-fluid grid mb-3">
-      @for (pair of exerciseData().randomizedWordPairs; track pair; let idx = $index) {
+      @for (pair of exerciseData().randomizedPairs; track pair; let idx = $index) {
         <div class="col-5 btn-matching-pairs">
           <p-button
-            [styleClass]="matchResults()[idx][0] ? 'btn-correct' : ''"
+            [styleClass]="
+            matchResults()[idx][0] ? 'btn-correct'
+            :
+            chosenPair()[0] == pair[0] ? 'btn-selected' : ''"
             id="{{pair[0]}}"
             label="{{pair[0]}}"
             [raised]="true"
@@ -178,7 +182,10 @@
         </div>
         <div class="col-5 col-offset-2 btn-matching-pairs">
           <p-button
-            [styleClass]="matchResults()[idx][1] ? 'btn-correct' : ''"
+            [styleClass]="
+            matchResults()[idx][1] ? 'btn-correct'
+            :
+            chosenPair()[1] == pair[1] ? 'btn-selected' : ''"
             id="{{pair[1]}}"
             label="{{pair[1]}}"
             [raised]="true"
@@ -189,11 +196,126 @@
     </div>
   </ng-template>
 
+  <!-- REORDER THE SENTENCE  -->
+  <ng-template  #reorderSentence>
+    <div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [dir]="utilHtml.isRtl(exerciseData)">
+      <!--   Chosen words   -->
+      @for (word of chosenWords(); track word; let idx = $index) {
+          <p-button
+            class=""
+            [styleClass]="
+              isDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect') : '' "
+            id="{{word}}"
+            label="{{word}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="toggleWordSelection(idx)"/>
+      }
+    </div>
+
+    <!--  Choices  -->
+    <div class="buttons-group flex overflow-hidden gap-4 mb-6">
+      @for (choice of exerciseData().choices; track choice; let idx = $index) {
+          <p-button
+            class="flex-grow-1 flex flex-column justify-content-center"
+            [styleClass]=
+              "isDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect')
+               :
+               chosenWords().includes(choice) ? 'btn-selected' : '' "
+            id="{{choice}}"
+            label="{{choice}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="toggleWordSelection(idx)"/>
+      }
+    </div>
+
+    <!--  Submit button  -->
+    <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
+      @if (!isDone()) {
+        <p-button
+          id="reorderSentenceSubmitBtn"
+          label="Submit"
+          severity="primary"
+          (onClick)="setExerciseResult(vrf.verifyAnswer(chosenWords().join(' '), exerciseData))"/>
+      }
+    </div>
+
+    @if (isDone()) {
+      <div class="translation-wrapper flex flex-column text-center justify-content-center">
+        <p><b>Answer:</b> {{exerciseData().answer}}</p>
+        <p><b>Translation:</b> {{exerciseData().translation}}</p>
+      </div>
+    }
+  </ng-template>
+
+  <!-- MATCH THE CATEGORY -->
+  <ng-template #matchTheCategory>
+    <div class="match-the-category-wrapper flex justify-content-center flex-row mb-2 h-25rem">
+      <!-- Category 1 container -->
+      <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(0)">
+        <p class="text-center surface-border border-bottom-1">{{categoryMatches().categories[0]}}</p>
+        <ul class="list-none flex flex-column gap-2 p-0 m-0" *ngIf="exerciseData().correctPairs" >
+          <li
+            *ngFor="let word of categoryMatches().cat1"
+            class="p-2 border-round shadow-1"
+            pDraggable
+            (onDragStart)="dragStart(word)"
+            (onDragEnd)="dragEnd()">
+            {{word}}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Word Bank -->
+      <div class="p-2 border-3 surface-border border-round w-15rem">
+        <ul class="list-none flex flex-column gap-2 p-0 m-0">
+          <li
+            *ngFor="let word of categoryMatches().wordBank"
+            class="p-2 border-round shadow-1"
+            pDraggable
+            (onDragStart)="dragStart(word)"
+            (onDragEnd)="dragEnd()">
+            {{word}}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Category 2 container -->
+      <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(1)">
+        <p class="text-center surface-border border-bottom-1">{{categoryMatches().categories[1]}}</p>
+        <ul class="list-none flex flex-column gap-2 p-0 m-0" *ngIf="exerciseData().correctPairs" >
+          <li
+            *ngFor="let word of categoryMatches().cat2"
+            class="p-2 border-round shadow-1"
+            pDraggable
+            (onDragStart)="dragStart(word)"
+            (onDragEnd)="dragEnd()">
+            {{word}}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!--  Submit button  -->
+    <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
+      @if (!isDone()) {
+        <p-button
+          id="matchTheCategorySubmitBtn"
+          label="Submit"
+          severity="primary"
+          [disabled]="(categoryMatches().wordBank?.length != 0)"
+          (onClick)="setExerciseResult(vrf.verifyCategories(categoryMatches, exerciseData))"/>
+      }
+    </div>
+
+  </ng-template>
+
 <!-- CONTENT -->
-<div class="wrapper">
+<div class="wrapper w-full w-10">
   @if (!isLessonOver()) {
   <!--    Current lesson  -->
-    <div class="heading-wrapper flex justify-content-center mb-4">
+    <div class="heading-wrapper flex justify-content-center text-center mb-4">
       <p>
         {{headingText()}}
       </p>
@@ -236,5 +358,4 @@
       </div>
     </div>
   }
-
 </div>

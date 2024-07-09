@@ -33,8 +33,8 @@ export class LearnMiscUtils {
       data.question = data.question?.normalize().toLowerCase();
       data.answer = data.answer?.normalize().toLowerCase();
       data.choices = data.choices?.map(elem => elem.normalize().toLowerCase());
-      data.correctWordPairs = data.correctWordPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
-      data.randomizedWordPairs = data.randomizedWordPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
+      data.correctPairs = data.correctPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
+      data.randomizedPairs = data.randomizedPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
       return data;
     })
   }
@@ -131,17 +131,31 @@ export class LearnMiscUtils {
     const newResultsArr: [boolean,boolean][] = [];
 
     // The results array matches in size the word pairs array in the current exercise
-    exercise()?.randomizedWordPairs?.forEach(()=>
+    exercise()?.randomizedPairs?.forEach(()=>
       newResultsArr.push([false, false])
     );
     matchResults.set(newResultsArr);
   }
 
+  static initializeMatchTheCategory(categoryMatches: WritableSignal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>, exercise: WritableSignal<Exercise>) {
+    const pairsArray = exercise().correctPairs ?? [];
+    const words = Array.from(new Set(pairsArray.map(pair => pair[0])));
+    const categories = Array.from(new Set(pairsArray.map(pair => pair[1])));
+    categoryMatches.update(data => {
+      data.categories = [categories[0],categories[1]];
+      data.cat1 = [];
+      data.cat2 = [];
+      data.wordBank = words;
+      return data;
+    });
+  }
+
   /**
    * Resets the states of all exercise-data related signals
    */
-  static resetSignals(isDone: WritableSignal<boolean>, isCorrectAnswer: WritableSignal<boolean>) {
+  static resetSignals(isDone: WritableSignal<boolean>, isCorrectAnswer: WritableSignal<boolean>, chosenWords: WritableSignal<string[]>) {
     isDone.set(false);
     isCorrectAnswer.set(false);
+    chosenWords.set([]);
   }
 }
