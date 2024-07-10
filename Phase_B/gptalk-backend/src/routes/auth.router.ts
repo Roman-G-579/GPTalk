@@ -3,14 +3,14 @@ import { getUserByTokenMiddleware, loginMiddleware } from '../controllers/auth.c
 import { authMiddleware } from '../middlewares/auth.middleware';
 
 /**
- * @route POST /api/login
+ * @route POST /api/auth/login
  * @description log a user in to the website
  * @access public
  */
 router.post('/login', loginMiddleware);
 
 /**
- * @route GET /api/user
+ * @route GET /api/auth/user
  * @description get user info
  * @access jwt
  */
