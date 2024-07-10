@@ -156,7 +156,7 @@ export class RegisterComponent implements OnInit{
   // Returns true if the given FormGroup's controls are all valid, otherwise returns false
   isValid(formGroup: FormGroup): boolean {
     for (const controlName in formGroup.controls) {
-      if (formGroup.controls.hasOwnProperty(controlName)) {
+      if (Object.prototype.hasOwnProperty.call(formGroup.controls, controlName)) {
         if (!formGroup.controls[controlName].valid) {
           return false;
         }
@@ -168,7 +168,7 @@ export class RegisterComponent implements OnInit{
   // Marks invalid form inputs from the given FormGroup as dirty if they are invalid
   highlightIfEmpty(formGroup: FormGroup): void {
     for (const controlName in formGroup.controls) {
-      if (formGroup.controls.hasOwnProperty(controlName) && !formGroup.controls[controlName].valid) {
+      if (Object.prototype.hasOwnProperty.call(formGroup.controls, controlName) && !formGroup.controls[controlName].valid) {
         formGroup.controls[controlName].markAsDirty();
       }
     }
