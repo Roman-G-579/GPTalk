@@ -23,7 +23,7 @@ export class LearnVerificationUtils {
     const actualAnswer = exercise().answer?.replace(/[,.!?:]/g,'') ?? "";
 
     // Exact answer
-    if (answer == actualAnswer) return true;
+    if (answer === actualAnswer) return true;
 
     // Close match (3 or fewer characters apart)
     // (Exclusive to TranslateTheSentence exercise)
@@ -34,7 +34,7 @@ export class LearnVerificationUtils {
     // Approximate the answer if it was submitted by manually typing it
     // (Done only in exercises where a single word is evaluated)
     // and compare it to the actual answer
-    else return util.findClosestString(answer, exercise) == actualAnswer;
+    else return util.findClosestString(answer, exercise) === actualAnswer;
   }
 
   /**
@@ -80,7 +80,7 @@ export class LearnVerificationUtils {
 
       // this.matchMistakesCnt.set(this.matchMistakesCnt() + 1);
       return "wrongMatch";
-      // TODO: for each mistake deduct exp reward of current exercise
+      //TODO: for each mistake deduct exp reward of current exercise
 
   }
 

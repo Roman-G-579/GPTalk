@@ -120,6 +120,26 @@ export class LearnComponent implements OnInit, AfterViewInit {
     translation: ''
   })
 
+  ngOnInit() {
+    this.learnService.generateLesson(Language.English, Difficulty.Very_Easy, 5).subscribe({
+      next: data => {
+        this.exerciseArr = data as Exercise[];
+        this.counters.set({correctAnswers: 0, totalExercises: data.length, matchMistakes: 0});
+
+        this.setUpNextExercise();
+      },
+      error: err => {
+        console.log("Error! Cannot generate exercise. ", err)
+      }
+    })
+    this.primengConfig.ripple = true;
+
+  }
+
+  ngAfterViewInit() {
+    this.cdr.detectChanges(); // Performs a detection change to update the templateRef of the current exercise
+  }
+
   // Contains mapping to every exercise template in the Learn component
   private getTemplateMap(): {[key: number]: TemplateRef<unknown> } {
     return {
@@ -144,25 +164,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngOnInit() {
-    this.learnService.generateLesson(Language.English, Difficulty.Very_Easy, 5).subscribe({
-      next: data => {
-        this.exerciseArr = data as Exercise[];
-        this.counters.set({correctAnswers: 0, totalExercises: data.length, matchMistakes: 0});
 
-        this.setUpNextExercise();
-      },
-      error: err => {
-        console.log("Error! Cannot generate exercise. ", err)
-      }
-    })
-    this.primengConfig.ripple = true;
-
-  }
-
-  ngAfterViewInit() {
-    this.cdr.detectChanges(); // Performs a detection change to update the templateRef of the current exercise
-  }
 
   /**
    * Sets up the data and parameters for the next exercise in the lesson
@@ -329,7 +331,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
       }
     }
     // Move word to the array of the category matching the given index
-    catIndex == 0 ? addToCategory(cat1Arr, cat2Arr) : addToCategory(cat2Arr, cat1Arr);
+    catIndex === 0 ? addToCategory(cat1Arr, cat2Arr) : addToCategory(cat2Arr, cat1Arr);
 
     // Updates the categories and wordBank arrays
     this.categoryMatches.update(data => {

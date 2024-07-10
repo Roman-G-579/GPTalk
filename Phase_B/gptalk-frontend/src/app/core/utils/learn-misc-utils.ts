@@ -102,13 +102,4 @@ export class LearnMiscUtils {
       return counters;
     });
   }
-
-  // /**
-  //  * Changes the state of the isLessonOver boolean signal to true.
-  //  * signalling the HTML template to display the results screen
-  //  * @param isLessonOver the signal that contains the boolean
-  //  */
-  // static displayResultsScreen(isLessonOver: WritableSignal<boolean>) {
-  //   isLessonOver.set(true);
-  // }
 }
