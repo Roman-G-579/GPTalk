@@ -109,7 +109,7 @@ export class LearnService {
     for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-      //let randomIndex = 0;
+
       const generatorFunc = exerciseGenerators[randomIndex]; // The chosen function
 
       // Generate an exercise based on the randomized exercise index

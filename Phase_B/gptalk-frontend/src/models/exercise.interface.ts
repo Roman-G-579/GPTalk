@@ -9,7 +9,7 @@ export interface Exercise {
   instructions: string; // Detailed instructions of the current exercise
   question?: string;
   choices?: string[];
-  correctPairs?: [string, string][]; // Left string - the word in language 1, right string - the equivalent in language 2
+  correctPairs?: [string, string][];
   randomizedPairs?: [string, string][]; // The word pairs with each column being independently shuffled
   answer?: string;
   translation?: string;

@@ -27,6 +27,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { StyleClassModule } from 'primeng/styleclass';
 import { BypassSecurityPipe } from '../../../pipes/bypass-security.pipe';
 import { LearnMiscUtils as util } from '../../core/utils/learn-misc-utils';
+import { LearnInitializerUtils as init} from '../../core/utils/learn-initializer-utils';
 import { LearnHtmlUtils } from '../../core/utils/learn-html-utils';
 import { LearnVerificationUtils, LearnVerificationUtils as vrf } from '../../core/utils/learn-verification-utils';
 import { RouterLink } from '@angular/router';
@@ -67,10 +68,10 @@ export class LearnComponent implements OnInit, AfterViewInit {
   @ViewChild('matchTheWords') matchTheWordsTemplate!: TemplateRef<unknown>;
   @ViewChild('reorderSentence') reorderSentenceTemplate!: TemplateRef<unknown>;
   @ViewChild('matchTheCategory') matchTheCategoryTemplate!: TemplateRef<unknown>;
+  @ViewChild('resultsScreen') resultsScreenTemplate!: TemplateRef<unknown>;
 
   inputForm = new FormControl(''); // Answer input field
   @ViewChild("inputField") inputFieldRef!: ElementRef;
-
 
   isDone = signal<boolean>(false); // Changes to true once an exercise is over
   isLessonOver = signal<boolean>(false); // Changes to true once the lesson is over
@@ -87,7 +88,6 @@ export class LearnComponent implements OnInit, AfterViewInit {
   chosenWords = signal<string[]>([]);
 
   // -- MatchTheCategory-specific variables --
-  categories = signal<[string,string]>(["",""]);
   categoryMatches = signal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>({
     categories: ["",""],
     wordBank: [],
@@ -101,11 +101,6 @@ export class LearnComponent implements OnInit, AfterViewInit {
     totalExercises: 0,
     matchMistakes: 0
   })
-  // Counts the number of correct answers in the lesson
-  correctAndTotalExercises = signal<[number,number]>([0,0]);
-
-  // Counts the number of wrong matches in the "match the words" exercise
-  matchMistakesCnt = signal(0);
 
   headingText = signal<string>(""); // Contains instructions or feedback
 
@@ -126,7 +121,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   })
 
   // Contains mapping to every exercise template in the Learn component
-  private getTemplateMap(): {[key: number]: TemplateRef<any> } {
+  private getTemplateMap(): {[key: number]: TemplateRef<unknown> } {
     return {
       0: this.fillInTheBlankTemplate,
       1: this.translateWordTemplate,
@@ -139,9 +134,14 @@ export class LearnComponent implements OnInit, AfterViewInit {
   }
 
   // Returns a TemplateRef based on the current exercise type
-  getTemplate(): TemplateRef<any> | null {
+  getTemplate(): TemplateRef<unknown> {
     const templateMap = this.getTemplateMap();
-    return templateMap[this.exerciseData().type] || null;
+    if (!this.isLessonOver()) {
+      return templateMap[this.exerciseData().type] || null;
+    }
+    else {
+      return this.resultsScreenTemplate;
+    }
   }
 
   ngOnInit() {
@@ -149,7 +149,6 @@ export class LearnComponent implements OnInit, AfterViewInit {
       next: data => {
         this.exerciseArr = data as Exercise[];
         this.counters.set({correctAnswers: 0, totalExercises: data.length, matchMistakes: 0});
-        //this.correctAndTotalExercises.set([0,data.length]); // Initialize the total exercise amount
 
         this.setUpNextExercise();
       },
@@ -170,27 +169,43 @@ export class LearnComponent implements OnInit, AfterViewInit {
    */
   setUpNextExercise() {
     // Retrieves the next exercise from the array
-    const curExercise = this.exerciseArr.length ? this.exerciseArr.shift() : util.displayResultsScreen(this.isLessonOver);
+    const curExercise = this.exerciseArr.length ? this.exerciseArr.shift() : null;
 
-    util.resetSignals(this.isDone, this.isCorrectAnswer, this.chosenWords);
-    this.inputForm.patchValue("");
-
-    // Sets the exercise data in the signal
     if (curExercise) {
+      // Sets the data in the exerciseData signal
       this.exerciseData.set(curExercise);
+
+      this.runInitializers();
     }
+    else {
+      this.displayResultsScreen();
+    }
+  }
+
+  /**
+   * Resets the fields and states, and runs the relevant initializer functions
+   */
+  runInitializers() {
+    // Resets the states of all exercise-data related signals
+    init.resetSignals(this.isDone, this.isCorrectAnswer, this.chosenWords);
+
+    // Resets the match mistakes counter
+    init.resetMatchMistakes(this.counters);
+
+    // Resets the input field's value
+    this.inputForm.patchValue("");
 
     // Normalizes the exercise's strings for easier comparison
     util.lowerCaseAndNormalizeAll(this.exerciseData);
 
     // Initializes a matchResults array for the "match the words" exercise
     if (this.exerciseData().type == ExerciseType.MatchTheWords) {
-      util.initializeMatchResults(this.matchResults, this.exerciseData);
+      init.initializeMatchResults(this.matchResults, this.exerciseData);
     }
 
     // Initializes a pair of categories for the "match the category" exercise
     if (this.exerciseData().type == ExerciseType.MatchTheCategory) {
-      util.initializeMatchTheCategory(this.categoryMatches, this.exerciseData);
+      init.initializeMatchTheCategory(this.categoryMatches, this.exerciseData);
     }
 
     // Sets the current exercise's heading string
@@ -200,6 +215,15 @@ export class LearnComponent implements OnInit, AfterViewInit {
     if (this.inputFieldRef) {
       this.inputFieldRef.nativeElement.focus();
     }
+  }
+
+  /**
+   * Prepares the signal values for the results screen at the end of a lesson
+   */
+  displayResultsScreen() {
+    this.headingText.set(`Lesson finished`);
+    this.isLessonOver.set(true);
+    this.isDone.set(true);
   }
 
   /**
@@ -234,7 +258,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Toggles the selection of a word from the full string of the current exercise
+   * Toggles the selection of a word from the full string in the current exercise
    *
    * Used by exercises: ReorderSentence
    * @param index the index of the word to be toggled
@@ -285,9 +309,9 @@ export class LearnComponent implements OnInit, AfterViewInit {
     const draggedWord = this.draggedWord();
     if (!draggedWord) return;
 
-    let cat1Arr = this.categoryMatches().cat1;
-    let cat2Arr = this.categoryMatches().cat2;
-    let wordBankArr = this.categoryMatches().wordBank;
+    const cat1Arr = this.categoryMatches().cat1;
+    const cat2Arr = this.categoryMatches().cat2;
+    const wordBankArr = this.categoryMatches().wordBank;
 
     // Moves draggedWord from one array to the other
     const addToCategory = (targetArr: string[], otherArr: string[]) => {
@@ -304,7 +328,7 @@ export class LearnComponent implements OnInit, AfterViewInit {
         wordBankArr.splice(wordBankArr.indexOf(draggedWord),1);
       }
     }
-    // Move word to first category's array
+    // Move word to the array of the category matching the given index
     catIndex == 0 ? addToCategory(cat1Arr, cat2Arr) : addToCategory(cat2Arr, cat1Arr);
 
     // Updates the categories and wordBank arrays
@@ -328,8 +352,9 @@ export class LearnComponent implements OnInit, AfterViewInit {
 
     if (status) {
       this.headingText.set(`Correct!`);
+
       //TODO: Add XP for correct answer
-      //util.incrementCorrectAnswers(this.correctAndTotalExercises);
+
       util.incrementCounters(this.counters, 1, 0);
     }
     else {

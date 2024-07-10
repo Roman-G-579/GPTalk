@@ -1,4 +1,4 @@
-import { signal, WritableSignal } from '@angular/core';
+import { WritableSignal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { distance } from 'fastest-levenshtein';
@@ -86,6 +86,8 @@ export class LearnVerificationUtils {
 
   /**
    * Checks if all words were matched to the correct categories
+   *
+   * Used by exercise types: MatchTheCategory
    * @param categoryMatches the signal containing the categories and the categorized word arrays
    * @param exercise the data of the currently active exercise
    */

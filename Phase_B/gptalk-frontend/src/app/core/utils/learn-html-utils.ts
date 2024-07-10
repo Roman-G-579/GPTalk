@@ -1,6 +1,5 @@
 import { ElementRef, WritableSignal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
-import { Language } from '../../../models/enums/language.enum';
 
 /**
  * Contains functions used by the Learn component's html template
@@ -27,10 +26,10 @@ export class LearnHtmlUtils {
   /**
    * Returns 'rtl' to alter the text direction of the element that called the function
    * if the given language is a right-to-left one (hebrew)
-   * @param language the current exercise's language
+   * @param exercise the data of the currently active exercise
    */
-  static isRtl(exercise: WritableSignal<Exercise>) {
-    return exercise().language?.toString() === 'hebrew' ? 'rtl' : '';
+  static langDirection(exercise: WritableSignal<Exercise>) {
+    return exercise().language?.toString() === 'hebrew' ? 'rtl' : 'ltr';
   }
 
 }

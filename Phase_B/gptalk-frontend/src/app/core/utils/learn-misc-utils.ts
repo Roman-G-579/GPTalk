@@ -27,6 +27,8 @@ export class LearnMiscUtils {
 
   /**
    * Converts every question and answer related string to normalized and lowercase for easier comparisons
+   *
+   * @param exercise signal containing the current exercise data
    */
   static lowerCaseAndNormalizeAll(exercise: WritableSignal<Exercise>) {
     exercise.update( data => {
@@ -84,17 +86,6 @@ export class LearnMiscUtils {
   }
 
   /**
-   * Adds 1 to the correct answers counter signal
-   * @param correctAndTotalExercises the signal that contains the correct answers counter
-   */
-  static incrementCorrectAnswers(correctAndTotalExercises: WritableSignal<[number,number]>) {
-    correctAndTotalExercises.update(cntArr => {
-      cntArr[0] += 1;
-      return cntArr;
-    });
-  }
-
-  /**
    * Increments the correct answers and the match mistakes counters based on the given data
    * @param counters signal containing the counter data
    * @param correctIncr counts correct answers in the lesson. 0 - do not increment, 1 - increment
@@ -112,50 +103,12 @@ export class LearnMiscUtils {
     });
   }
 
-  /**
-   * Changes the state of the isLessonOver boolean signal to true.
-   * signalling the HTML template to display the results screen
-   * @param isLessonOver the signal that contains the boolean
-   */
-  static displayResultsScreen(isLessonOver: WritableSignal<boolean>) {
-    isLessonOver.set(true);
-  }
-
-  /**
-   * Initializes the boolean pairs array for the matchResults signal
-   * based on the size of the current exercise's word pair amount
-   * @param matchResults the signal containing the match result pairs
-   * @param exercise the data of the currently active exercise
-   */
-  static initializeMatchResults(matchResults: WritableSignal<[boolean,boolean][]>, exercise: WritableSignal<Exercise>) {
-    const newResultsArr: [boolean,boolean][] = [];
-
-    // The results array matches in size the word pairs array in the current exercise
-    exercise()?.randomizedPairs?.forEach(()=>
-      newResultsArr.push([false, false])
-    );
-    matchResults.set(newResultsArr);
-  }
-
-  static initializeMatchTheCategory(categoryMatches: WritableSignal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>, exercise: WritableSignal<Exercise>) {
-    const pairsArray = exercise().correctPairs ?? [];
-    const words = Array.from(new Set(pairsArray.map(pair => pair[0])));
-    const categories = Array.from(new Set(pairsArray.map(pair => pair[1])));
-    categoryMatches.update(data => {
-      data.categories = [categories[0],categories[1]];
-      data.cat1 = [];
-      data.cat2 = [];
-      data.wordBank = words;
-      return data;
-    });
-  }
-
-  /**
-   * Resets the states of all exercise-data related signals
-   */
-  static resetSignals(isDone: WritableSignal<boolean>, isCorrectAnswer: WritableSignal<boolean>, chosenWords: WritableSignal<string[]>) {
-    isDone.set(false);
-    isCorrectAnswer.set(false);
-    chosenWords.set([]);
-  }
+  // /**
+  //  * Changes the state of the isLessonOver boolean signal to true.
+  //  * signalling the HTML template to display the results screen
+  //  * @param isLessonOver the signal that contains the boolean
+  //  */
+  // static displayResultsScreen(isLessonOver: WritableSignal<boolean>) {
+  //   isLessonOver.set(true);
+  // }
 }

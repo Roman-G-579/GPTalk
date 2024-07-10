@@ -1,4 +1,3 @@
-<!--TODO: remove isDone where unnecessary-->
 <!-- TEMPLATES -->
 
   <!-- FILL IN THE BLANK -->
@@ -7,8 +6,7 @@
       <p>{{exerciseData().question}} </p>
       <input
         #inputField
-        class="input-field flex-grow-1 flex-wrap"
-        [readOnly]="isDone()"
+        class="fill-in-the-blank-input-field flex-grow-1 flex-wrap"
         autofocus
         type="text"
         id="inputForm"
@@ -77,8 +75,7 @@
     </div>
     <div class="flex justify-content-center mb-2">
       <textarea
-        [dir]="utilHtml.isRtl(exerciseData)"
-        #inputField
+        [dir]="utilHtml.langDirection(exerciseData)"
         autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
         [readOnly]="isDone()"
@@ -121,8 +118,7 @@
 
         <div class="bubble right justify-content-end">
           <input
-            [dir]="utilHtml.isRtl(exerciseData)"
-            #inputField
+            [dir]="utilHtml.langDirection(exerciseData)"
             class="chat-input-field flex-grow-1 flex-wrap"
             [readOnly]="isDone()"
             id="chatInputForm"
@@ -140,7 +136,7 @@
       @for (choice of exerciseData().choices; track choice) {
         <div class="col-12">
           <p-button
-            [dir]="utilHtml.isRtl(exerciseData)"
+            [dir]="utilHtml.langDirection(exerciseData)"
             [styleClass]="
             isDone() ? (
               utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
@@ -173,7 +169,7 @@
             [styleClass]="
             matchResults()[idx][0] ? 'btn-correct'
             :
-            chosenPair()[0] == pair[0] ? 'btn-selected' : ''"
+            chosenPair()[0] === pair[0] ? 'btn-selected' : ''"
             id="{{pair[0]}}"
             label="{{pair[0]}}"
             [raised]="true"
@@ -185,7 +181,7 @@
             [styleClass]="
             matchResults()[idx][1] ? 'btn-correct'
             :
-            chosenPair()[1] == pair[1] ? 'btn-selected' : ''"
+            chosenPair()[1] === pair[1] ? 'btn-selected' : ''"
             id="{{pair[1]}}"
             label="{{pair[1]}}"
             [raised]="true"
@@ -194,11 +190,17 @@
         </div>
       }
     </div>
+
+    @if (isDone() && counters().matchMistakes) {
+      <div class="flex flex-column text-center justify-content-center">
+        <p>Total incorrect matches: {{counters().matchMistakes}}</p>
+      </div>
+    }
   </ng-template>
 
   <!-- REORDER THE SENTENCE  -->
   <ng-template  #reorderSentence>
-    <div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [dir]="utilHtml.isRtl(exerciseData)">
+    <div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [dir]="utilHtml.langDirection(exerciseData)">
       <!--   Chosen words   -->
       @for (word of chosenWords(); track word; let idx = $index) {
           <p-button
@@ -251,11 +253,11 @@
 
   <!-- MATCH THE CATEGORY -->
   <ng-template #matchTheCategory>
-    <div class="match-the-category-wrapper flex justify-content-center flex-row mb-2 h-25rem">
+    <div class="match-the-category-wrapper flex justify-content-center flex-row text-center mb-2 gap-4 ">
       <!-- Category 1 container -->
       <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(0)">
-        <p class="text-center surface-border border-bottom-1">{{categoryMatches().categories[0]}}</p>
-        <ul class="list-none flex flex-column gap-2 p-0 m-0" *ngIf="exerciseData().correctPairs" >
+        <p class="text-center surface-border border-bottom-1 font-bold">{{categoryMatches().categories[0]}}</p>
+        <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().cat1"
             class="p-2 border-round shadow-1"
@@ -268,7 +270,7 @@
       </div>
 
       <!-- Word Bank -->
-      <div class="p-2 border-3 surface-border border-round w-15rem">
+      <div class="p-2 border-3 surface-border border-round h-auto w-15rem">
         <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().wordBank"
@@ -283,8 +285,8 @@
 
       <!-- Category 2 container -->
       <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(1)">
-        <p class="text-center surface-border border-bottom-1">{{categoryMatches().categories[1]}}</p>
-        <ul class="list-none flex flex-column gap-2 p-0 m-0" *ngIf="exerciseData().correctPairs" >
+        <p class="text-center surface-border border-bottom-1 font-bold">{{categoryMatches().categories[1]}}</p>
+        <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().cat2"
             class="p-2 border-round shadow-1"
@@ -304,45 +306,16 @@
           id="matchTheCategorySubmitBtn"
           label="Submit"
           severity="primary"
-          [disabled]="(categoryMatches().wordBank?.length != 0)"
+          [disabled]="(categoryMatches().wordBank.length !== 0)"
           (onClick)="setExerciseResult(vrf.verifyCategories(categoryMatches, exerciseData))"/>
       }
     </div>
 
   </ng-template>
 
-<!-- CONTENT -->
-<div class="wrapper w-full w-10">
-  @if (!isLessonOver()) {
-  <!--    Current lesson  -->
-    <div class="heading-wrapper flex justify-content-center text-center mb-4">
-      <p>
-        {{headingText()}}
-      </p>
-    </div>
-
-    <ng-template [ngTemplateOutlet]="getTemplate()"></ng-template>
-
-    <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
-      <div class="next-btn-wrapper flex justify-content-end">
-        @if (isDone()) {
-          <p-button id="next-btn" label="Next" severity="primary" (onClick)="setUpNextExercise()"/>
-        }
-      </div>
-    </div>
-
-    <!--  Exercise-specific instructions -->
-    @if (!isDone()) {
-      <div class="instructions-wrapper flex justify-content-center">
-        <!-- bypassSecurity pipe is used to utilize the string's HTML tags if they exist in the string     -->
-        <p [innerHTML]="exerciseData().instructions | bypassSecurity"></p>
-      </div>
-    }
-  }
-  @else {
-  <!--    Results Screen  -->
-    <div class="results-wrapper">
-      <p>Lesson finished</p>
+  <!-- RESULTS SCREEN -->
+  <ng-template #resultsScreen>
+    <div class="results-wrapper text-center">
       <p>Correct answers:</p>
       <p>{{counters().correctAnswers}} out of {{counters().totalExercises}}</p>
       <p>Experience points earned:</p>
@@ -357,5 +330,34 @@
         </a>
       </div>
     </div>
-  }
+  </ng-template>
+<!-- CONTENT -->
+<div class="wrapper w-full w-10">
+  <!--    Current lesson  -->
+    <!--  Heading  -->
+    <div class="heading-wrapper flex justify-content-center text-center mb-4">
+      <p>
+        {{headingText()}}
+      </p>
+    </div>
+
+    <!--  Exercise Template  -->
+    <ng-template [ngTemplateOutlet]="getTemplate()"></ng-template>
+
+    <!--  Next Button  -->
+    <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+      <div class="next-btn-wrapper flex justify-content-end">
+        @if (isDone() && !isLessonOver()) {
+          <p-button id="next-btn" label="Next" severity="primary" autofocus (onClick)="setUpNextExercise()"/>
+        }
+      </div>
+    </div>
+
+    <!--  Exercise-specific instructions -->
+    @if (!isDone()) {
+      <div class="instructions-wrapper flex justify-content-center">
+        <!-- bypassSecurity pipe is used to utilize the string's HTML tags if they exist in the string     -->
+        <p [innerHTML]="exerciseData().instructions | bypassSecurity"></p>
+      </div>
+    }
 </div>
