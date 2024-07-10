@@ -1,4 +1,4 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { Achievement } from './achievment.interface';
 
 export interface UserAchievement extends Achievement {

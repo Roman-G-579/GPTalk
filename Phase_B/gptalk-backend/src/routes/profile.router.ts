@@ -7,7 +7,7 @@ const router = Router();
 
 /**
  * @route GET /api/profile
- * @description register a user to the website
+ * @description get the user profile
  * @access public
  */
 router.get('/', validateProfile, validator, authMiddleware, getUserProfile);

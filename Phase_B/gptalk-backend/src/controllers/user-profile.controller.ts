@@ -6,7 +6,7 @@ import { ResultModel } from '../models/result.interface';
 import { UserProfile } from '../models/user-profile.interface';
 import httpStatus from 'http-status';
 import { ChallengeModel } from '../models/challenge.interface';
-import { Achievement, AchievementModel } from '../models/achievment.interface';
+import { AchievementModel } from '../models/achievment.interface';
 import { Result } from '../models/result.interface';
 import { LanguageModel } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
@@ -42,7 +42,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 		const level = calculateLevel(totalExp);
 
 		const achievements = await getAchievments(
-			streak,
+			maxStreak,
 			totalExp,
 			noMistakes,
 			challengesCompleted,
