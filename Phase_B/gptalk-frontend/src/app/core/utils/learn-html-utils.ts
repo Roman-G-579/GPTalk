@@ -27,6 +27,7 @@ export class LearnHtmlUtils {
    * Returns 'rtl' to alter the text direction of the element that called the function
    * if the given language is a right-to-left one (hebrew)
    * @param exercise the data of the currently active exercise
+   * @returns DOM directionality
    */
   static langDirection(exercise: WritableSignal<Exercise>) {
     return exercise().language?.toString() === 'hebrew' ? 'rtl' : 'ltr';

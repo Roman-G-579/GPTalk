@@ -1,0 +1,49 @@
+    <div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [dir]="utilHtml.langDirection(exerciseData)">
+      <!--   Chosen words   -->
+      @for (word of chosenWords(); track word; let idx = $index) {
+          <p-button
+            class=""
+            [styleClass]="
+              isDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect') : '' "
+            id="{{word}}"
+            label="{{word}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="removeWord(idx)"/>
+      }
+    </div>
+
+    <!--  Choices  -->
+    <div class="buttons-group flex overflow-hidden gap-4 mb-6">
+      @for (choice of exerciseData().choices; track choice; let idx = $index) {
+          <p-button
+            class="flex-grow-1 flex flex-column justify-content-center"
+            [styleClass]=
+              "isDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect')
+               :
+               chosenWords().includes(choice) ? 'btn-selected' : '' "
+            id="{{choice}}"
+            label="{{choice}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="toggleWordSelection(idx)"/>
+      }
+    </div>
+
+    <!--  Submit button  -->
+    <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
+      @if (!isDone()) {
+        <p-button
+          id="reorderSentenceSubmitBtn"
+          label="Submit"
+          severity="primary"
+          (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(chosenWords().join(' '), exerciseData))"/>
+      }
+    </div>
+
+    @if (isDone()) {
+      <div class="translation-wrapper flex flex-column text-center justify-content-center">
+        <p><b>Answer:</b> {{exerciseData().answer}}</p>
+        <p><b>Translation:</b> {{exerciseData().translation}}</p>
+      </div>
+    }

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { WritableSignal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { closest, distance } from 'fastest-levenshtein';
+import { Difficulty } from '../../../models/enums/difficulty.enum';
 
 /**
  * Contains various miscellaneous functions related to learn functionality
@@ -86,20 +87,38 @@ export class LearnMiscUtils {
   }
 
   /**
-   * Increments the correct answers and the match mistakes counters based on the given data
-   * @param counters signal containing the counter data
-   * @param correctIncr counts correct answers in the lesson. 0 - do not increment, 1 - increment
-   * @param matchMistakesIncr counts mistakes in the "match the words" exercise. 0 - do not increment, 1 - increment
+   * Removes the first element from the exercises array
+   * @returns firstElement - the first element in the given exercises array (before the shift)
+   * @param exerciseArr the exercises array in signal form
    */
-  static incrementCounters(
-    counters: WritableSignal<{correctAnswers: number, totalExercises: number, matchMistakes: number}>,
-    correctIncr: number = 0,
-    matchMistakesIncr: number = 0)
-  {
-    counters.update(counters => {
-      counters.correctAnswers += correctIncr;
-      counters.matchMistakes += matchMistakesIncr;
-      return counters;
+  static exerciseArrShift(exerciseArr: WritableSignal<Exercise[]>) {
+    const firstElement = exerciseArr()[0];
+    exerciseArr.update(arr => {
+      arr.shift();
+      return arr;
     });
+    return firstElement;
+  }
+
+  /**
+   * Inserts strings into the keyWords array based on the given difficulty
+   * @param difficulty the difficulty level
+   * @returns updated keyWords array
+   */
+  static insertKeyWords(difficulty: Difficulty) {
+    const keyWords: string[] = [];
+    // Parameters for very easy and easy difficulties
+    if (difficulty >= 0 && difficulty < 2) {
+      keyWords.push('simple', 'beginners');
+    }
+    // Parameters for medium and hard difficulties
+    else if (difficulty >= 3 && difficulty < 4) {
+      keyWords.push('some familiarity with the language');
+    }
+    // Parameters for very hard and expert difficulties
+    else {
+      keyWords.push('high level learners', 'challenge');
+    }
+    return keyWords;
   }
 }

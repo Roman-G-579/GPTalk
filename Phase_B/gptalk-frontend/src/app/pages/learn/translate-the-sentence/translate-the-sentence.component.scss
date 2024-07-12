@@ -1,0 +1,11 @@
+.sentence-input-area {
+  padding: 5px;
+  font-size: var(--t);
+  font-family: Poppins, sans-serif;
+  border-color: var(--gray-700);
+  border-radius: 15px;
+  border-width: 4px;
+  background: var(--gray-200);
+  resize: none;
+  max-width: 70vw;
+}

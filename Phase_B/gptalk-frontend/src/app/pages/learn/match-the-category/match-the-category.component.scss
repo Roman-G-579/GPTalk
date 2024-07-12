@@ -1,0 +1,34 @@
+.match-the-category-wrapper {
+  font-size: var(--t);
+  height: 40rem;
+
+  & .drop-column {
+    border: 4px solid var(--blue-400);
+    border-radius: 15px;
+  }
+
+  & li {
+    color: var(--primary-clr);
+    border: 1px solid var(--blue-400);
+
+    &:hover {
+      background: var(--blue-300);
+      transition: background 0.25s ease;
+
+      cursor: grab;
+    }
+    &:active {
+      background: var(--blue-400);
+      transition: background 0.25s ease;
+
+      cursor: grabbing;
+    }
+  }
+}
+
+.p-draggable-enter {
+  border: 2px solid var(--blue-400);
+  border-radius: 15px;
+  background: var(--blue-100);
+  transition: background 0.25s ease;
+}

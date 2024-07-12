@@ -1,0 +1,48 @@
+    <!--    Chat bubbles-->
+    <div class="chat-wrapper flex flex-column  mb-4">
+      <div class="bubble left  justify-content-start">
+        {{exerciseData().question}}
+      </div>
+
+        <div class="bubble right justify-content-end">
+          <input
+            [dir]="utilHtml.langDirection(exerciseData)"
+            class="chat-input-field flex-grow-1 flex-wrap"
+            [readOnly]="isDone()"
+            id="chatInputForm"
+            title="Input Field"
+            [value]="isDone() ? exerciseData().answer : ''"
+            [formControl]="inputForm"
+            (keyup.enter)="inputForm.value ?
+            lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"
+          />
+        </div>
+    </div>
+
+    <!--  answer choices  -->
+    <div class="buttons-group p-fluid grid-12 gap-2 mb-2">
+      @for (choice of exerciseData().choices; track choice) {
+        <div class="col-12">
+          <p-button
+            [dir]="utilHtml.langDirection(exerciseData)"
+            [styleClass]="
+            isDone() ? (
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+            id="{{choice}}"
+            label="{{choice}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
+        </div>
+      }
+    </div>
+
+    @if (isDone()) {
+      <div class="translation-wrapper flex justify-content-center">
+        <p><b>Translation:</b> {{exerciseData().translation}}</p>
+      </div>
+    }
