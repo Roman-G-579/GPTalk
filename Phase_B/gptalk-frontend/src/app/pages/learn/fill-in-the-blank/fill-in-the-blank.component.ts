@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { LearnHtmlUtils } from '../../../core/utils/learn-html-utils';
 import { LearnVerificationUtils } from '../../../core/utils/learn-verification-utils';
 import { Button } from 'primeng/button';
@@ -18,7 +18,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './fill-in-the-blank.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class FillInTheBlankComponent implements AfterViewInit {
+export class FillInTheBlankComponent {
 
 	protected readonly utilHtml = LearnHtmlUtils;
 	protected readonly vrf = LearnVerificationUtils;
@@ -32,9 +32,4 @@ export class FillInTheBlankComponent implements AfterViewInit {
   isDone = this.lrn.isDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 
-  ngAfterViewInit() {
-    // Calls the initializer again whenever another fillInTheBlank exercise appears in the lesson
-    this.lrn.onExerciseSwitch.subscribe(() => {
-      this.inputForm.patchValue("");
-    })  }
 }

@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { LearnHtmlUtils } from '../../../core/utils/learn-html-utils';
 import { LearnVerificationUtils } from '../../../core/utils/learn-verification-utils';
 import { LearnService } from '../../../core/services/learn.service';
@@ -16,7 +16,7 @@ import { Button } from 'primeng/button';
   styleUrl: './complete-the-conversation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CompleteTheConversationComponent implements AfterViewInit {
+export class CompleteTheConversationComponent {
 
   protected readonly utilHtml = LearnHtmlUtils;
   protected readonly vrf = LearnVerificationUtils;
@@ -24,16 +24,9 @@ export class CompleteTheConversationComponent implements AfterViewInit {
   protected readonly lrn = inject(LearnService);
 
   inputForm = new FormControl(''); // Answer input field
-  @ViewChild("inputField") inputFieldRef!: ElementRef;
 
   exerciseData = this.lrn.exerciseData;
   isDone = this.lrn.isDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 
-  ngAfterViewInit() {
-    // Calls the initializer again whenever another completeTheConversation exercise appears in the lesson
-    this.lrn.onExerciseSwitch.subscribe(() => {
-      this.inputForm.patchValue("");
-    })
-  }
 }

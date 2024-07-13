@@ -2,7 +2,7 @@ import { ElementRef, WritableSignal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 
 /**
- * Contains functions used by the Learn component's html template
+ * Contains functions used by the Learn component's html templates
  */
 export class LearnHtmlUtils {
   /**

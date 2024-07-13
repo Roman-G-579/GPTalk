@@ -42,13 +42,12 @@ export class LearnComponent implements OnInit {
   isDone = this.lrn.isDone;
   isLessonOver = this.lrn.isLessonOver;
 
-  // headingText = signal<string>(""); // Contains instructions or feedback
-  headingText = this.lrn.headingText;
+  headingText = this.lrn.headingText; // Contains instructions or feedback
 
   exerciseData = this.lrn.exerciseData;
 
   ngOnInit() {
-    this.lgService.generateLesson(Language.English, Difficulty.Very_Easy, 2).subscribe({
+    this.lgService.generateLesson(Language.English, Difficulty.Very_Easy, 4).subscribe({
       next: data => {
         this.lrn.setUpLesson(data as Exercise[]);
       },

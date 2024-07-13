@@ -19,7 +19,7 @@ import { LearnInitializerUtils as init } from '../../../core/utils/learn-initial
   styleUrl: './match-the-category.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MatchTheCategoryComponent implements OnInit, AfterViewInit {
+export class MatchTheCategoryComponent {
 
   protected readonly utilHtml = LearnHtmlUtils;
   protected readonly vrf = LearnVerificationUtils;
@@ -29,24 +29,8 @@ export class MatchTheCategoryComponent implements OnInit, AfterViewInit {
   exerciseData = this.lrn.exerciseData;
   isDone = this.lrn.isDone;
 
-  categoryMatches = signal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>({
-    categories: ["",""],
-    wordBank: [],
-    cat1: [],
-    cat2: []
-  })
-  draggedWord = signal<string>("");
-
-  ngOnInit() {
-    init.initializeMatchTheCategory(this.categoryMatches, this.exerciseData);
-  }
-
-  ngAfterViewInit() {
-    // Calls the initializer again whenever another matchTheCategory exercise appears in the lesson
-    this.lrn.onExerciseSwitch.subscribe(() => {
-      init.initializeMatchTheCategory(this.categoryMatches, this.exerciseData);
-    })
-  }
+  categoryMatches = this.lrn.categoryMatches;
+  draggedWord = this.lrn.draggedWord;
 
   /**
    * Handles the start of the drag event

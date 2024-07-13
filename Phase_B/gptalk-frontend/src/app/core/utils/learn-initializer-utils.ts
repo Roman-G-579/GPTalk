@@ -10,7 +10,7 @@ export class LearnInitializerUtils {
    * @param matchMistakes the mistakes counter for the exercise
    * @param exercise the data of the currently active exercise
    */
-  static initializeMatchResults(matchResults: WritableSignal<[boolean,boolean][]>, matchMistakes: WritableSignal<number>, exercise: WritableSignal<Exercise>) {
+  static initializeMatchTheWords(matchResults: WritableSignal<[boolean,boolean][]>, matchMistakes: WritableSignal<number>, exercise: WritableSignal<Exercise>) {
     const newResultsArr: [boolean,boolean][] = [];
 
     // The results array matches in size the word pairs array in the current exercise

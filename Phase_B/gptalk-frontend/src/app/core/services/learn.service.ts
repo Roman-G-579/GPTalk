@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable, signal } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Language } from '../../../models/enums/language.enum';
@@ -24,6 +24,23 @@ export class LearnService {
   totalExercises = signal<number>(0); // Stores the total amount of exercises in the current lesson
 
   headingText = signal<string>(""); // Contains instructions or exercise feedback
+
+  // MatchTheWords-specific signals
+  matchResults = signal<[boolean,boolean][]>([]); // Contains boolean pairs that signify whether the matches are correct or not
+  chosenPair = signal<[string, string]>(["",""]); // Contains the current chosen pair of words in the "match the words" exercise
+  matchMistakes = signal<number>(0); // Counts the number of wrong matches
+
+  // MatchTheCategory-specific signals
+  categoryMatches = signal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>({
+    categories: ["",""],
+    wordBank: [],
+    cat1: [],
+    cat2: []
+  })
+  draggedWord = signal<string>("");
+
+  // ReorderWords-specific signal
+  chosenWords = signal<string[]>([]); // Contains an array of strings that are used to construct the answer sentence
 
   exerciseArr = signal<Exercise[]>([]);
 
@@ -91,24 +108,25 @@ export class LearnService {
     this.isDone.set(false);
     this.isCorrectAnswer.set(false);
 
-    // Signals the child components to call their exercise-specific initializers
+    // Signals the child components to initialize their input fields
     this.onExerciseSwitch.next(true);
 
-    // init.resetSignals(this.isDone, this.isCorrectAnswer, this.chosenWords);
+    // Exercise-specific initializations
 
-    // Resets the match mistakes counter
-    // init.resetMatchMistakes(this.counters);
+    if (this.exerciseData().type === ExerciseType.MatchTheWords) {
+      init.initializeMatchTheWords(this.matchResults, this.matchMistakes, this.exerciseData);
+    }
 
-    // Resets the input field's value
-    // this.inputForm.patchValue("");
+    if (this.exerciseData().type === ExerciseType.MatchTheCategory) {
+      init.initializeMatchTheCategory(this.categoryMatches, this.exerciseData);
+    }
+
+    if (this.exerciseData().type === ExerciseType.ReorderSentence) {
+      this.chosenWords.set([]);
+    }
 
     // Normalizes the exercise's strings for easier comparison
     util.lowerCaseAndNormalizeAll(this.exerciseData);
-
-    // Initializes a pair of categories for the "match the category" exercise
-    // if (this.exerciseData().type == ExerciseType.MatchTheCategory) {
-    //   init.initializeMatchTheCategory(this.categoryMatches, this.exerciseData);
-    // }
 
     // Sets the current exercise's heading string
     this.headingText.set(this.exerciseData().heading ?? '');

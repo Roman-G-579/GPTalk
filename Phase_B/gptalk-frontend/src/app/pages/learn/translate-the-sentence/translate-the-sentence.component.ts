@@ -24,14 +24,14 @@ export class TranslateTheSentenceComponent implements AfterViewInit {
   protected readonly lrn = inject(LearnService);
 
   inputForm = new FormControl(''); // Answer input field
-  @ViewChild("inputField") inputFieldRef!: ElementRef;
 
   exerciseData = this.lrn.exerciseData;
   isDone = this.lrn.isDone;
 
   ngAfterViewInit() {
-    // Calls the initializer again whenever another translateTheSentence exercise appears in the lesson
     this.lrn.onExerciseSwitch.subscribe(() => {
       this.inputForm.patchValue("");
-    })  }
+    });
+  }
+
 }

@@ -1,9 +1,7 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   inject,
-  signal,
 } from '@angular/core';
 import { LearnHtmlUtils } from '../../../core/utils/learn-html-utils';
 import { LearnVerificationUtils } from '../../../core/utils/learn-verification-utils';
@@ -20,7 +18,7 @@ import { Button } from 'primeng/button';
   styleUrl: './reorder-sentence.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ReorderSentenceComponent implements AfterViewInit {
+export class ReorderSentenceComponent {
 
   protected readonly utilHtml = LearnHtmlUtils;
   protected readonly vrf = LearnVerificationUtils;
@@ -31,16 +29,8 @@ export class ReorderSentenceComponent implements AfterViewInit {
   isDone = this.lrn.isDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 
-  // Contains an array of strings that are used to construct the answer sentence
-  // in the ReorderSentence exercise
-  chosenWords = signal<string[]>([]);
+  chosenWords = this.lrn.chosenWords;
 
-  ngAfterViewInit() {
-    // Calls the initializer again whenever another reorderSentence exercise appears in the lesson
-    this.lrn.onExerciseSwitch.subscribe(() => {
-      this.chosenWords.set([]);
-    })
-  }
 
   /**
    * Toggles the selection of a word from the full string in the current exercise

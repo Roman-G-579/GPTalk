@@ -1,14 +1,10 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnInit,
-  signal,
 } from '@angular/core';
 import { LearnHtmlUtils } from '../../../core/utils/learn-html-utils';
 import { LearnVerificationUtils } from '../../../core/utils/learn-verification-utils';
-import { LearnInitializerUtils as init } from '../../../core/utils/learn-initializer-utils';
 import { LearnService } from '../../../core/services/learn.service';
 import { Button } from 'primeng/button';
 
@@ -22,34 +18,19 @@ import { Button } from 'primeng/button';
   styleUrl: './match-the-words.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MatchTheWordsComponent implements OnInit, AfterViewInit {
+export class MatchTheWordsComponent {
 
   protected readonly utilHtml = LearnHtmlUtils;
   protected readonly vrf = LearnVerificationUtils;
 
   protected readonly lrn = inject(LearnService);
 
-
   exerciseData = this.lrn.exerciseData;
   isDone = this.lrn.isDone;
-  isCorrectAnswer = this.lrn.isCorrectAnswer;
 
-  // Contains boolean pairs that signify whether the matches are correct or not
-  matchResults = signal<[boolean,boolean][]>([]);
-  // Contains the current chosen pair of words in the "match the words" exercise
-  chosenPair = signal<[string, string]>(["",""]);
-  matchMistakes = signal<number>(0); // Counts the number of wrong matches
-
-  ngOnInit() {
-    init.initializeMatchResults(this.matchResults, this.matchMistakes, this.exerciseData);
-  }
-
-  ngAfterViewInit() {
-    // Calls the initializer again whenever another matchTheWords exercise appears in the lesson
-    this.lrn.onExerciseSwitch.subscribe(() => {
-      init.initializeMatchResults(this.matchResults, this.matchMistakes, this.exerciseData);
-    })
-  }
+  matchResults = this.lrn.matchResults;
+  chosenPair = this.lrn.chosenPair;
+  matchMistakes = this.lrn.matchMistakes;
 
   /**
    *
