@@ -121,4 +121,23 @@ export class LearnMiscUtils {
     }
     return keyWords;
   }
+
+  /**
+   * Updates the given signal of type string with the specified text
+   * @param stringSignal the signal to be updated
+   * @param input the text to be added to the signal
+   */
+  static updateStringSignal(stringSignal: WritableSignal<string>, input: string) {
+    stringSignal.update(data => {
+      data += input;
+      return data;
+    });
+  }
+
+  static convertToExerciseArray(data: unknown) {
+    let exercises: Exercise[] =[];
+
+    //TODO: assign data to array
+    return exercises;
+  }
 }

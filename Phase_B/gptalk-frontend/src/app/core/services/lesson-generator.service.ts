@@ -1,12 +1,12 @@
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { catchError, forkJoin, map, Observable, of } from 'rxjs';
-import { Language } from '../../../models/enums/language.enum';
-import { Difficulty } from '../../../models/enums/difficulty.enum';
-import { ExerciseType } from '../../../models/enums/exercise-type.enum';
-import { Exercise } from '../../../models/exercise.interface';
-import { LearnMiscUtils as util } from '../utils/learn-misc-utils';
+import {inject, Injectable, signal} from '@angular/core';
+import {environment} from '../../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {catchError, forkJoin, map, Observable, of, tap} from 'rxjs';
+import {Language} from '../../../models/enums/language.enum';
+import {Difficulty} from '../../../models/enums/difficulty.enum';
+import {ExerciseType} from '../../../models/enums/exercise-type.enum';
+import {Exercise} from '../../../models/exercise.interface';
+import {LearnMiscUtils as util} from '../utils/learn-misc-utils';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,9 @@ import { LearnMiscUtils as util } from '../utils/learn-misc-utils';
 export class LessonGeneratorService {
   private readonly apiUrl = environment.apiUrl;
   private readonly http = inject(HttpClient);
+
+  promptString = signal<string>('');
+  exercises = signal<Exercise[]>([]);
 
   mockExercise_FillInTheBlank: Exercise = {
     type: ExerciseType.FillInTheBlank,
@@ -92,6 +95,9 @@ export class LessonGeneratorService {
    */
   generateLesson(language: Language, difficulty: Difficulty, amount: number): Observable<Exercise[]> {
     const keyWords = util.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
+    const promptText = `Generate the following ${amount} exercises in ${language}.
+    Follow the example for each requested type:\n`;
+    util.updateStringSignal(this.promptString,promptText);
 
     // All functions that can be called to generate an exercise
     const exerciseGenerators = [
@@ -116,6 +122,18 @@ export class LessonGeneratorService {
       // And place its result in the observables array
       exerciseObservables.push(generatorFunc(language,difficulty,keyWords));
     }
+
+    const {href} = new URL('generateLesson', this.apiUrl)
+    let generatedResult =  this.http.post(href,this.promptString()).pipe(
+      tap({
+        next: (data) => {
+          this.exercises.set(util.convertToExerciseArray(data));
+        },
+        error: (err: unknown) => {
+          console.log('Error fetching lesson data', err);
+        }
+      })
+    );
 
     return forkJoin(exerciseObservables).pipe(
       map(exercises => {
@@ -153,6 +171,12 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
+    const exercisePrompt = `Generate a "Translate the word" exercise:
+        question: "תפוח",
+        choices: ["Hello","Apple","Tree"],
+        answer: "Apple"`
+    util.updateStringSignal(this.promptString,exercisePrompt);
+
     return of(this.mockExercise_FillInTheBlank);
   }
 
@@ -181,6 +205,12 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
+    const exercisePrompt = `Generate a "Translate the word" exercise
+        question: "תפוח",
+        choices: ["Hello","Apple","Tree"],
+        answer: "Apple"`
+    util.updateStringSignal(this.promptString,exercisePrompt);
+
     return of(this.mockExercise_TranslateWord);
   }
 
@@ -194,6 +224,11 @@ export class LessonGeneratorService {
     this.mockExercise_TranslateSentence.heading = 'Translate the sentence';
     this.mockExercise_TranslateSentence.instructions =`Write the given sentence in ${language}`;
 
+    const exercisePrompt = `        Generate a "Translate the sentence" exercise
+        question: "קוראים לי דני",
+        answer: "My name is Danny"`
+    util.updateStringSignal(this.promptString,exercisePrompt);
+
     return of(this.mockExercise_TranslateSentence);
   }
 
@@ -206,6 +241,13 @@ export class LessonGeneratorService {
   generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]): Observable<Exercise> {
     this.mockExercise_CompleteTheConversation.heading = 'Complete the conversation';
     this.mockExercise_CompleteTheConversation.instructions = `Click on an answer or type it and hit the <i>enter</i> key to submit`;
+
+    const exercisePrompt = `        Generate a "Complete conversation" exercise
+        question: "בהצלחה במבחן!",
+        choices: ["תודה, גם לך!","נעים להכיר!"],
+        answer: "תודה, גם לך!",
+        translation: "Person A: Good luck on the test! Person B: Thanks, You too!"`
+    util.updateStringSignal(this.promptString,exercisePrompt);
 
     return of(this.mockExercise_CompleteTheConversation);
   }
@@ -235,7 +277,15 @@ export class LessonGeneratorService {
       numOfPairs = 6;
     }
 
-    // Get the exercise object from the api
+    const exercisePrompt = `Generate a "Match the words" exercise
+       correctPairs: [
+      ["חתול", "Cat"],
+      ["מים", "Water"],
+      ["תפוז", "Orange"],
+      ["ספר", "Book"],
+      ["שולחן", "Table"]
+      ],`
+    util.updateStringSignal(this.promptString,exercisePrompt);
 
     // Randomize the word pairs
     this.mockExercise_MatchTheWords.randomizedPairs = util.shuffleWordPairs(this.mockExercise_MatchTheWords.correctPairs?? []);
@@ -267,6 +317,12 @@ export class LessonGeneratorService {
       sentenceLength = 6;
     }
 
+    const exercisePrompt = `Generate a "Reorder the sentence" exercise
+        choices: ['יוסי','רוכב','על','האופניים'],
+        answer: 'יוסי רוכב על האופניים',
+        translation: 'Yossi is riding the bicycle'`
+    util.updateStringSignal(this.promptString,exercisePrompt);
+
     return of(this.mockExercise_ReorderSentence);
   }
 
@@ -274,10 +330,16 @@ export class LessonGeneratorService {
     this.mockExercise_MatchTheCategory.heading = 'Match the words to their correct category';
     this.mockExercise_MatchTheCategory.instructions = 'Drag and drop the words to their category container. Click submit when finished.'
 
+    const exercisePrompt = `Generate a "Match the words" exercise
+        correctPairs: [
+        ["כדורסל", "ספורט"],
+        ["טניס", "ספורט"],
+        ["עוגה", "אוכל"],
+        ["עגבניה", "אוכל"],
+        ["כדורגל", "ספורט"],
+        ["תפוח","אוכל"]
+        ],`
+    util.updateStringSignal(this.promptString,exercisePrompt);
     return of(this.mockExercise_MatchTheCategory);
   }
-
-
-
-
 }

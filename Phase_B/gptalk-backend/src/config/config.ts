@@ -22,4 +22,6 @@ export class Config {
 	public static SALT_ROUNDS = parseInt(process.env.SALT_ROUNDS) || 10;
 
 	public static JWT_SECRET = process.env.JWT_SECRET || 'secret';
+
+	public static OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 }
