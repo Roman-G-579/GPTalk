@@ -45,16 +45,11 @@ export class LearnComponent implements OnInit {
   headingText = this.lrn.headingText; // Contains instructions or feedback
 
   exerciseData = this.lrn.exerciseData;
+  lessonLanguage = this.lrn.lessonLanguage;
 
   ngOnInit() {
-    this.lgService.generateLesson(Language.English, Difficulty.Very_Easy, 4).subscribe({
-      next: data => {
-        this.lrn.setUpLesson(data as Exercise[]);
-      },
-      error: err => {
-        console.log("Error! Cannot generate exercise. ", err)
-      }
-    })
+    this.lrn.setUpLesson(this.lgService.generateLesson(Language.Hebrew, Difficulty.Very_Easy, 5));
+    this.lessonLanguage.set(Language.Hebrew); //TODO: change method of setting current lesson's language
     this.primengConfig.ripple = true;
 
   }

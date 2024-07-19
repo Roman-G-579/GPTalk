@@ -26,6 +26,7 @@ export class CompleteTheConversationComponent {
   inputForm = new FormControl(''); // Answer input field
 
   exerciseData = this.lrn.exerciseData;
+  lessonLanguage = this.lrn.lessonLanguage;
   isDone = this.lrn.isDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 

@@ -10,23 +10,6 @@ import { Difficulty } from '../../../models/enums/difficulty.enum';
 export class LearnMiscUtils {
 
   /**
-   * Shuffles the locations of the left words and the locations of the right words in the array
-   * @param wordPairs an array of string pairs. first element in pair - left word.
-   *                  Second element in pair - right word
-   */
-  static shuffleWordPairs(wordPairs: [string, string][]): [string, string][] {
-    const leftWords = wordPairs.map(pair => pair[0]);
-    const rightWords = wordPairs.map(pair => pair[1]);
-
-    // Shuffle each array independently
-    const shuffledLeftWords = _.shuffle(leftWords);
-    const shuffledRightWords = _.shuffle(rightWords);
-
-    // Re-pair the shuffled words
-    return shuffledLeftWords.map((leftWord, index) => [leftWord, shuffledRightWords[index]])
-  }
-
-  /**
    * Converts every question and answer related string to normalized and lowercase for easier comparisons
    *
    * @param exercise signal containing the current exercise data
@@ -100,44 +83,5 @@ export class LearnMiscUtils {
     return firstElement;
   }
 
-  /**
-   * Inserts strings into the keyWords array based on the given difficulty
-   * @param difficulty the difficulty level
-   * @returns updated keyWords array
-   */
-  static insertKeyWords(difficulty: Difficulty) {
-    const keyWords: string[] = [];
-    // Parameters for very easy and easy difficulties
-    if (difficulty >= 0 && difficulty < 2) {
-      keyWords.push('simple', 'beginners');
-    }
-    // Parameters for medium and hard difficulties
-    else if (difficulty >= 3 && difficulty < 4) {
-      keyWords.push('some familiarity with the language');
-    }
-    // Parameters for very hard and expert difficulties
-    else {
-      keyWords.push('high level learners', 'challenge');
-    }
-    return keyWords;
-  }
 
-  /**
-   * Updates the given signal of type string with the specified text
-   * @param stringSignal the signal to be updated
-   * @param input the text to be added to the signal
-   */
-  static updateStringSignal(stringSignal: WritableSignal<string>, input: string) {
-    stringSignal.update(data => {
-      data += input;
-      return data;
-    });
-  }
-
-  static convertToExerciseArray(data: unknown) {
-    let exercises: Exercise[] =[];
-
-    //TODO: assign data to array
-    return exercises;
-  }
 }

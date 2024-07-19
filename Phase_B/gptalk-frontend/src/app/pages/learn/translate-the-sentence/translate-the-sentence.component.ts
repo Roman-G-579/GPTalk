@@ -26,6 +26,7 @@ export class TranslateTheSentenceComponent implements AfterViewInit {
   inputForm = new FormControl(''); // Answer input field
 
   exerciseData = this.lrn.exerciseData;
+  lessonLanguage = this.lrn.lessonLanguage;
   isDone = this.lrn.isDone;
 
   ngAfterViewInit() {

@@ -4,9 +4,8 @@ import { SafeHtml } from '@angular/platform-browser';
 
 export interface Exercise {
   type: ExerciseType;
-  language?: Language;
   heading?: string; // Concise goal of the current exercise
-  instructions: string; // Detailed instructions of the current exercise
+  instructions?: string; // Detailed instructions of the current exercise
   question?: string;
   choices?: string[];
   correctPairs?: [string, string][];

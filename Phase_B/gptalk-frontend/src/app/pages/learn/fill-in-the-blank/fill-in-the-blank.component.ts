@@ -29,6 +29,7 @@ export class FillInTheBlankComponent {
   protected readonly lrn = inject(LearnService);
 
   exerciseData = this.lrn.exerciseData;
+  lessonLanguage = this.lrn.lessonLanguage;
   isDone = this.lrn.isDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 

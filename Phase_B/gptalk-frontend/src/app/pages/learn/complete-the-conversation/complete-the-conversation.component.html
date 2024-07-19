@@ -6,7 +6,7 @@
 
         <div class="bubble right justify-content-end">
           <input
-            [dir]="utilHtml.langDirection(exerciseData)"
+            [dir]="utilHtml.langDirection(lessonLanguage)"
             class="chat-input-field flex-grow-1 flex-wrap"
             autofocus
             [readOnly]="isDone()"
@@ -25,7 +25,7 @@
       @for (choice of exerciseData().choices; track choice) {
         <div class="col-12">
           <p-button
-            [dir]="utilHtml.langDirection(exerciseData)"
+            [dir]="utilHtml.langDirection(lessonLanguage)"
             [styleClass]="
             isDone() ? (
               utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )

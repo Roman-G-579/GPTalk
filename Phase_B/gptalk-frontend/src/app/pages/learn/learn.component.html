@@ -23,7 +23,7 @@
     @if (!isDone()) {
       <div class="instructions-wrapper flex justify-content-center">
         <!-- bypassSecurity pipe is used to utilize the string's HTML tags if they exist in the string     -->
-        <p [innerHTML]="exerciseData().instructions | bypassSecurity"></p>
+        <p [innerHTML]="exerciseData().instructions ? exerciseData().instructions : '' | bypassSecurity "></p>
       </div>
     }
 </div>

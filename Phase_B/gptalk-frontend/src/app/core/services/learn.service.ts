@@ -46,7 +46,6 @@ export class LearnService {
 
   exerciseData = signal<Exercise>({
     type: ExerciseType.FillInTheBlank,
-    language: Language.English,
     heading: '',
     instructions: '',
     question: '',
@@ -56,6 +55,8 @@ export class LearnService {
     answer: '',
     translation: ''
   })
+
+  lessonLanguage = signal<Language>(Language.Hebrew);
 
   /**
    * Sets up the data and parameters for the current lesson
@@ -74,7 +75,7 @@ export class LearnService {
    */
   setUpNextExercise() {
     // Retrieves the next exercise from the array
-    const curExercise = this.exerciseArr().length
+    const curExercise: Exercise | null = this.exerciseArr().length
       ?
       util.exerciseArrShift(this.exerciseArr)
       :
@@ -86,6 +87,7 @@ export class LearnService {
 
       this.runInitializers();
     }
+    // If the exercise array is empty, display the results screen
     else {
       this.displayResultsScreen();
     }
