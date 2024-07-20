@@ -7,7 +7,7 @@ main {
 
 .statistics {
 	display: flex;
-  gap: 7rem;
+  justify-content: space-evenly;
 
 	& .stat-block {
 		display: flex;
