@@ -1,3 +1,52 @@
-:host {
-  display: block;
+main {
+	display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  height: 100%;
+  gap: 2.5rem;
+}
+
+.grid-block {
+  background: var(--background-over-block-clr);
+  border-radius: 6px;
+}
+
+.profile {
+	&__details {
+    grid-area: 1 / 1 / 7 / 2;
+	}
+
+	&__statistics {
+    grid-area: 1 / 2 / 3 / 6;
+	}
+
+	&__achievements {
+		grid-area: 3 / 2 / 7 / 4;
+	}
+
+	&__languages {
+    grid-area: 3 / 4 / 5 / 6;
+	}
+
+	&__latest-results {
+    grid-area: 5 / 4 / 7 / 6;
+	}
+}
+
+@media (max-width: 600px) {
+  main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Adjust gap for better spacing on smaller screens */
+  }
+
+  .profile {
+    &__details,
+    &__statistics,
+    &__achievements,
+    &__languages,
+    &__latest-results {
+      grid-area: auto;
+    }
+  }
 }

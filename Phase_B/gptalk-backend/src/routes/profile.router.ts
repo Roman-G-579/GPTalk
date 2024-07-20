@@ -6,10 +6,10 @@ import { validateProfile } from '../pipes/validator.pipe';
 const router = Router();
 
 /**
- * @route GET /api/profile
+ * @route GET /api/profile/:email
  * @description get the user profile
  * @access public
  */
-router.get('/', validateProfile, validator, authMiddleware, getUserProfile);
+router.get('/:email', validateProfile, validator, authMiddleware, getUserProfile);
 
 export default router;

@@ -1,1 +1,18 @@
-<p>my-profile works!</p>,
+<main *ngIf="myProfile$ | async as myProfile">
+	<app-profile-details class="profile__details grid-block"></app-profile-details>
+	<app-profile-statistics
+		[streak]="myProfile.streak"
+    [challenges]="myProfile.challengesCompleted"
+    [exp]="myProfile.totalExp"
+		class="profile__statistics grid-block"
+	></app-profile-statistics>
+	<app-profile-achievements [achievements]="myProfile.achievements" class="profile__achievements grid-block"></app-profile-achievements>
+	<app-profile-languages class="profile__languages grid-block"></app-profile-languages>
+	<app-profile-latest-results
+		class="profile__latest-results grid-block"
+	></app-profile-latest-results>
+</main>
+
+<!-- <pre>
+  {{ myProfile$ | async | json }}
+</pre> -->
