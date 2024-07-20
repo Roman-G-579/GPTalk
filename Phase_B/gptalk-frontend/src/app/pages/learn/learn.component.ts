@@ -3,7 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  OnInit,
+  OnInit, signal,
 } from '@angular/core';
 import { LessonGeneratorService } from '../../core/services/lesson-generator.service';
 import { Language } from '../../../models/enums/language.enum';
@@ -39,6 +39,7 @@ export class LearnComponent implements OnInit {
   protected readonly lrn = inject(LearnService);
   private readonly primengConfig = inject(PrimeNGConfig);
 
+  isLoading = signal<boolean>(true);
   isDone = this.lrn.isDone;
   isLessonOver = this.lrn.isLessonOver;
 
@@ -48,8 +49,14 @@ export class LearnComponent implements OnInit {
   lessonLanguage = this.lrn.lessonLanguage;
 
   ngOnInit() {
-    this.lrn.setUpLesson(this.lgService.generateLesson(Language.Hebrew, Difficulty.Very_Easy, 5));
-    this.lessonLanguage.set(Language.Hebrew); //TODO: change method of setting current lesson's language
+    this.lgService.generateLesson(Language.Hebrew, Difficulty.Easy, 3).subscribe({
+      next: (exercises: Exercise[]) => {
+        this.lrn.setUpLesson(exercises);
+        this.lessonLanguage.set(Language.Hebrew); //TODO: change method of setting current lesson's language
+        this.isLoading.set(false);
+      }
+    })
+
     this.primengConfig.ripple = true;
 
   }

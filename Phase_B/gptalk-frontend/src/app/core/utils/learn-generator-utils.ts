@@ -34,12 +34,12 @@ export class LearnGeneratorUtils {
 
 
   /**
-   * Updates the given signal of type string with the specified text
-   * @param stringSignal the signal to be updated
+   * Updates the prompt string with the specified text
+   * @param promptString the signal to be updated
    * @param input the text to be added to the signal
    */
-  static updateStringSignal(stringSignal: WritableSignal<string>, input: string) {
-    stringSignal.update(data => {
+  static updatePromptString(promptString: WritableSignal<string>, input: string) {
+    promptString.update(data => {
       data += '\n' + input;
       return data;
     });
@@ -77,7 +77,7 @@ export class LearnGeneratorUtils {
         exercisesArr.push(exercise);
       }
     }
-    // Adds exercise-specific data to current exercise
+    // Adds exercise-specific data to the exercise array
     exercisesArr = this.addExerciseSpecificData(language, exercisesArr);
 
     return exercisesArr;

@@ -1,6 +1,9 @@
 <div class="wrapper w-full w-10">
-  <!--    Current lesson  -->
-    <!--  Heading  -->
+  @if(isLoading()) {
+    Loading lesson...
+  } @else if (!isLoading()) {
+    <!--    Current lesson  -->
+      <!--  Heading  -->
     <div class="heading-wrapper flex justify-content-center text-center mb-4">
       <p>
         {{headingText()}}
@@ -26,4 +29,6 @@
         <p [innerHTML]="exerciseData().instructions ? exerciseData().instructions : '' | bypassSecurity "></p>
       </div>
     }
+  }
+
 </div>

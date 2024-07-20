@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {generateLesson} from "../controllers/lesson-generator.controller";
+import {generateLessonMiddleware} from "../controllers/lesson-generator.controller";
 
 const router = Router();
 
@@ -8,6 +8,6 @@ const router = Router();
  * @description generate a lesson using the OpenAI API
  * @access public
  */
-router.post('/', generateLesson);
+router.post('/', generateLessonMiddleware);
 
 export default router;
