@@ -218,6 +218,8 @@ export class LessonGeneratorService {
   "choices": ["East","West","North","South"],
   "answer": "East"
 }`
+    const exercisePrompt2 = `generate a sentence, in ${language}, ${difficulty} difficulty. { "answer": "", "translation": "" }`;
+    //TODO: adjust fillInTheBlank exercise creation
     genUtil.updatePromptString(this.promptString,exercisePrompt);
   }
 
@@ -251,6 +253,8 @@ export class LessonGeneratorService {
 "choices": ["Hello","Apple","Tree"],
 "answer": "Apple"
 }`
+    const exercisePrompt2 = `generate a "translate the word" exercise, difficulty: ${difficulty}, language: ${language}. number of words: ${numOfAnswers} {"choices": [array_of_words] "translations": [array_of_translations] }`;
+    //TODO: adjust generateTranslateWord exercise creation
     genUtil.updatePromptString(this.promptString,exercisePrompt);
   }
 
@@ -267,6 +271,7 @@ export class LessonGeneratorService {
 "question": "my name is Danny",
 "answer": "קוראים לי דני"
 }`
+    const exercisePrompt2 = `generate a "translate the sentence" exercise, difficulty: ${difficulty}. {"question": "english_sentence", "answer": "${language}_translation"}`;
     genUtil.updatePromptString(this.promptString,exercisePrompt);
   }
 
@@ -285,6 +290,8 @@ export class LessonGeneratorService {
 "answer": "תודה, גם לך!",
 "translation": "Person A: Good luck on the test! Person B: Thanks, You too!"
 }`
+
+    const exercisePrompt2 = `generate a "complete the conversation" exercise, difficulty: easy, language:hebrew One of the replies is grammatically correct and makes sense, the other isn't. "answer" field contains the correct reply number . { "question": "question/statement", "choices": ["reply1","reply2"], "answer": "1/2", "translation": "english_translation_of_question_&_correct_reply" }`;
     genUtil.updatePromptString(this.promptString,exercisePrompt);
   }
   /**
@@ -321,6 +328,7 @@ export class LessonGeneratorService {
 ["שולחן", "Table"],
 ]
 }`
+    const exercisePrompt2 = `Generate a "match the words" exercise in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. "correctPairs": { ["word","translation"] }`;
     genUtil.updatePromptString(this.promptString,exercisePrompt);
   }
 
@@ -353,6 +361,8 @@ export class LessonGeneratorService {
 "answer": 'יוסי רוכב על האופניים',
 "translation": 'Yossi is riding the bicycle'
 }`
+    const exercisePrompt2 = `generate a sentence, in ${language}, ${difficulty} difficulty. { "answer": "", "translation": "" }`;
+    //TODO: adjust reorderSentence exercise creation
     genUtil.updatePromptString(this.promptString,exercisePrompt);
   }
 
@@ -370,6 +380,8 @@ export class LessonGeneratorService {
 ["תפוח","אוכל"]
 ]
 }`
+    const exercisePrompt2 = `generate 2 categories and 3 words for each, in hebrew, easy difficulty. { "cat_a": "", "cat_b":"", "a_words": [], "b_words":[] }`;
+    //TODO: adjust matchTheCategory exercise creation
     genUtil.updatePromptString(this.promptString,exercisePrompt);
   }
 }
