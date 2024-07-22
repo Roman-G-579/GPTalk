@@ -1,9 +1,9 @@
-import { Difficulty } from '../../../models/enums/difficulty.enum';
-import { WritableSignal } from '@angular/core';
-import { Exercise } from '../../../models/exercise.interface';
+import {Difficulty} from '../../../models/enums/difficulty.enum';
+import {WritableSignal} from '@angular/core';
+import {Exercise} from '../../../models/exercise.interface';
 import _ from 'lodash';
-import { ExerciseType } from '../../../models/enums/exercise-type.enum';
-import { Language } from '../../../models/enums/language.enum';
+import {ExerciseType} from '../../../models/enums/exercise-type.enum';
+import {Language} from '../../../models/enums/language.enum';
 
 /*
   Contains functions related to lesson generation
@@ -34,61 +34,37 @@ export class LearnGeneratorUtils {
 
 
   /**
-   * Updates the prompt string with the specified text
-   * @param promptString the signal to be updated
-   * @param input the text to be added to the signal
-   */
-  static updatePromptString(promptString: WritableSignal<string>, input: string) {
-    promptString.update(data => {
-      data += '\n' + input;
-      return data;
-    });
-  }
-
-
-  /**
-   * Converts a JSON object of generated exercises to an array of type Exercise objects
-   * @param exercisesJson the JSON object
+   * Converts a JSON object of generated exercise to Exercise object
+   * and adds relevant data
+   * @param exerciseJson the JSON object
+   * @param exerciseType the type of the current exercise
    * @param language the lesson's selected language
    * @returns an Exercise objects array
    */
-  static convertToExerciseArray(exercisesJson: any, language: Language) {
-    let exercisesArr: Exercise[] =[];
-
-    for (const key in exercisesJson) {
-
-      if (exercisesJson.hasOwnProperty(key)) {
-        // Gets the current ExerciseType using the JSON object's key
-        const exerciseType: ExerciseType = <ExerciseType>parseInt(key);
-
-        // Gets the current exercise's data using the JSON object's key
-        const exerciseData = exercisesJson[key];
-
-        // Converts the data to an Exercise object
-        let exercise: Exercise = {
-          type: exerciseType,
-          question: exerciseData.question,
-          choices: exerciseData.choices,
-          correctPairs: exerciseData.correctPairs,
-          answer: exerciseData.answer,
-          translation: exerciseData.translation
-        };
-
-        exercisesArr.push(exercise);
-      }
+  static convertToExerciseObject(exerciseJson: any, exerciseType: ExerciseType, language: Language): Exercise {
+    let exercise: Exercise = {
+      type: exerciseType,
+      question: exerciseJson.question,
+      cat_a: exerciseJson.cat_a,
+      cat_b: exerciseJson.cat_b,
+      words_a: exerciseJson.words_a,
+      words_b: exerciseJson.words_b,
+      choices: exerciseJson.choices,
+      correctPairs: exerciseJson.correctPairs,
+      answer: exerciseJson.answer,
+      translation: exerciseJson.translation,
+      translations: exerciseJson.translations
     }
-    // Adds exercise-specific data to the exercise array
-    exercisesArr = this.addExerciseSpecificData(language, exercisesArr);
 
-    return exercisesArr;
+    return this.addExerciseSpecificData(exercise, language);
   }
 
   /**
-   * Adds heading and instruction strings to the exercises array
+   * Adds heading, instructions and other exercise-specific data to the exercise
    * @param language the lesson's selected language
-   * @param exercises the exercises array
+   * @param exercise the given exercise
    */
-  private static addExerciseSpecificData(language: Language, exercises: Exercise[]) {
+  private static addExerciseSpecificData(exercise: Exercise, language: Language): Exercise {
 
     // The heading strings of the available exercise types
     const headingsMap: {[key in ExerciseType]: string } = {
@@ -112,20 +88,108 @@ export class LearnGeneratorUtils {
       6: 'Drag and drop the words to their category container. Click submit when finished.'
     }
 
-    // Adds data according to each exercise object's type
-    for (let exercise of exercises) {
-      // Adds heading and instruction based on the exercise type
-      exercise.heading = headingsMap[exercise.type];
-      exercise.instructions = instructionsMap[exercise.type];
+    // Adds heading and instruction based on the exercise type
+    exercise.heading = headingsMap[exercise.type];
+    exercise.instructions = instructionsMap[exercise.type];
 
-      // Randomizes the word order for a matchTheWords exercise
-      if (exercise.type === ExerciseType.MatchTheWords) {
-        exercise.randomizedPairs = this.shuffleWordPairs(exercise.correctPairs ?? []);
+    // Sets data according to each exercise's needs
+    switch (exercise.type) {
+      case ExerciseType.FillInTheBlank:
+        return this.setFillInTheBlank(exercise);
+      case ExerciseType.TranslateWord:
+        return this.setTranslateWord(exercise);
+      case ExerciseType.TranslateTheSentence:
+        return exercise;
+      case ExerciseType.CompleteTheConversation:
+        return this.setCompleteTheConversation(exercise);
+      case ExerciseType.MatchTheWords:
+        return this.setMatchTheWords(exercise);
+      case ExerciseType.ReorderSentence:
+        return this.setReorderSentence(exercise);
+      case ExerciseType.MatchTheCategory:
+        return this.setMatchTheCategory(exercise);
+      default: {
+        return exercise;
       }
     }
-    return exercises;
   }
 
+  private static setFillInTheBlank(exercise: Exercise): Exercise {
+    // Takes the answer sentence and converts it to an array
+    const fullSentence = exercise.answer ?? "";
+    let sentenceArr = fullSentence.split(' ');
+
+    // Takes the choices array
+    let choices = exercise.choices ?? [];
+
+    let randIndex = Math.floor(Math.random() * fullSentence.length);
+
+    // Takes out a random word from the full sentence
+    const randomWord = sentenceArr[randIndex];
+
+    // Saves the words before and after the extracted word in separate arrays
+    const stringsBeforeWord = sentenceArr.slice(0,randIndex);
+    const stringsAfterWord = sentenceArr.slice(randIndex + 1);
+
+    // Index to place the word in the choices array
+    randIndex = Math.floor(Math.random() * choices.length);
+
+    // Places the word in the choices array
+    choices.splice(randIndex, 0, randomWord);
+
+    // Sets the exercise data
+    exercise.sentenceBeforeBlank = stringsBeforeWord.join();
+    exercise.sentenceAfterBlank = stringsAfterWord.join();
+    exercise.choices = choices;
+    exercise.answer = randomWord
+
+    return exercise;
+  }
+
+  private static setTranslateWord(exercise: Exercise): Exercise {
+    // Takes the random words array
+    const choices = exercise.choices ?? [];
+
+    // Takes the array of the random word's translations
+    const translations = exercise.translations ?? [];
+
+    const randIndex = Math.floor(Math.random() * choices.length);
+
+    // Picks a random word as the exercise's question, moves every possible translation to the choices field,
+    // and puts the correct translation in the answer field
+    exercise.question = choices[randIndex];
+    exercise.choices = translations;
+    exercise.answer = translations[randIndex];
+
+    return exercise;
+  }
+
+  private static setCompleteTheConversation(exercise: Exercise) {
+    let choices = exercise.choices ?? [];
+
+    exercise.answer = choices[0];
+
+    choices = _.shuffle(choices);
+    exercise.choices = choices;
+
+    return exercise;
+  }
+  private static setMatchTheWords(exercise: Exercise): Exercise {
+    exercise.randomizedPairs = this.shuffleWordPairs(exercise.correctPairs ?? []);
+    return exercise;
+  }
+
+  private static setReorderSentence(exercise: Exercise): Exercise {
+    let choices = exercise.answer?.split(' ') ?? [];
+    choices = _.shuffle(choices);
+    exercise.choices = choices;
+    return exercise;
+  }
+
+  private static setMatchTheCategory(exercise: Exercise): Exercise {
+    exercise.choices = [...exercise.words_a ?? "", ...exercise.words_b ?? ""];
+    return exercise;
+  }
   /**
    * Shuffles the locations of the left words and the locations of the right words in the array
    * @param wordPairs an array of string pairs. first element in pair - left word.

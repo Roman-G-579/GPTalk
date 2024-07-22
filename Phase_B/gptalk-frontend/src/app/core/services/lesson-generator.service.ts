@@ -5,7 +5,8 @@ import {Language} from '../../../models/enums/language.enum';
 import {Difficulty} from '../../../models/enums/difficulty.enum';
 import {Exercise} from '../../../models/exercise.interface';
 import {LearnGeneratorUtils as genUtil} from '../utils/learn-generator-utils';
-import { Observable, tap } from 'rxjs';
+import {Observable, of} from 'rxjs';
+import {ExerciseType} from "../../../models/enums/exercise-type.enum";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,8 @@ export class LessonGeneratorService {
 
   mockLesson = {
     0: {
-      "question": " דנה רוצה לשתות",
+      "sentenceBeforeBlank": " דנה רוצה לשתות",
+      "sentenceAfterBlank": "",
       "choices": ["תפוח", "מכונית", "מים", "חנות"],
       "answer": "מים",
       "translation": "Dana wants to drink water"
@@ -128,15 +130,15 @@ export class LessonGeneratorService {
    */
   generateLesson(language: Language, difficulty: Difficulty, amount: number): Observable<Exercise[]> {
     const keyWords = genUtil.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
-    const promptText = `Generate ${amount} varied ${Difficulty[difficulty]} exercises in ${language}.
-    Each one will be represented as a JSON object with a numerical key.
-    Generate each exercise to logically match what's written in "instructions" (exclude them from output).
-    Follow each example for the output, don't copy the examples.
-    Each exercise object must contain all keys that are present in its example
-    If exercise types repeat, generate different data for each:\n`;
-
-
-    genUtil.updatePromptString(this.promptString,promptText);
+    // const promptText = `Generate ${amount} varied ${Difficulty[difficulty]} exercises in ${language}.
+    // Each one will be represented as a JSON object with a numerical key.
+    // Generate each exercise to logically match what's written in "instructions" (exclude them from output).
+    // Follow each example for the output, don't copy the examples.
+    // Each exercise object must contain all keys that are present in its example
+    // If exercise types repeat, generate different data for each:\n`;
+    //
+    //
+    // genUtil.updatePromptString(this.promptString,promptText);
 
     // All functions that can be called to generate an exercise
     const exerciseGenerators = [
@@ -159,33 +161,34 @@ export class LessonGeneratorService {
       generatorFunc(language,difficulty,keyWords);
     }
 
-
-    const {href} = new URL('generateLesson', this.apiUrl)
-    return new Observable<Exercise[]>((obs) => {
-
-      // API CONNECTION
-      this.http.post(href,{userPrompt: this.promptString()}).subscribe({
-          next: (data) => {
-            console.log("generated data: \n");
-            console.log(data);
-            this.exercises.set(genUtil.convertToExerciseArray(data, language));
-            console.log("exercise array: \n");
-            console.log(this.exercises());
-            obs.next(this.exercises());
-            obs.complete();
-          },
-          error: (err: unknown) => {
-            console.log('Error fetching lesson data', err);
-          }
-        });
-
-      // PLACEHOLDER DATA
-      // console.log(this.promptString());
-      // this.exercises.set(genUtil.convertToExerciseArray(this.mockLesson, language));
-      // obs.next(this.exercises());
-      // obs.complete();
-
-    });
+    const exerData: Exercise[] = [];
+    return of(exerData);
+    // const {href} = new URL('generateLesson', this.apiUrl)
+    // return new Observable<Exercise[]>((obs) => {
+    //
+    //   // API CONNECTION
+    //   this.http.post(href,{userPrompt: this.promptString()}).subscribe({
+    //       next: (data) => {
+    //         console.log("generated data: \n");
+    //         console.log(data);
+    //         this.exercises.set(genUtil.convertToExerciseArray(data, language));
+    //         console.log("exercise array: \n");
+    //         console.log(this.exercises());
+    //         obs.next(this.exercises());
+    //         obs.complete();
+    //       },
+    //       error: (err: unknown) => {
+    //         console.log('Error fetching lesson data', err);
+    //       }
+    //     });
+    //
+    //   // PLACEHOLDER DATA
+    //   // console.log(this.promptString());
+    //   // this.exercises.set(genUtil.convertToExerciseArray(this.mockLesson, language));
+    //   // obs.next(this.exercises());
+    //   // obs.complete();
+    //
+    // });
   }
 
   /**
@@ -194,7 +197,7 @@ export class LessonGeneratorService {
    * @param difficulty the exercise's difficulty level
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
-  generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]) {
+  generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]): Exercise {
     // Exercise-specific parameters
     let numOfAnswers: number;
 
@@ -211,16 +214,11 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
-    const exercisePrompt =
-`instructions: "Fill in the blank"
-0: {
-  "question": "The sun rises in the ",
-  "choices": ["East","West","North","South"],
-  "answer": "East"
-}`
-    const exercisePrompt2 = `generate a sentence, in ${language}, ${difficulty} difficulty. { "answer": "", "translation": "" }`;
-    //TODO: adjust fillInTheBlank exercise creation
-    genUtil.updatePromptString(this.promptString,exercisePrompt);
+    const exercisePrompt = `generate an object in ${language}, ${difficulty} difficulty. 'answer' is the sentence, 'translation' is its english translation, 'choices' is 3 random words. {"answer": "", "choices:" [], "translation": ""}`
+
+    const result = this.getExerciseFromApi(exercisePrompt);
+
+    return genUtil.convertToExerciseObject(result,ExerciseType.FillInTheBlank,language);
   }
 
   /**
@@ -229,7 +227,7 @@ export class LessonGeneratorService {
    * @param difficulty the exercise's difficulty level
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
-  generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]) {
+  generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): Exercise {
     // Exercise-specific parameters
     let numOfAnswers: number;
 
@@ -246,16 +244,11 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
-    const exercisePrompt =
-`instructions: "Translate the word"
-1: {
-"question": "תפוח",
-"choices": ["Hello","Apple","Tree"],
-"answer": "Apple"
-}`
-    const exercisePrompt2 = `generate a "translate the word" exercise, difficulty: ${difficulty}, language: ${language}. number of words: ${numOfAnswers} {"choices": [array_of_words] "translations": [array_of_translations] }`;
-    //TODO: adjust generateTranslateWord exercise creation
-    genUtil.updatePromptString(this.promptString,exercisePrompt);
+    const exercisePrompt = `generate a "translate the word" exercise, difficulty: ${difficulty}, language: ${language}. number of words: ${numOfAnswers} {"choices": [array_of_words] "translations": [array_of_translations] }`;
+
+    const result = this.getExerciseFromApi(exercisePrompt);
+
+    return genUtil.convertToExerciseObject(result,ExerciseType.TranslateWord,language);
   }
 
   /**
@@ -265,14 +258,11 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateTranslateTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]) {
-    const exercisePrompt =
-`instructions: "Translate the sentence"
-2: {
-"question": "my name is Danny",
-"answer": "קוראים לי דני"
-}`
-    const exercisePrompt2 = `generate a "translate the sentence" exercise, difficulty: ${difficulty}. {"question": "english_sentence", "answer": "${language}_translation"}`;
-    genUtil.updatePromptString(this.promptString,exercisePrompt);
+    const exercisePrompt = `generate a "translate the sentence" exercise, difficulty: ${difficulty}. {"question": "english_sentence", "answer": "${language}_translation"}`;
+
+    const result = this.getExerciseFromApi(exercisePrompt);
+
+    return genUtil.convertToExerciseObject(result,ExerciseType.TranslateTheSentence,language);
   }
 
   /**
@@ -282,17 +272,11 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]) {
-    const exercisePrompt =
-`instructions: "Complete the conversation"
-3: {
-"question": "בהצלחה במבחן!",
-"choices": ["תודה, גם לך!","נעים להכיר!"],
-"answer": "תודה, גם לך!",
-"translation": "Person A: Good luck on the test! Person B: Thanks, You too!"
-}`
+    const exercisePrompt = `generate a "complete the conversation" exercise, difficulty: ${difficulty}, language: ${language}. First choice is grammatically correct and makes sense, second choice doesn't. { "question": "question/statement", "choices": ["reply1","reply2"] "translation": "english_translation_of_question_&_correct_reply" }`;
 
-    const exercisePrompt2 = `generate a "complete the conversation" exercise, difficulty: easy, language:hebrew One of the replies is grammatically correct and makes sense, the other isn't. "answer" field contains the correct reply number . { "question": "question/statement", "choices": ["reply1","reply2"], "answer": "1/2", "translation": "english_translation_of_question_&_correct_reply" }`;
-    genUtil.updatePromptString(this.promptString,exercisePrompt);
+    const result = this.getExerciseFromApi(exercisePrompt);
+    //TODO: add setCompleteTheConversation function in learn-generator-utils
+    return genUtil.convertToExerciseObject(result,ExerciseType.CompleteTheConversation, language);
   }
   /**
    * Sends a query to the API to generate a "match the words to their translations" exercise, using the given parameters
@@ -317,19 +301,11 @@ export class LessonGeneratorService {
       numOfPairs = 6;
     }
 
-    const exercisePrompt =
-`instructions: "Match the words"
-4: {
-"correctPairs": [
-["חתול", "Cat"],
-["מים", "Water"],
-["תפוז", "Orange"],
-["ספר", "Book"],
-["שולחן", "Table"],
-]
-}`
-    const exercisePrompt2 = `Generate a "match the words" exercise in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. "correctPairs": { ["word","translation"] }`;
-    genUtil.updatePromptString(this.promptString,exercisePrompt);
+    const exercisePrompt = `Generate a "match the words" exercise in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. "correctPairs": { ["word","translation"] }`;
+
+    const result = this.getExerciseFromApi(exercisePrompt);
+
+    return genUtil.convertToExerciseObject(result,ExerciseType.MatchTheWords,language);
   }
 
   /**
@@ -354,34 +330,30 @@ export class LessonGeneratorService {
       sentenceLength = 6;
     }
 
-    const exercisePrompt =
-`instructions: "Reorder the sentence. 'choices' contains each word from 'answer' in random order, 'answer' contains the sentence in the correct order."
-5: {
-"choices": ['יוסי','רוכב','על','האופניים'],
-"answer": 'יוסי רוכב על האופניים',
-"translation": 'Yossi is riding the bicycle'
-}`
-    const exercisePrompt2 = `generate a sentence, in ${language}, ${difficulty} difficulty. { "answer": "", "translation": "" }`;
-    //TODO: adjust reorderSentence exercise creation
-    genUtil.updatePromptString(this.promptString,exercisePrompt);
+    const exercisePrompt = `generate a sentence, in ${language}, ${difficulty} difficulty. { "answer": "", "translation": "" }`;
+
+    const result = this.getExerciseFromApi(exercisePrompt);
+    return genUtil.convertToExerciseObject(result,ExerciseType.ReorderSentence,language);
   }
 
   generateMatchTheCategory(language: Language, difficulty: Difficulty, keyWords: string[]) {
+    const exercisePrompt = `generate 2 categories and 3 words for each, in ${language}, ${difficulty} difficulty. { "cat_a": "", "cat_b": "", "words_a":[], "words_b":[] }`;
 
-    const exercisePrompt =
-`instructions: "Match the word (second in pair) to one of 2 categories (first in pair)"
-6: {
-"correctPairs": [
-["כדורסל", "ספורט"],
-["טניס", "ספורט"],
-["עוגה", "אוכל"],
-["עגבניה", "אוכל"],
-["כדורגל", "ספורט"],
-["תפוח","אוכל"]
-]
-}`
-    const exercisePrompt2 = `generate 2 categories and 3 words for each, in hebrew, easy difficulty. { "cat_a": "", "cat_b":"", "a_words": [], "b_words":[] }`;
-    //TODO: adjust matchTheCategory exercise creation
-    genUtil.updatePromptString(this.promptString,exercisePrompt);
+    const result = this.getExerciseFromApi(exercisePrompt);
+    return genUtil.convertToExerciseObject(result,ExerciseType.MatchTheCategory,language);
   }
+
+  getExerciseFromApi(promptString: string): Observable<object> {
+    const {href} = new URL('generateLesson', this.apiUrl);
+
+    // API CONNECTION
+    return this.http.post(href,{userPrompt: promptString});
+
+    // PLACEHOLDER DATA
+      // console.log(this.promptString());
+      // this.exercises.set(genUtil.convertToExerciseArray(this.mockLesson, language));
+      // obs.next(this.exercises());
+      // obs.complete();
+  }
+
 }

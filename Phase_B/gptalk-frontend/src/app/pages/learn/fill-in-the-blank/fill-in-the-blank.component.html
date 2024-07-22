@@ -1,5 +1,5 @@
   <div class="sentence-wrapper flex justify-content-start gap-3 mb-2" [dir]="utilHtml.langDirection(lessonLanguage)">
-    <p>{{exerciseData().question}} </p>
+    <p>{{exerciseData().sentenceBeforeBlank}} </p>
     <input
       #inputField
       class="fill-in-the-blank-input-field flex-grow-1 flex-wrap"
@@ -14,6 +14,7 @@
                        lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData))
                        : ''"
       [formControl]="inputForm"/>
+    <p>{{exerciseData().sentenceAfterBlank}}</p>
   </div>
 
   <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
