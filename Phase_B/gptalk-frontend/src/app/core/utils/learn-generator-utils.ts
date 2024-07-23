@@ -1,7 +1,7 @@
 import {Difficulty} from '../../../models/enums/difficulty.enum';
 import {WritableSignal} from '@angular/core';
 import {Exercise} from '../../../models/exercise.interface';
-import _ from 'lodash';
+import _, { random } from 'lodash';
 import {ExerciseType} from '../../../models/enums/exercise-type.enum';
 import {Language} from '../../../models/enums/language.enum';
 
@@ -121,8 +121,7 @@ export class LearnGeneratorUtils {
 
     // Takes the choices array
     let choices = exercise.choices ?? [];
-
-    let randIndex = Math.floor(Math.random() * fullSentence.length);
+    let randIndex = Math.floor(Math.random() * sentenceArr.length);
 
     // Takes out a random word from the full sentence
     const randomWord = sentenceArr[randIndex];
@@ -138,8 +137,8 @@ export class LearnGeneratorUtils {
     choices.splice(randIndex, 0, randomWord);
 
     // Sets the exercise data
-    exercise.sentenceBeforeBlank = stringsBeforeWord.join();
-    exercise.sentenceAfterBlank = stringsAfterWord.join();
+    exercise.sentenceBeforeBlank = stringsBeforeWord.join(' ');
+    exercise.sentenceAfterBlank = stringsAfterWord.join(' ');
     exercise.choices = choices;
     exercise.answer = randomWord
 
@@ -187,7 +186,8 @@ export class LearnGeneratorUtils {
   }
 
   private static setMatchTheCategory(exercise: Exercise): Exercise {
-    exercise.choices = [...exercise.words_a ?? "", ...exercise.words_b ?? ""];
+    const choices = [...exercise.words_a ?? "", ...exercise.words_b ?? ""];
+    exercise.choices = _.shuffle(choices);
     return exercise;
   }
   /**

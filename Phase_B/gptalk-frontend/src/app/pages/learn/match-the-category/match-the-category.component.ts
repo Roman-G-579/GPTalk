@@ -31,7 +31,6 @@ export class MatchTheCategoryComponent {
 
   categoryMatches = this.lrn.categoryMatches;
   draggedWord = this.lrn.draggedWord;
-  //TODO: update component logic (cat_a,cat_b,words_a,words_b)
   /**
    * Handles the start of the drag event
    *

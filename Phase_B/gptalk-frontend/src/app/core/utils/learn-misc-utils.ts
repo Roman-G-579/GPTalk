@@ -18,7 +18,7 @@ export class LearnMiscUtils {
     exercise.update( data => {
       data.question = data.question?.normalize().toLowerCase();
       data.answer = data.answer?.normalize().toLowerCase();
-      data.choices = data.choices?.map(elem => elem.normalize().toLowerCase());
+      data.choices = data.choices?.map(elem => elem.normalize().replace(/[,.!?:]/g,'').toLowerCase());
       data.correctPairs = data.correctPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
       data.randomizedPairs = data.randomizedPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
       return data;

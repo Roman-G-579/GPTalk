@@ -26,15 +26,11 @@ export class LearnInitializerUtils {
    * @param categoryMatches the signal containing data relevant to the MatchTheCategory exercise
    * @param exercise signal containing the current exercise data
    */
-  static initializeMatchTheCategory(categoryMatches: WritableSignal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>, exercise: WritableSignal<Exercise>) {
-    const pairsArray = exercise().correctPairs ?? [];
-    const words = Array.from(new Set(pairsArray.map(pair => pair[0])));
-    const categories = Array.from(new Set(pairsArray.map(pair => pair[1])));
+  static initializeMatchTheCategory(categoryMatches: WritableSignal<{wordBank: string[], cat1: string[], cat2: string[]}>, exercise: WritableSignal<Exercise>) {
     categoryMatches.update(data => {
-      data.categories = [categories[0],categories[1]];
       data.cat1 = [];
       data.cat2 = [];
-      data.wordBank = words;
+      data.wordBank = exercise().choices ?? [];
       return data;
     });
   }

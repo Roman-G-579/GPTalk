@@ -14,10 +14,10 @@ export async function generateLessonMiddleware(req: Request, res: Response, next
         const { userPrompt } = req.body;
         const completion = await openai.chat.completions.create({
             messages: [
-                {role: "system", content: "you are a helpful language learning exercise generator, please output valid JSON"},
+                {role: "system", content: "you are a helpful language learning exercise generator, please output valid JSON. include every key from the instruction in the response object "},
                 {role: "user", content: userPrompt }
             ],
-            model: "gpt-4o",
+            model: "gpt-4o-mini",
             response_format: {"type": "json_object"},
             temperature: 0.2,
         });

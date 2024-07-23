@@ -1,7 +1,7 @@
     <div class="match-the-category-wrapper flex justify-content-center flex-row text-center mb-2 gap-4 ">
       <!-- Category 1 container -->
       <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(0)">
-        <p class="text-center surface-border border-bottom-1 font-bold">{{categoryMatches().categories[0]}}</p>
+        <p class="text-center surface-border border-bottom-1 font-bold">{{exerciseData().cat_a}}</p>
         <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().cat1"
@@ -30,7 +30,7 @@
 
       <!-- Category 2 container -->
       <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(1)">
-        <p class="text-center surface-border border-bottom-1 font-bold">{{categoryMatches().categories[1]}}</p>
+        <p class="text-center surface-border border-bottom-1 font-bold">{{exerciseData().cat_b}}</p>
         <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().cat2"

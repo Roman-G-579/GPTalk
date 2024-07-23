@@ -31,8 +31,7 @@ export class LearnService {
   matchMistakes = signal<number>(0); // Counts the number of wrong matches
 
   // MatchTheCategory-specific signals
-  categoryMatches = signal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>({
-    categories: ["",""],
+  categoryMatches = signal<{wordBank: string[], cat1: string[], cat2: string[]}>({
     wordBank: [],
     cat1: [],
     cat2: []

@@ -1,8 +1,8 @@
-  <div class="sentence-wrapper flex justify-content-start gap-3 mb-2" [dir]="utilHtml.langDirection(lessonLanguage)">
-    <p>{{exerciseData().sentenceBeforeBlank}} </p>
+  <div class="sentence-wrapper flex flex-wrap gap-3 mb-2" [dir]="utilHtml.langDirection(lessonLanguage)">
+    <p>{{exerciseData().sentenceBeforeBlank}}</p>
     <input
       #inputField
-      class="fill-in-the-blank-input-field flex-grow-1 flex-wrap"
+      class="fill-in-the-blank-input-field text-center"
       autofocus
       type="text"
       id="inputForm"
