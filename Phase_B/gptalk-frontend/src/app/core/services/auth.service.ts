@@ -20,6 +20,8 @@ export class AuthService {
 		firstName: '',
 		lastName: '',
 		username: '',
+    level: 0,
+    userAvatar: '',
 	});
 
 	// Calls the login middleware function, with the given email and password as parameters
@@ -65,6 +67,8 @@ export class AuthService {
 			firstName: '',
 			lastName: '',
 			username: '',
+      level: 0,
+      userAvatar: '',
 		});
 		localStorage.removeItem('token');
 	}
