@@ -5,7 +5,7 @@ import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { Exercise } from '../../../models/exercise.interface';
 import { LearnGeneratorUtils as genUtil } from '../utils/learn-generator-utils';
-import { forkJoin, map, Observable, of } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 
 @Injectable({

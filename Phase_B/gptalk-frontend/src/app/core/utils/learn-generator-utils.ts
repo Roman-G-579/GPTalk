@@ -1,7 +1,6 @@
 import {Difficulty} from '../../../models/enums/difficulty.enum';
-import {WritableSignal} from '@angular/core';
 import {Exercise} from '../../../models/exercise.interface';
-import _, { random } from 'lodash';
+import _ from 'lodash';
 import {ExerciseType} from '../../../models/enums/exercise-type.enum';
 import {Language} from '../../../models/enums/language.enum';
 import {TOPICS} from './topics';
