@@ -4,6 +4,7 @@ import {Exercise} from '../../../models/exercise.interface';
 import _, { random } from 'lodash';
 import {ExerciseType} from '../../../models/enums/exercise-type.enum';
 import {Language} from '../../../models/enums/language.enum';
+import {TOPICS} from './topics';
 
 /*
   Contains functions related to lesson generation
@@ -17,6 +18,11 @@ export class LearnGeneratorUtils {
    */
   static insertKeyWords(difficulty: Difficulty) {
     const keyWords: string[] = [];
+
+    const randomIndex: number = Math.floor(Math.random() * TOPICS.length);
+
+    keyWords.push(TOPICS[randomIndex]);
+
     // Parameters for very easy and easy difficulties
     if (difficulty >= 0 && difficulty < 2) {
       keyWords.push('simple', 'beginners');
@@ -30,6 +36,14 @@ export class LearnGeneratorUtils {
       keyWords.push('high level learners', 'challenge');
     }
     return keyWords;
+  }
+
+  static changeTopicKeyWord(keywords: string[]) {
+    const randomIndex: number = Math.floor(Math.random() * TOPICS.length);
+
+    keywords[0] = TOPICS[randomIndex];
+
+    return keywords;
   }
 
 
@@ -117,7 +131,7 @@ export class LearnGeneratorUtils {
   private static setFillInTheBlank(exercise: Exercise): Exercise {
     // Takes the answer sentence and converts it to an array
     const fullSentence = exercise.answer ?? "";
-    let sentenceArr = fullSentence.split(' ');
+    let sentenceArr = fullSentence.replace(/[,.!?:]/g,'').split(' ');
 
     // Takes the choices array
     let choices = exercise.choices ?? [];
@@ -165,7 +179,7 @@ export class LearnGeneratorUtils {
 
   private static setCompleteTheConversation(exercise: Exercise) {
     let choices = exercise.choices ?? [];
-
+    choices = choices.map(str => str.replace(/[,.!?:]/g,''));
     exercise.answer = choices[0];
 
     choices = _.shuffle(choices);
@@ -173,6 +187,7 @@ export class LearnGeneratorUtils {
 
     return exercise;
   }
+
   private static setMatchTheWords(exercise: Exercise): Exercise {
     exercise.randomizedPairs = this.shuffleWordPairs(exercise.correctPairs ?? []);
     return exercise;

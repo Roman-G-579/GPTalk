@@ -19,7 +19,7 @@ export async function generateLessonMiddleware(req: Request, res: Response, next
             ],
             model: "gpt-4o-mini",
             response_format: {"type": "json_object"},
-            temperature: 0.2,
+            temperature: 0.3,
         });
 
         return res.status(httpStatus.OK).send(completion.choices[0].message.content);

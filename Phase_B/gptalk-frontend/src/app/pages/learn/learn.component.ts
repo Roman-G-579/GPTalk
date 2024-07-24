@@ -49,7 +49,7 @@ export class LearnComponent implements OnInit {
   lessonLanguage = this.lrn.lessonLanguage;
 
   ngOnInit() {
-    this.lgService.generateLesson(Language.Hebrew, Difficulty.Easy, 3).subscribe({
+    this.lgService.generateLesson(Language.Hebrew, Difficulty.Medium, 5).subscribe({
       next: (exercises: Exercise[]) => {
         this.lrn.setUpLesson(exercises);
         this.lessonLanguage.set(Language.Hebrew); //TODO: change method of setting current lesson's language

@@ -5,7 +5,7 @@ import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { Exercise } from '../../../models/exercise.interface';
 import { LearnGeneratorUtils as genUtil } from '../utils/learn-generator-utils';
-import { forkJoin, map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 
 @Injectable({
@@ -74,7 +74,7 @@ export class LessonGeneratorService {
    * @param amount the amount of exercises to be generated
    */
   generateLesson(language: Language, difficulty: Difficulty, amount: number): Observable<Exercise[]> {
-    const keyWords = genUtil.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
+    let keyWords = genUtil.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
 
     // All functions that can be called to generate an exercise
     const exerciseGenerators = [
@@ -103,14 +103,17 @@ export class LessonGeneratorService {
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
         map(response => {
+          console.log("RESPONSE: ");
           console.log(response);
-          const exerciseType = <ExerciseType>(randomIndex);
+          const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
           return genUtil.convertToExerciseObject(response, exerciseType, language);
         })
       );
 
       // Add the exercise to the observables array
       exerciseObservables.push(exerciseObservable);
+
+      keyWords = genUtil.changeTopicKeyWord(keyWords); // Randomizes a topic for the next exercise
     }
 
     return forkJoin(exerciseObservables);
@@ -139,7 +142,7 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
-    return `generate an object in ${language}, ${difficulty} difficulty. 'answer' is the sentence, 'translation' is its english translation, 'choices' is 3 random words. {"answer": "", "choices:" [], "translation": ""}`;
+    return `generate an object in ${language}, ${difficulty} difficulty. 'answer' is the sentence, 'translation' is its english translation, 'choices' is 3 random words, not found in "answer". Focus on topics: ${keyWords[0]}. {"answer": "", "choices:" [], "translation": ""}`;
   }
 
   /**
@@ -165,7 +168,7 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
-    return `generate a "translate the word" exercise, difficulty: ${difficulty}, language: ${language}. number of words: ${numOfAnswers} {"choices": [array_of_words] "translations": [array_of_translations] }`;
+    return `generate word array, difficulty: ${difficulty}, language: ${language}. number of words: ${numOfAnswers}. Focus on topics: ${keyWords[0]}. {"choices": [array_of_words] "translations": [array_of_translations] }`;
   }
 
   /**
@@ -175,7 +178,7 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateTranslateTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]) {
-    return `generate a "translate the sentence" exercise, difficulty: ${difficulty}. {"question": "english_sentence", "answer": "${language}_translation"}`;
+    return `generate a "translate the sentence" exercise, difficulty: ${difficulty}. Focus on topics: ${keyWords[0]}. {"question": "english_sentence", "answer": "${language}_translation"}`;
   }
 
   /**
@@ -185,8 +188,9 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]) {
-    return `generate a "complete the conversation" exercise, difficulty: ${difficulty}, language: ${language}. First choice is grammatically correct and makes sense, second choice doesn't. { "question": "question/statement", "choices": ["reply1","reply2"] "translation": "english_translation_of_question_&_correct_reply" }`;
+    return `generate a "complete the conversation" exercise, difficulty: ${difficulty}, language: ${language}. First choice is grammatically correct and makes sense, second choice doesn't. Focus on topics: ${keyWords[0]}. { "question": "question/statement", "choices": ["reply1","reply2"] "translation": "english_translation_of_question_&_correct_reply" }`;
   }
+
   /**
    * Sends a query to the API to generate a "match the words to their translations" exercise, using the given parameters
    * @param language the language of the generated exercise
@@ -210,8 +214,7 @@ export class LessonGeneratorService {
       numOfPairs = 6;
     }
 
-    return `Generate a "match the words" exercise in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. "correctPairs": { ["word","translation"] }`;
-
+    return `Generate a "match the words" exercise in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. Focus on topics: ${keyWords[0]}. "correctPairs": { ["word","translation"] }`;
   }
 
   /**
@@ -236,11 +239,11 @@ export class LessonGeneratorService {
       sentenceLength = 6;
     }
 
-    return `generate a sentence, in ${language}, ${difficulty} difficulty. { "answer": "", "translation": "" }`;
+    return `generate a sentence, in ${language}, ${difficulty} difficulty. Focus on topics: ${keyWords[0]} { "answer": "", "translation": "" }`;
   }
 
   generateMatchTheCategory(language: Language, difficulty: Difficulty, keyWords: string[]) {
-    return `generate 2 categories and 3 words for each, in ${language}, ${difficulty} difficulty. { "cat_a": "", "cat_b": "", "words_a":[], "words_b":[] }`;
+    return `Generate 2 distinct categories and 4 words for each, in ${language}, ${difficulty} difficulty. Focus on topics: ${keyWords[0]} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
   }
 
   getExerciseFromApi(promptString: string) {
@@ -250,12 +253,7 @@ export class LessonGeneratorService {
     return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    // const mockExercise_FillInTheBlank = {
-    //     answer: "הטיסה ממריאה מחר בבוקר",
-    //     choices: ["חתול","קפה","לרוץ"],
-    //     translation: "The flight takes off tomorrow"
-    // }
-    // return of(mockExercise_FillInTheBlank);
+    // return of(this.mockExercise_TranslateWord);
   }
 
 }

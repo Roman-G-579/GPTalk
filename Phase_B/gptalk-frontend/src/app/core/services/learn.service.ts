@@ -81,6 +81,7 @@ export class LearnService {
       null;
 
     if (curExercise) {
+      console.log(curExercise);
       // Sets the data in the exerciseData signal
       this.exerciseData.set(curExercise);
 
