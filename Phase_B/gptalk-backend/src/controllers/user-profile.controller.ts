@@ -8,7 +8,7 @@ import httpStatus from 'http-status';
 import { ChallengeModel } from '../models/challenge.interface';
 import { AchievementModel } from '../models/achievment.interface';
 import { Result } from '../models/result.interface';
-import { LanguageModel } from '../models/language.interface';
+import { Language, LanguageModel } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
 
 export async function getUserProfile(req: Request, res: Response, next: NextFunction) {
@@ -28,6 +28,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			challengesCompleted,
 			noMistakes,
 			languages,
+			allLanguages,
 		] = await Promise.all([
 			calculateTopPercentage(user._id),
 			calculateStreak(user._id),
@@ -36,6 +37,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			calculateChallengesCompleted(user._id),
 			calculateNoMistakesChallenges(user._id),
 			calculateExpertOrMasterLanguages(user._id),
+			getAllLanguages(user._id),
 		]);
 
 		const maxStreak = await calculateMaxStreak(user._id, streak);
@@ -60,8 +62,8 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			level,
 			topPercentage,
 			streak,
-			latestResults,
-			languages,
+			latestResults: latestResults as Result[],
+			languages: allLanguages as Language[],
 			achievements,
 		};
 
@@ -121,11 +123,15 @@ async function calculateChallengesCompleted(userId: Schema.Types.ObjectId) {
 }
 
 async function fetchLatestResults(userId: Schema.Types.ObjectId) {
-	return ResultModel.find({ user: userId }).sort({ date: -1 }).limit(5).exec();
+	return ResultModel.find({ user: userId }).sort({ date: -1 }).limit(4).exec();
 }
 
 async function calculateNoMistakesChallenges(userId: Schema.Types.ObjectId) {
 	return ChallengeModel.countDocuments({ user: userId, mistakes: 0 });
+}
+
+async function getAllLanguages(userId: Schema.Types.ObjectId) {
+	return LanguageModel.find({ user: userId });
 }
 
 async function calculateExpertOrMasterLanguages(userId: Schema.Types.ObjectId) {
@@ -158,35 +164,39 @@ async function getAchievements(
 	totalLanguages: number,
 ): Promise<UserAchievement[]> {
 	const [streak, exp, mistakes, challenges, languages] = await Promise.all([
-			AchievementModel.find({ type: 'streak' }).lean(),
-			AchievementModel.find({ type: 'exp' }).lean(),
-			AchievementModel.find({ type: 'mistakes' }).lean(),
-			AchievementModel.find({ type: 'challenges' }).lean(),
-			AchievementModel.find({ type: 'languages' }).lean(),
+		AchievementModel.find({ type: 'streak' }).lean(),
+		AchievementModel.find({ type: 'exp' }).lean(),
+		AchievementModel.find({ type: 'mistakes' }).lean(),
+		AchievementModel.find({ type: 'challenges' }).lean(),
+		AchievementModel.find({ type: 'languages' }).lean(),
 	]);
 
 	const achievements: UserAchievement[] = [
-			{ ...streak[0], progress: currentStreak },
-			{ ...exp[0], progress: totalExp },
-			{ ...mistakes[0], progress: noMistakes },
-			{ ...challenges[0], progress: totalChallenges },
-			{ ...languages[0], progress: totalLanguages },
+		{ ...streak[0], progress: currentStreak },
+		{ ...exp[0], progress: totalExp },
+		{ ...mistakes[0], progress: noMistakes },
+		{ ...challenges[0], progress: totalChallenges },
+		{ ...languages[0], progress: totalLanguages },
 	];
 
 	const updateAchievement = (
-			achievementArray: any[],
-			progress: number,
-			achievementIndex: number
+		achievementArray: any[],
+		progress: number,
+		achievementIndex: number,
 	) => {
-			for (let i = 1; i < achievementArray.length; i++) {
-					if (
-							(i === achievementArray.length - 1 && achievementArray[achievementArray.length - 1].goal <= progress) ||
-							(achievementArray[i].goal > progress && achievementArray[i - 1].goal <= progress)
-					) {
-							achievements[achievementIndex] = { ...achievementArray[i === achievementArray.length - 1 ? achievementArray.length - 1 : i], progress };
-							break;
-					}
+		for (let i = 1; i < achievementArray.length; i++) {
+			if (
+				(i === achievementArray.length - 1 &&
+					achievementArray[achievementArray.length - 1].goal <= progress) ||
+				(achievementArray[i].goal > progress && achievementArray[i - 1].goal <= progress)
+			) {
+				achievements[achievementIndex] = {
+					...achievementArray[i === achievementArray.length - 1 ? achievementArray.length - 1 : i],
+					progress,
+				};
+				break;
 			}
+		}
 	};
 
 	updateAchievement(streak, currentStreak, 0);
