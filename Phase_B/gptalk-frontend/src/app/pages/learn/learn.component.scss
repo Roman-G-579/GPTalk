@@ -5,6 +5,7 @@
   font-family: Poppins, sans-serif;
   color: var(--primary-clr);
   --t: 1.6rem; // standard text size
+  --t_large: 1.8rem;
 }
 
 .wrapper {
@@ -17,8 +18,8 @@
   font-size: 2.6rem;
 }
 
-.translation-wrapper {
-  font-size: var(--t);
+::ng-deep .translation-wrapper p {
+  font-size: var(--t_large);
 }
 
 

@@ -7,7 +7,7 @@
             *ngFor="let word of categoryMatches().cat1"
             class="p-2 border-round shadow-1"
             pDraggable
-            (onDragStart)="dragStart(word)"
+            (onDragStart)="!isDone() ? dragStart(word) : null"
             (onDragEnd)="dragEnd()">
             {{word}}
           </li>
@@ -36,7 +36,7 @@
             *ngFor="let word of categoryMatches().cat2"
             class="p-2 border-round shadow-1"
             pDraggable
-            (onDragStart)="dragStart(word)"
+            (onDragStart)="!isDone() ? dragStart(word) : null"
             (onDragEnd)="dragEnd()">
             {{word}}
           </li>
@@ -55,3 +55,11 @@
           (onClick)="lrn.setExerciseResult(vrf.verifyCategories(categoryMatches, exerciseData))"/>
       }
     </div>
+
+    @if (isDone()) {
+      <div class="translation-wrapper flex flex-column text-center justify-content-center">
+        <p>Actual answer:</p>
+        <p><b>{{exerciseData().cat_a}}:</b> {{exerciseData().words_a}}</p>
+        <p><b>{{exerciseData().cat_b}}:</b> {{exerciseData().words_b}}</p>
+      </div>
+    }
