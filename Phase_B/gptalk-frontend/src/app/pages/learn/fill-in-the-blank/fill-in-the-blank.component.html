@@ -38,4 +38,8 @@
     }
   </div>
 
-
+  @if (isDone()) {
+    <div class="translation-wrapper flex justify-content-center">
+      <p><b>Translation:</b> {{exerciseData().translation}}</p>
+    </div>
+  }
