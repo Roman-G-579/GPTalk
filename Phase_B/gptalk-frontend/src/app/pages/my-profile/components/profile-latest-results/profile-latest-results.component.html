@@ -1,3 +1,14 @@
 <main>
   <h1>Latest Results</h1>
+  <div class="content">
+    @for (result of results(); track result) {
+      <div class="result">
+				<div>
+					<img src="assets/profile/coin.png" alt="coin"/>
+					<p>{{ result.exp }} exp</p>
+				</div>
+				<p>{{ result.date | date: 'dd/MM/yyyy' }}</p>
+			</div>
+    }
+  </div>
 </main>

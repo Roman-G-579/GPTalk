@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Result } from "./result.interface";
 
 @Component({
   selector: 'app-profile-latest-results',
@@ -11,4 +12,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './profile-latest-results.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileLatestResultsComponent { }
+export class ProfileLatestResultsComponent {
+  results = input<Result[]>([]);
+}
