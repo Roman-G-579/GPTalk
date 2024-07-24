@@ -1,0 +1,41 @@
+  <div class="sentence-wrapper flex flex-wrap gap-3 mb-2" [dir]="utilHtml.langDirection(lessonLanguage)">
+    <p>{{exerciseData().sentenceBeforeBlank}}</p>
+    <input
+      #inputField
+      class="fill-in-the-blank-input-field text-center"
+      autofocus
+      type="text"
+      id="inputForm"
+      title="Input Field"
+      [readOnly]="isDone()"
+      [value]="isDone() ? exerciseData().answer : ''"
+      (blur)="!isDone() ? utilHtml.forceFocus(inputFieldRef) : ''"
+      (keyup.enter)="inputForm.value ?
+                       lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData))
+                       : ''"
+      [formControl]="inputForm"/>
+    <p>{{exerciseData().sentenceAfterBlank}}</p>
+  </div>
+
+  <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+    @for (choice of exerciseData().choices; track choice) {
+      <div class="col-12">
+        <p-button
+          [styleClass]="
+            isDone() ? (
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+
+          id="{{choice}}"
+          label="{{choice}}"
+          [raised]="true"
+          severity="secondary"
+          (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
+      </div>
+    }
+  </div>
+
+

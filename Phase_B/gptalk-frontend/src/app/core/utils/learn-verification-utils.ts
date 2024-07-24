@@ -92,22 +92,19 @@ export class LearnVerificationUtils {
    * @param exercise the data of the currently active exercise
    */
   static verifyCategories(
-    categoryMatches: WritableSignal<{categories: [string,string], wordBank: string[], cat1: string[], cat2: string[]}>,
-    exercise: WritableSignal<Exercise>)
+    categoryMatches: WritableSignal<{wordBank: string[], cat1: string[], cat2: string[]}>, exercise: WritableSignal<Exercise>)
   {
-    const correctPairsArr = exercise().correctPairs ?? [];
+    const correctCat_a = exercise().words_a ?? [];
+    const correctCat_b = exercise().words_b ?? [];
+    const userCat_a = categoryMatches().cat1;
+    const userCat_b = categoryMatches().cat2;
 
-    // Creates a map from the pairs array: key - word, value - word's category
-    const correctPairsMap = new Map(correctPairsArr.map(([word, category]) => [word, category]));
 
-    // Checks if all elements in a given array appear with the correct category in correctPairsMap
-    const checkCategory = (arr: string[], category: string) => arr.every(item => correctPairsMap.get(item) === category);
-
-    // Calls the checkCategory method to verify the word placements in the arrays
-    const isCat1Correct = checkCategory(categoryMatches().cat1, categoryMatches().categories[0]);
-    const isCat2Correct = checkCategory(categoryMatches().cat2, categoryMatches().categories[1]);
-
-    return isCat1Correct && isCat2Correct;
+    return (
+      correctCat_a.every(word => userCat_a.includes(word))
+      &&
+      correctCat_b.every(word => userCat_b.includes(word))
+    );
   }
 
 }

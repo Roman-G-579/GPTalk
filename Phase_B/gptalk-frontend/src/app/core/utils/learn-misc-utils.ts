@@ -2,28 +2,12 @@ import _ from 'lodash';
 import { WritableSignal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { closest, distance } from 'fastest-levenshtein';
+import { Difficulty } from '../../../models/enums/difficulty.enum';
 
 /**
  * Contains various miscellaneous functions related to learn functionality
  */
 export class LearnMiscUtils {
-
-  /**
-   * Shuffles the locations of the left words and the locations of the right words in the array
-   * @param wordPairs an array of string pairs. first element in pair - left word.
-   *                  Second element in pair - right word
-   */
-  static shuffleWordPairs(wordPairs: [string, string][]): [string, string][] {
-    const leftWords = wordPairs.map(pair => pair[0]);
-    const rightWords = wordPairs.map(pair => pair[1]);
-
-    // Shuffle each array independently
-    const shuffledLeftWords = _.shuffle(leftWords);
-    const shuffledRightWords = _.shuffle(rightWords);
-
-    // Re-pair the shuffled words
-    return shuffledLeftWords.map((leftWord, index) => [leftWord, shuffledRightWords[index]])
-  }
 
   /**
    * Converts every question and answer related string to normalized and lowercase for easier comparisons
@@ -34,7 +18,7 @@ export class LearnMiscUtils {
     exercise.update( data => {
       data.question = data.question?.normalize().toLowerCase();
       data.answer = data.answer?.normalize().toLowerCase();
-      data.choices = data.choices?.map(elem => elem.normalize().toLowerCase());
+      data.choices = data.choices?.map(elem => elem.normalize().replace(/[,.!?:]/g,'').toLowerCase());
       data.correctPairs = data.correctPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
       data.randomizedPairs = data.randomizedPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
       return data;
@@ -86,20 +70,18 @@ export class LearnMiscUtils {
   }
 
   /**
-   * Increments the correct answers and the match mistakes counters based on the given data
-   * @param counters signal containing the counter data
-   * @param correctIncr counts correct answers in the lesson. 0 - do not increment, 1 - increment
-   * @param matchMistakesIncr counts mistakes in the "match the words" exercise. 0 - do not increment, 1 - increment
+   * Removes the first element from the exercises array
+   * @returns firstElement - the first element in the given exercises array (before the shift)
+   * @param exerciseArr the exercises array in signal form
    */
-  static incrementCounters(
-    counters: WritableSignal<{correctAnswers: number, totalExercises: number, matchMistakes: number}>,
-    correctIncr: number = 0,
-    matchMistakesIncr: number = 0)
-  {
-    counters.update(counters => {
-      counters.correctAnswers += correctIncr;
-      counters.matchMistakes += matchMistakesIncr;
-      return counters;
+  static exerciseArrShift(exerciseArr: WritableSignal<Exercise[]>) {
+    const firstElement = exerciseArr()[0];
+    exerciseArr.update(arr => {
+      arr.shift();
+      return arr;
     });
+    return firstElement;
   }
+
+
 }

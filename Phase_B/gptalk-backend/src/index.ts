@@ -16,6 +16,8 @@ import { errorMiddleware } from './middlewares/error.middleware';
 import registerRouter from './routes/register.router';
 import authRouter from './routes/auth.router';
 import profileRouter from './routes/profile.router';
+import exerciseGeneratorRouter from './routes/lesson-generator.router';
+import lessonGeneratorRouter from './routes/lesson-generator.router';
 
 // initialize express server
 const app = express();
@@ -48,6 +50,7 @@ app.get('/api/ping', (req, res) => {
 app.use('/api/register', registerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/profile', profileRouter);
+app.use('/api/generateLesson', lessonGeneratorRouter);
 
 // Error handler
 app.use(errorMiddleware);

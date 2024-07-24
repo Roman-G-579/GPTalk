@@ -1,0 +1,34 @@
+    <div class="buttons-group p-fluid grid mb-3">
+      @for (pair of exerciseData().randomizedPairs; track pair; let idx = $index) {
+        <div class="col-5 btn-matching-pairs">
+          <p-button
+            [styleClass]="
+            matchResults()[idx][0] ? 'btn-correct'
+            :
+            chosenPair()[0] === pair[0] ? 'btn-selected' : ''"
+            id="{{pair[0]}}"
+            label="{{pair[0]}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="!isDone() ? chooseMatch(pair[0], 0) : null"/>
+        </div>
+        <div class="col-5 col-offset-2 btn-matching-pairs">
+          <p-button
+            [styleClass]="
+            matchResults()[idx][1] ? 'btn-correct'
+            :
+            chosenPair()[1] === pair[1] ? 'btn-selected' : ''"
+            id="{{pair[1]}}"
+            label="{{pair[1]}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="!isDone() ? chooseMatch(pair[1], 1) : null"/>
+        </div>
+      }
+    </div>
+
+    @if (isDone() && matchMistakes()) {
+      <div class="flex flex-column text-center justify-content-center">
+        <p>Total incorrect matches: {{matchMistakes()}}</p>
+      </div>
+    }

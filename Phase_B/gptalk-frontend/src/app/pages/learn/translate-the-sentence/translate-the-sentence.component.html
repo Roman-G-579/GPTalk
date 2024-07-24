@@ -1,0 +1,35 @@
+    <div class="flex justify-content-center">
+      <p>{{exerciseData().question}}</p>
+    </div>
+    <div class="flex justify-content-center mb-2">
+      <textarea
+        [dir]="utilHtml.langDirection(lessonLanguage)"
+        autofocus
+        class="sentence-input-area flex-grow-1 flex-wrap"
+        [readOnly]="isDone()"
+        id="sentenceInputForm"
+        title="Input Field"
+        [formControl]="inputForm"
+        rows="3"
+        cols="30"
+        >
+      </textarea>
+    </div>
+    <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
+      @if (!isDone()) {
+        <p-button
+          id="writSentenceSubmitBtn"
+          label="Submit"
+          severity="primary"
+          (onClick)="inputForm.value ?
+          lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"/>
+      }
+    </div>
+
+    @if (isDone()) {
+      <div class="translation-wrapper flex justify-content-center flex-column text-center ">
+          <p><b>Translation:</b></p>
+          <p>{{exerciseData().question}} means:</p>
+          <p>{{exerciseData().answer}}</p>
+      </div>
+    }
