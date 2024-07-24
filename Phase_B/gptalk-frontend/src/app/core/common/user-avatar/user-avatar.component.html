@@ -1,0 +1,5 @@
+@if (imgUrl()) {
+	<p-avatar styleClass="mr-2" shape="circle" [image]="imgUrl()" [size]="size()" />
+} @else {
+	<p-avatar icon="pi pi-user" styleClass="mr-2" shape="circle" [size]="size()" [style]="{ 'background-color': 'rgba(0, 0, 0, 0.138)' }"/>
+}

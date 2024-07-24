@@ -9,6 +9,7 @@ export interface User {
 	email: string;
 	password: string;
 	maxStreak: number;
+	level?: number;
 	achievements: UserAchievement[];
 	languages: {
     language: string;

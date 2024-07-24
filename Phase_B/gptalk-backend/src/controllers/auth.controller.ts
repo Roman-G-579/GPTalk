@@ -4,6 +4,7 @@ import HttpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.interface';
 import { Config } from '../config/config';
+import { calculateLevel, calculateTotalExp } from './user-profile.controller';
 
 /**
  * Logs a user to the app
@@ -37,6 +38,9 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
 		});
 
 		user.password = undefined;
+		
+		const totalExp = await calculateTotalExp(user._id);
+		user.level = calculateLevel(totalExp);
 
 		// Return the token
 		return res.status(HttpStatus.OK).json({ token, user });
