@@ -95,7 +95,7 @@ export class LessonGeneratorService {
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
 
       // The Chosen function
-      const generatorFunc = exerciseGenerators[6];
+      const generatorFunc = exerciseGenerators[randomIndex];
 
       // Generate an exercise prompt based on the randomized exercise index
       let exercisePrompt = generatorFunc(language,difficulty,keyWords);
@@ -105,7 +105,7 @@ export class LessonGeneratorService {
         map(response => {
           console.log("RESPONSE: ");
           console.log(response);
-          const exerciseType = <ExerciseType>(6); // Sets the generated exercise's type
+          const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
           return genUtil.convertToExerciseObject(response, exerciseType, language);
         })
       );
@@ -250,10 +250,10 @@ export class LessonGeneratorService {
     const {href} = new URL('generateLesson', this.apiUrl);
 
     // API CONNECTION
-    // return this.http.post(href,{userPrompt: promptString});
+    return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    return of(this.mockExercise_MatchTheCategory);
+    // return of(this.mockExercise_MatchTheCategory);
   }
 
 }
