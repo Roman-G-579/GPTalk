@@ -5,6 +5,8 @@ export interface UserResponse {
     updatedAt?: Date;
     email: string;
     username: string;
+    userAvatar: string;
     firstName: string;
     lastName: string;
+    level: number;
 }

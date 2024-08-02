@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+.wrapper {
+  height: 100%;
+}
+
+.edit-btn {
+  width: 100%;
+
+  & .p-button {
+    width: 100% !important;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 7rem 1.5rem 1.5rem;
+  height: 100%;
+
+  & .base {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &__details {
+      p:nth-child(1) {
+        font-size: 1.5rem;
+      }
+
+      p:nth-child(2) {
+        font-size: 1.3rem;
+        color: #8D8D8D;
+      }
+    }
+  }
+
+  & .infos {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    & .info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      & > i {
+        font-size: 1.4rem;
+      }
+
+      & > p {
+        font-size: 1.3rem;
+      }
+    }
+  }
+}

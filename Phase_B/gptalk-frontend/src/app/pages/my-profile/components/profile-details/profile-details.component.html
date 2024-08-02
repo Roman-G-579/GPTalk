@@ -1,0 +1,38 @@
+@if (profile()) {
+	<div class="content">
+		<div class="wrapper flex flex-column justify-between">
+			<div class="base">
+				<app-user-avatar size="xlarge" [imgUrl]="profile().userAvatar"></app-user-avatar>
+				<div class="base__details">
+					<p>{{ profile().firstName | titlecase }} {{ profile().lastName | titlecase }}</p>
+					<p>Level {{ profile().level }}</p>
+				</div>
+			</div>
+
+			<div class="infos">
+				<div class="topPercentage info">
+					<i class="pi pi-trophy"></i>
+					<p>Top {{ profile().topPercentage }}%</p>
+				</div>
+
+				<div class="calendar info">
+					<i class="pi pi-calendar"></i>
+					<p>{{ profile().createdAt | sinceDate }}</p>
+				</div>
+
+				<div class="globe info">
+					<i class="pi pi-globe"></i>
+					<p>{{ profile().country | titlecase }}</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="edit-btn">
+			<p-button
+				label="Edit Profile"
+				severity="contrast"
+				[style]="{ width: '100%' }"
+			></p-button>
+		</div>
+	</div>
+}

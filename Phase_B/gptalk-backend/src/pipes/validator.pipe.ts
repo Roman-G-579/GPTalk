@@ -10,4 +10,4 @@ export const validateUser = [
 	body('email').exists().isEmail(),
 ];
 
-export const validateProfile = [body('email').exists().isEmail()];
+export const validateProfile = [param('email').exists().isEmail()];

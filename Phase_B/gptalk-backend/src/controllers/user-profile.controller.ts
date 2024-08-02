@@ -8,12 +8,12 @@ import httpStatus from 'http-status';
 import { ChallengeModel } from '../models/challenge.interface';
 import { AchievementModel } from '../models/achievment.interface';
 import { Result } from '../models/result.interface';
-import { LanguageModel } from '../models/language.interface';
+import { Language, LanguageModel } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
 
 export async function getUserProfile(req: Request, res: Response, next: NextFunction) {
 	try {
-		const { email } = req.body;
+		const { email } = req.params;
 		const user = await UserModel.findOne({ email });
 
 		if (!user) {
@@ -28,6 +28,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			challengesCompleted,
 			noMistakes,
 			languages,
+			allLanguages,
 		] = await Promise.all([
 			calculateTopPercentage(user._id),
 			calculateStreak(user._id),
@@ -36,12 +37,13 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			calculateChallengesCompleted(user._id),
 			calculateNoMistakesChallenges(user._id),
 			calculateExpertOrMasterLanguages(user._id),
+			getAllLanguages(user._id),
 		]);
 
 		const maxStreak = await calculateMaxStreak(user._id, streak);
 		const level = calculateLevel(totalExp);
 
-		const achievements = await getAchievments(
+		const achievements = await getAchievements(
 			maxStreak,
 			totalExp,
 			noMistakes,
@@ -60,8 +62,8 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			level,
 			topPercentage,
 			streak,
-			latestResults,
-			languages,
+			latestResults: latestResults as Result[],
+			languages: allLanguages as Language[],
 			achievements,
 		};
 
@@ -121,11 +123,15 @@ async function calculateChallengesCompleted(userId: Schema.Types.ObjectId) {
 }
 
 async function fetchLatestResults(userId: Schema.Types.ObjectId) {
-	return ResultModel.find({ user: userId }).sort({ date: -1 }).limit(5).exec();
+	return ResultModel.find({ user: userId }).sort({ date: -1 }).limit(4).exec();
 }
 
 async function calculateNoMistakesChallenges(userId: Schema.Types.ObjectId) {
 	return ChallengeModel.countDocuments({ user: userId, mistakes: 0 });
+}
+
+async function getAllLanguages(userId: Schema.Types.ObjectId) {
+	return LanguageModel.find({ user: userId });
 }
 
 async function calculateExpertOrMasterLanguages(userId: Schema.Types.ObjectId) {
@@ -150,7 +156,7 @@ export function calculateLevel(totalExp: number): number {
 	return level;
 }
 
-async function getAchievments(
+async function getAchievements(
 	currentStreak: number,
 	totalExp: number,
 	noMistakes: number,
@@ -158,18 +164,14 @@ async function getAchievments(
 	totalLanguages: number,
 ): Promise<UserAchievement[]> {
 	const [streak, exp, mistakes, challenges, languages] = await Promise.all([
-		AchievementModel.find({ type: 'streak' }),
-		AchievementModel.find({ type: 'exp' }),
-		AchievementModel.find({ type: 'mistakes' }),
-		AchievementModel.find({ type: 'challanges' }),
-		AchievementModel.find({ type: 'languages' }),
+		AchievementModel.find({ type: 'streak' }).lean(),
+		AchievementModel.find({ type: 'exp' }).lean(),
+		AchievementModel.find({ type: 'mistakes' }).lean(),
+		AchievementModel.find({ type: 'challenges' }).lean(),
+		AchievementModel.find({ type: 'languages' }).lean(),
 	]);
 
-	for (const achievment of [streak, exp, mistakes, challenges, languages]) {
-		achievment.map((x) => x.toObject());
-	}
-
-	const achievments: UserAchievement[] = [
+	const achievements: UserAchievement[] = [
 		{ ...streak[0], progress: currentStreak },
 		{ ...exp[0], progress: totalExp },
 		{ ...mistakes[0], progress: noMistakes },
@@ -177,60 +179,31 @@ async function getAchievments(
 		{ ...languages[0], progress: totalLanguages },
 	];
 
-	// Streak
-	for (let i = 1; i < streak.length; i++) {
-		if (i === streak.length - 1 && streak[streak.length - 1].goal <= currentStreak) {
-			achievments[0] = { ...streak[streak.length - 1], progress: currentStreak };
+	const updateAchievement = (
+		achievementArray: any[],
+		progress: number,
+		achievementIndex: number,
+	) => {
+		for (let i = 1; i < achievementArray.length; i++) {
+			if (
+				(i === achievementArray.length - 1 &&
+					achievementArray[achievementArray.length - 1].goal <= progress) ||
+				(achievementArray[i].goal > progress && achievementArray[i - 1].goal <= progress)
+			) {
+				achievements[achievementIndex] = {
+					...achievementArray[i === achievementArray.length - 1 ? achievementArray.length - 1 : i],
+					progress,
+				};
+				break;
+			}
 		}
-		if (streak[i].goal > currentStreak && streak[i - 1].goal <= currentStreak) {
-			achievments[0] = { ...streak[i], progress: currentStreak };
-			break;
-		}
-	}
+	};
 
-	// Exp
-	for (let i = 1; i < exp.length; i++) {
-		if (i === exp.length - 1 && exp[exp.length - 1].goal <= totalExp) {
-			achievments[1] = { ...exp[exp.length - 1], progress: totalExp };
-		}
-		if (exp[i].goal > totalExp && exp[i - 1].goal <= totalExp) {
-			achievments[1] = { ...exp[i], progress: totalExp };
-			break;
-		}
-	}
+	updateAchievement(streak, currentStreak, 0);
+	updateAchievement(exp, totalExp, 1);
+	updateAchievement(mistakes, noMistakes, 2);
+	updateAchievement(challenges, totalChallenges, 3);
+	updateAchievement(languages, totalLanguages, 4);
 
-	// No mistakes
-	for (let i = 1; i < mistakes.length; i++) {
-		if (i === mistakes.length - 1 && mistakes[mistakes.length - 1].goal <= noMistakes) {
-			achievments[2] = { ...mistakes[mistakes.length - 1], progress: noMistakes };
-		}
-		if (mistakes[i].goal > noMistakes && mistakes[i - 1].goal <= noMistakes) {
-			achievments[2] = { ...mistakes[i], progress: noMistakes };
-			break;
-		}
-	}
-
-	// Challenges
-	for (let i = 1; i < challenges.length; i++) {
-		if (i === challenges.length - 1 && challenges[challenges.length - 1].goal <= totalChallenges) {
-			achievments[3] = { ...challenges[challenges.length - 1], progress: totalChallenges };
-		}
-		if (challenges[i].goal > totalChallenges && challenges[i - 1].goal <= totalChallenges) {
-			achievments[3] = { ...challenges[i], progress: totalChallenges };
-			break;
-		}
-	}
-
-	// Languages
-	for (let i = 1; i < languages.length; i++) {
-		if (i === languages.length - 1 && languages[languages.length - 1].goal <= totalLanguages) {
-			achievments[4] = { ...languages[languages.length - 1], progress: totalLanguages };
-		}
-		if (languages[i].goal > totalLanguages && languages[i - 1].goal <= totalLanguages) {
-			achievments[4] = { ...languages[i], progress: totalLanguages };
-			break;
-		}
-	}
-
-	return achievments;
+	return achievements;
 }

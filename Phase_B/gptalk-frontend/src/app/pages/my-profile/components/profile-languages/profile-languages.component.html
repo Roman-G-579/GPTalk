@@ -1,0 +1,14 @@
+<main>
+	<h1>Languages</h1>
+	<div class="content">
+		@for (language of languages(); track language) {
+			<div class="language">
+				<div>
+					<img [src]="languageIconRecord[language.language]" [alt]="language.language" width="50px"/>
+					<p>{{ language.language }}</p>
+				</div>
+				<p-tag [severity]="languageRankClassRecord[language.rank]" [value]="language.rank"></p-tag>
+			</div>
+		}
+	</div>
+</main>
