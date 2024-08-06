@@ -8,10 +8,11 @@ const openai = new OpenAi({ apiKey: Config.OPENAI_API_KEY });
 export async function chatWithMeMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { userPrompt, language, conversation } = req.body;
+		const content = `Return a JSON in the following structure { feedback: string, followUpQuestion: string } for the following user response: ${userPrompt}`
 		const prompt = [
 			{ role: 'system', content: `You are a language tutor for ${language}.` },
 			...conversation,
-			{ role: 'user', content: userPrompt },
+			{ role: 'user', content },
 			{
 				role: 'system',
 				content: "Provide feedback on the user's response, then ask a follow-up question.",
