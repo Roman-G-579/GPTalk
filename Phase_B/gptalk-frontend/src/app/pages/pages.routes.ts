@@ -15,11 +15,6 @@ export default [
 		loadComponent: () => import('./learn/learn.component').then((c) => c.LearnComponent),
 	},
 	{
-		path: 'daily-task',
-		loadComponent: () =>
-			import('./daily-task/daily-task.component').then((c) => c.DailyTaskComponent),
-	},
-	{
 		path: 'chat-with-me',
 		loadComponent: () =>
 			import('./chat-with-me/chat-with-me.component').then((c) => c.ChatWithMeComponent),
