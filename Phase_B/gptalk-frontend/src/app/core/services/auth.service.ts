@@ -48,7 +48,6 @@ export class AuthService {
             const protectedData = data.user as UserResponse;
             this.userData.set(protectedData); //stores the protected data in a signal
             this.totalExp.set(data.user.totalExp ?? 0);
-            console.log(this.userData());
           },
           error: (err: unknown) => {
             console.log('Error fetching protected data', err);
