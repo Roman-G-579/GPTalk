@@ -1,3 +1,10 @@
 :host {
   display: block;
+  height: 100%;
+}
+
+.messages-wrapper {
+  height: 100%;
+  display: grid;
+  place-items: center;
 }

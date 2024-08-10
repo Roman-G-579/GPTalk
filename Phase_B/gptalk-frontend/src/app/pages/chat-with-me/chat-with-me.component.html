@@ -1,6 +1,7 @@
-<div class="grid place"></div>
-@for (message of conversation(); track message) {
-  <div>message</div>
-} @empty {
-  Let's start our chat!
-}
+<div class="messages-wrapper">
+  @for (message of conversation(); track message) {
+    <div class="messages">{{message}}</div>
+  } @empty {
+    Let's start our chat!
+  }
+</div>
