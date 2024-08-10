@@ -77,11 +77,7 @@ export class LearnVerificationUtils {
         return "matchFound"
       }
     }
-
-      // this.matchMistakesCnt.set(this.matchMistakesCnt() + 1);
       return "wrongMatch";
-      //TODO: for each mistake deduct exp reward of current exercise
-
   }
 
   /**
@@ -98,7 +94,6 @@ export class LearnVerificationUtils {
     const correctCat_b = exercise().words_b ?? [];
     const userCat_a = categoryMatches().cat1;
     const userCat_b = categoryMatches().cat2;
-
 
     return (
       correctCat_a.every(word => userCat_a.includes(word))

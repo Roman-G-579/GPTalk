@@ -1,5 +1,6 @@
 import { WritableSignal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
+import { LevelInfo } from '../../../models/level-info.interface';
 
 export class LearnInitializerUtils {
   /**
@@ -42,7 +43,7 @@ export class LearnInitializerUtils {
    */
   static initializeLessonParams(
     isLessonOver: WritableSignal<boolean>,
-    mistakesCounter: WritableSignal<number>,
+    mistakesCounter: WritableSignal<number>
   ) {
     isLessonOver.set(false);
     mistakesCounter.set(0);

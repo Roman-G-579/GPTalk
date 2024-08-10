@@ -5,8 +5,9 @@ import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { Exercise } from '../../../models/exercise.interface';
 import { LearnGeneratorUtils as genUtil } from '../utils/learn-generator-utils';
-import { forkJoin, map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, of } from 'rxjs';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
+import { cloneDeep } from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -15,12 +16,12 @@ export class LessonGeneratorService {
   private readonly apiUrl = environment.apiUrl;
   private readonly http = inject(HttpClient);
 
-  // mockExercise_FillInTheBlank: Exercise = {
-  //   type: ExerciseType.FillInTheBlank,
-  //   answer: "הטיסה ממריאה מחר בבוקר",
-  //   choices: ["חתול","קפה","לרוץ"],
-  //   translation: "The flight takes off tomorrow"
-  // }
+  mockExercise_FillInTheBlank: Exercise = {
+    type: ExerciseType.FillInTheBlank,
+    answer: "הטיסה ממריאה מחר בבוקר",
+    choices: ["חתול","קפה","לרוץ"],
+    translation: "The flight takes off tomorrow"
+  }
   //
   // mockExercise_TranslateWord: Exercise = {
   //   type: ExerciseType.TranslateWord,
@@ -41,16 +42,16 @@ export class LessonGeneratorService {
   //   translation: "When do you plan to finish the project? / I plan to finish the project by the end of the week."
   // }
   //
-  // mockExercise_MatchTheWords: Exercise = {
-  //   type: ExerciseType.MatchTheWords,
-  //   "correctPairs": [
-  //     ["מכונית", "car"],
-  //     ["בית", "house"],
-  //     ["חתול", "cat"],
-  //     ["עץ", "tree"],
-  //     ["ספר", "book"]
-  //   ]
-  // }
+  mockExercise_MatchTheWords: Exercise = {
+    type: ExerciseType.MatchTheWords,
+    "correctPairs": [
+      ["מכונית", "car"],
+      ["בית", "house"],
+      ["חתול", "cat"],
+      ["עץ", "tree"],
+      ["ספר", "book"]
+    ]
+  }
   //
   // mockExercise_ReorderSentence: Exercise = {
   //   type: ExerciseType.ReorderSentence,
@@ -96,7 +97,7 @@ export class LessonGeneratorService {
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
 
       // The Chosen function
-      const generatorFunc = exerciseGenerators[randomIndex];
+      const generatorFunc = exerciseGenerators[0];
 
       // Generate an exercise prompt based on the randomized exercise index
       let exercisePrompt = generatorFunc(language,difficulty,keyWords);
@@ -104,9 +105,7 @@ export class LessonGeneratorService {
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
         map(response => {
-          console.log("RESPONSE: ");
-          console.log(response);
-          const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
+          const exerciseType = <ExerciseType>(0); // Sets the generated exercise's type
           return genUtil.convertToExerciseObject(response, exerciseType, language);
         })
       );
@@ -262,10 +261,10 @@ export class LessonGeneratorService {
     const {href} = new URL('generateLesson', this.apiUrl);
 
     // API CONNECTION
-    return this.http.post(href,{userPrompt: promptString});
+    // return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    // return of(this.mockExercise_MatchTheCategory);
+    return of(cloneDeep(this.mockExercise_FillInTheBlank));
   }
 
 }

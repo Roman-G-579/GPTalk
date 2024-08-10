@@ -8,5 +8,5 @@ export interface UserResponse {
     userAvatar: string;
     firstName: string;
     lastName: string;
-    level: number;
+    totalExp: number;
 }
