@@ -1,7 +1,51 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
 <div class="messages-wrapper">
-  @for (message of conversation(); track message) {
-    <div class="messages">{{message}}</div>
-  } @empty {
-    Let's start our chat!
-  }
+	@for (message of conversation(); track message) {
+		<div
+			class="message text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round"
+			[class.user]="message.role === 'user'"
+			[class.system]="message.role === 'system'"
+		>
+			{{ message.content }}
+		</div>
+	} @empty {
+		<div class="no-messages">
+			<ng-lottie [options]="noMessagesOptions"></ng-lottie>
+			<span>Let's start our chat!</span>
+		</div>
+	}
+	<div
+		class="p-3 md:p-4 w-full lg:p-6 flex flex-column sm:flex-row align-items-center mt-auto border-top-1 surface-border gap-3"
+	>
+		<input
+			id="message"
+			type="text"
+			pInputText
+			placeholder="Type a message"
+			class="flex-1 w-full sm:w-auto border-round"
+			[(ngModel)]="textContent"
+			(keydown.enter)="chat()"
+		/>
+		<div class="flex w-full sm:w-auto gap-3">
+			<button
+				pButton
+				pRipple
+				label="Send"
+				icon="pi pi-send"
+				class="w-full sm:w-auto"
+				severity="contrast"
+				[disabled]="loading()"
+				(click)="chat()"
+			></button>
+			<button
+				pButton
+				pRipple
+				label="Grade Me!"
+				icon="pi pi-graduation-cap"
+				class="w-full sm:w-auto"
+				severity="success"
+				(click)="grade()"
+			></button>
+		</div>
+	</div>
 </div>

@@ -16,7 +16,7 @@ export class ChatWithMeService {
 		language: 'English' | 'Spanish' | 'Russian' | 'Hebrew',
 		conversation: Chat[],
 	) {
-		const { href } = new URL('/chat-with-me/chat', this.apiUrl);
+		const { href } = new URL('chat-with-me/chat', this.apiUrl);
 		return this.http.post<ChatResponse>(href, { userPrompt, language, conversation });
 	}
 }
