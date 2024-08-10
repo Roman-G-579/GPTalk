@@ -27,11 +27,6 @@ export class SidebarComponent {
 			route: '/pages/learn',
 		},
 		{
-			name: 'Daily Tasks',
-			icon: 'pi pi-list-check',
-			route: '/pages/daily-task',
-		},
-		{
 			name: 'Chat With Me',
 			icon: 'pi pi-comment',
 			route: '/pages/chat-with-me',
