@@ -17,6 +17,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import routes from './app.routes';
 import { provideToastr } from 'ngx-toastr';
 import { NgPipesModule } from 'ngx-pipes';
+import { provideLottieOptions } from 'ngx-lottie';
+import player from 'lottie-web';
 import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { GlobalErrorHandler } from './core/interceptors/global-error.interceptor';
 
@@ -40,6 +42,10 @@ export const appConfig: ApplicationConfig = {
 		}),
 		// ngx-pipes
 		importProvidersFrom(NgPipesModule),
+		// ngx-lottie
+		provideLottieOptions({
+			player: () => player,
+		}),
 		// interceptors
 		{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
 		{ provide: ErrorHandler, useClass: GlobalErrorHandler },
