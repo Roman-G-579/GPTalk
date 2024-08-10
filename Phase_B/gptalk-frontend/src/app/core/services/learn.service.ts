@@ -1,15 +1,24 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Language } from '../../../models/enums/language.enum';
 import { LearnMiscUtils as util } from '../utils/learn-misc-utils';
 import { LearnInitializerUtils as init } from '../utils/learn-initializer-utils';
 import { Subject } from 'rxjs';
+import { MyProfileService } from '../../pages/my-profile/my-profile.service';
+import { AuthService } from './auth.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { ExpVals } from '../../../models/enums/exp-vals.enum';
+import { LevelInfo } from '../../../models/level-info.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LearnService {
+  private readonly authService = inject(AuthService);
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiUrl}`;
 
   // Signals child components that the active exercise has changed
   onExerciseSwitch = new Subject();
@@ -22,6 +31,10 @@ export class LearnService {
   // Counters
   mistakesCounter = signal<number>(0); // Counts the mistakes in the lesson's exercises
   totalExercises = signal<number>(0); // Stores the total amount of exercises in the current lesson
+
+  // Stores user's exp and level values
+  totalExp = this.authService.totalExp;
+  lessonExp = signal<number>(0);
 
   headingText = signal<string>(""); // Contains instructions or exercise feedback
 
@@ -81,7 +94,6 @@ export class LearnService {
       null;
 
     if (curExercise) {
-      console.log(curExercise);
       // Sets the data in the exerciseData signal
       this.exerciseData.set(curExercise);
 
@@ -89,6 +101,7 @@ export class LearnService {
     }
     // If the exercise array is empty, display the results screen
     else {
+      this.postResult();
       this.displayResultsScreen();
     }
   }
@@ -132,11 +145,6 @@ export class LearnService {
 
     // Sets the current exercise's heading string
     this.headingText.set(this.exerciseData().heading ?? '');
-
-    // Once the content has been loaded, force focus on the input field, if it exists in the selected template
-    // if (this.inputFieldRef) {
-    //   this.inputFieldRef.nativeElement.focus();
-    // }
   }
 
   /**
@@ -152,12 +160,31 @@ export class LearnService {
     if (status) {
       this.headingText.set(`Correct!`);
 
-      //TODO: Add XP for correct answer
-
+      // A specific amount of xp (based on a const's value) is added to the totalExp counter.
+      // If the current exercise is MatchTheCategory and incorrect matches were chosen,
+      // the user gets a penalty to his exp reward.
+      this.addExp();
     }
     else {
       this.headingText.set(`Incorrect.`);
-      this.mistakesCounter.update(value => value + 1);
+      this.mistakesCounter.update(val => val + 1);
     }
+  }
+
+  addExp() {
+    const exp = Math.max(0, ExpVals.exercise - this.matchMistakes() * 10);
+    this.lessonExp.set(this.lessonExp() + exp);
+    this.totalExp.set(this.totalExp() + exp);
+  }
+
+  postResult() {
+    const email = this.authService.userData().email;
+    const { href } = new URL(`profile/postResult`, this.apiUrl);
+
+    return this.http.post(href, {exp: this.lessonExp(), email: email, numberOfQuestions: this.totalExercises(), mistakes: this.mistakesCounter()}).subscribe({
+      next: (res) => {
+        console.log(res);
+      }
+    })
   }
 }

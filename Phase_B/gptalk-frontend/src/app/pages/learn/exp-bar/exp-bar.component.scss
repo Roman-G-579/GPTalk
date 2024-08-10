@@ -1,0 +1,37 @@
+::ng-deep .exp-bar-wrapper {
+  width: 20%;
+  position: absolute;
+  right: 3.5%;
+  top: 3%;
+
+  background: linear-gradient(to right, rgb(174, 187, 215) 0%, rgba(39, 133, 236, 0.64) 100%);
+  padding: 7px;
+  border-radius: 9px;
+  & .p-progressbar {
+    background: #b5d5ee;
+  }
+  & .p-progressbar-value {
+    background: linear-gradient(to left, #54bffc, #717cf1);
+  }
+}
+
+.lvl-display-wrapper {
+  position: absolute;
+  right: 0.4%;
+  top: 1.5%;
+}
+
+.lvl-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-55%, -52%);
+  font-family: Poppins, sans-serif;
+  font-weight: bold;
+  color: rgba(33, 109, 194, 0.85);
+  font-size: 24px;
+  text-align: center;
+  user-select: none;
+}
+
+

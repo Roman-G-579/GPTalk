@@ -9,7 +9,7 @@ export interface User {
 	email: string;
 	password: string;
 	maxStreak: number;
-	level?: number;
+	totalExp: number;
 	achievements: UserAchievement[];
 	languages: {
     language: string;
@@ -42,6 +42,10 @@ const userSchema = new Schema(
 		email: {
 			type: String,
 			required: true,
+		},
+		totalExp: {
+			type: Number,
+			default: 0,
 		},
 		achievements: [userAchievementSchema],
 		languages: [

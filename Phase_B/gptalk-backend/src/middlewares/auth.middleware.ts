@@ -4,12 +4,13 @@ import HttpStatus from 'http-status';
 import { User } from '../models/user.interface'; // Import the IUser interface
 import { VisitLogModel } from '../models/visit-log.interface';
 import mongoose from 'mongoose';
+import { calculateTotalExp } from '../controllers/user-profile.controller';
 
 interface AuthenticatedRequest extends Request {
   user?: User; // Extend the Request interface to include user
 }
 
-export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const authMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   passport.authenticate('jwt', { session: false }, async (err: Error, user: User, info: unknown) => {
     if (err) {
       console.error('Error in authMiddleware:', err); // Log any error
@@ -20,7 +21,10 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
       console.log(`Token: ${req.headers.authorization}`); // Log the token
       return res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Unauthorized' });
     }
+    user.totalExp = await calculateTotalExp(user._id);
+    console.log(user);
     req.user = user;
+
     console.log('User authenticated:', user.email); // Log authenticated user
 
     await logUserVisit(user);

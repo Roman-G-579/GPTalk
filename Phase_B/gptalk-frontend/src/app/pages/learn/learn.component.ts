@@ -21,6 +21,7 @@ import { MatchTheWordsComponent } from './match-the-words/match-the-words.compon
 import { ReorderSentenceComponent } from './reorder-sentence/reorder-sentence.component';
 import { MatchTheCategoryComponent } from './match-the-category/match-the-category.component';
 import { ResultsScreenComponent } from './results-screen/results-screen.component';
+import { ExpBarComponent } from './exp-bar/exp-bar.component';
 
 @Component({
   selector: 'app-learn',
@@ -29,6 +30,7 @@ import { ResultsScreenComponent } from './results-screen/results-screen.componen
     CommonModule,
     Button,
     BypassSecurityPipe,
+    ExpBarComponent,
   ],
   templateUrl: './learn.component.html',
   styleUrl: './learn.component.scss',
@@ -49,7 +51,7 @@ export class LearnComponent implements OnInit {
   lessonLanguage = this.lrn.lessonLanguage;
 
   ngOnInit() {
-    this.lgService.generateLesson(Language.Hebrew, Difficulty.Medium, 5).subscribe({
+    this.lgService.generateLesson(Language.Hebrew, Difficulty.Medium, 2).subscribe({
       next: (exercises: Exercise[]) => {
         this.lrn.setUpLesson(exercises);
         this.lessonLanguage.set(Language.Hebrew); //TODO: change method of setting current lesson's language

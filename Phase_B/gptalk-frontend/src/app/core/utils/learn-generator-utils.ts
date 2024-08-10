@@ -1,7 +1,6 @@
 import {Difficulty} from '../../../models/enums/difficulty.enum';
-import {WritableSignal} from '@angular/core';
 import {Exercise} from '../../../models/exercise.interface';
-import _, { random } from 'lodash';
+import _ from 'lodash';
 import {ExerciseType} from '../../../models/enums/exercise-type.enum';
 import {Language} from '../../../models/enums/language.enum';
 import {TOPICS} from './topics';
@@ -38,6 +37,11 @@ export class LearnGeneratorUtils {
     return keyWords;
   }
 
+  /**
+   * Updates the keywords array with a random topic taken from the topics array
+   * @param keywords the keywords array
+   * @returns the updated array
+   */
   static changeTopicKeyWord(keywords: string[]) {
     const randomIndex: number = Math.floor(Math.random() * TOPICS.length);
 
@@ -53,7 +57,7 @@ export class LearnGeneratorUtils {
    * @param exerciseJson the JSON object
    * @param exerciseType the type of the current exercise
    * @param language the lesson's selected language
-   * @returns an Exercise objects array
+   * @returns an Exercise object
    */
   static convertToExerciseObject(exerciseJson: any, exerciseType: ExerciseType, language: Language): Exercise {
     let exercise: Exercise = {
@@ -77,6 +81,7 @@ export class LearnGeneratorUtils {
    * Adds heading, instructions and other exercise-specific data to the exercise
    * @param language the lesson's selected language
    * @param exercise the given exercise
+   * @returns the updated exercise object
    */
   private static addExerciseSpecificData(exercise: Exercise, language: Language): Exercise {
 
@@ -128,6 +133,11 @@ export class LearnGeneratorUtils {
     }
   }
 
+  /**
+   * Sets the parameters of a "FillInTheBlank" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
   private static setFillInTheBlank(exercise: Exercise): Exercise {
     // Takes the answer sentence and converts it to an array
     const fullSentence = exercise.answer ?? "";
@@ -159,6 +169,11 @@ export class LearnGeneratorUtils {
     return exercise;
   }
 
+  /**
+   * Sets the parameters of a "TranslateWord" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
   private static setTranslateWord(exercise: Exercise): Exercise {
     // Takes the random words array
     const choices = exercise.choices ?? [];
@@ -177,6 +192,11 @@ export class LearnGeneratorUtils {
     return exercise;
   }
 
+  /**
+   * Sets the parameters of a "CompleteTheConversation" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
   private static setCompleteTheConversation(exercise: Exercise) {
     let choices = exercise.choices ?? [];
     choices = choices.map(str => str.replace(/[,.!?:]/g,''));
@@ -188,11 +208,21 @@ export class LearnGeneratorUtils {
     return exercise;
   }
 
+  /**
+   * Sets the parameters of a "MatchTheWords" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
   private static setMatchTheWords(exercise: Exercise): Exercise {
     exercise.randomizedPairs = this.shuffleWordPairs(exercise.correctPairs ?? []);
     return exercise;
   }
 
+  /**
+   * Sets the parameters of a "ReorderSentence" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
   private static setReorderSentence(exercise: Exercise): Exercise {
     let choices = exercise.answer?.split(' ') ?? [];
     choices = _.shuffle(choices);
@@ -200,11 +230,17 @@ export class LearnGeneratorUtils {
     return exercise;
   }
 
+  /**
+   * Sets the parameters of a "MatchTheCategory" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
   private static setMatchTheCategory(exercise: Exercise): Exercise {
     const choices = [...exercise.words_a ?? "", ...exercise.words_b ?? ""];
     exercise.choices = _.shuffle(choices);
     return exercise;
   }
+
   /**
    * Shuffles the locations of the left words and the locations of the right words in the array
    * @param wordPairs an array of string pairs. first element in pair - left word.

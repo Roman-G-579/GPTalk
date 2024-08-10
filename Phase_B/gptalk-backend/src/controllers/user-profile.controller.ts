@@ -1,13 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UserModel } from '../models/user.interface';
 import { VisitLogModel } from '../models/visit-log.interface';
 import { Schema } from 'mongoose';
-import { ResultModel } from '../models/result.interface';
+import { Result, ResultModel } from '../models/result.interface';
 import { UserProfile } from '../models/user-profile.interface';
 import httpStatus from 'http-status';
 import { ChallengeModel } from '../models/challenge.interface';
 import { AchievementModel } from '../models/achievment.interface';
-import { Result } from '../models/result.interface';
 import { Language, LanguageModel } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
 
@@ -72,6 +71,78 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 		next(err);
 	}
 }
+
+/**
+ * Returns the progress to the next level
+ * And the exp required for the next level
+ * @param req
+ * @param res
+ * @param next
+ */
+export async function getLevelInfo(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { email } = req.params;
+			const user = await UserModel.findOne({ email });
+
+			if (!user) {
+				return res.status(httpStatus.NOT_FOUND).json({ message: 'User not found' });
+			}
+
+			let level = 1;
+			let expForNextLevel = 100;
+
+			let totalExp = await calculateTotalExp(user._id);
+
+			let remainingExp = totalExp;
+			// Calculate the level and the remaining experience
+			while (remainingExp >= expForNextLevel) {
+				remainingExp -= expForNextLevel;
+				level++;
+				expForNextLevel *= 2;
+			}
+			return res.status(httpStatus.OK).send({level, totalExp, expForNextLevel});
+	} catch (err) {
+			next(err);
+	}
+}
+
+export async function postResult(req: Request, res: Response, next: NextFunction) {
+	try {
+			const { exp, email, numberOfQuestions, mistakes } = req.body
+
+			if (!exp || !email) {
+				return res.status(400).json({ message: 'Missing data in postResult function' });
+			}
+			const user = await UserModel.findOne({ email });
+
+			if (!user) {
+				return res.status(httpStatus.NOT_FOUND).json({ message: 'User not found' });
+			}
+
+			// Create and save the new result document
+			const resultDocument = new ResultModel({
+				exp,
+				user: user._id
+			});
+
+			const result = await resultDocument.save();
+
+			const challengeDocument = new ChallengeModel({
+				numberOfQuestions,
+				mistakes,
+				user: user._id,
+				result: result._id
+			});
+
+			await challengeDocument.save();
+
+			res.status(200).json(result);
+
+	} catch (err) {
+		next(err);
+	}
+}
+
 
 async function calculateTopPercentage(userId: Schema.Types.ObjectId): Promise<number> {
 	const users = await UserModel.find().sort({ totalExp: -1 }).exec();
@@ -140,6 +211,7 @@ async function calculateExpertOrMasterLanguages(userId: Schema.Types.ObjectId) {
 
 export async function calculateTotalExp(userId: Schema.Types.ObjectId) {
 	const results = await ResultModel.find({ user: userId });
+	console.log('hi');
 	return results.reduce((total: number, result: Result) => total + result.exp, 0);
 }
 
@@ -155,6 +227,8 @@ export function calculateLevel(totalExp: number): number {
 
 	return level;
 }
+
+
 
 async function getAchievements(
 	currentStreak: number,
