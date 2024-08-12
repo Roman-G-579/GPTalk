@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from '@angular/core';
 import { finalize } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { LottieComponent, AnimationOptions } from 'ngx-lottie';
@@ -37,7 +37,7 @@ export class ChatWithMeComponent {
 	private readonly router = inject(Router);
 
 	//! TODO: Change to enum
-	language: 'English' | 'Spanish' | 'Russian' | 'Hebrew' = 'English';
+	language: WritableSignal<'English' | 'Spanish' | 'Russian' | 'Hebrew' | ''> = signal('');
 	conversation = signal<Chat[]>([]);
 	loading = signal(false);
 	gradeLoading = signal(false);
@@ -50,11 +50,30 @@ export class ChatWithMeComponent {
 		path: '/assets/lottie/no-messages.json',
 	};
 
+	languages: { language: 'English' | 'Spanish' | 'Russian' | 'Hebrew'; img: string }[] = [
+		{
+			language: 'English',
+			img: 'assets/languages/english.png',
+		},
+		{
+			language: 'Spanish',
+			img: 'assets/languages/spanish.png',
+		},
+		{
+			language: 'Russian',
+			img: 'assets/languages/russian.png',
+		},
+		{
+			language: 'Hebrew',
+			img: 'assets/languages/hebrew.png',
+		},
+	];
+
 	chat() {
 		this.loading.set(true);
 		this.conversation.update((values) => [...values, { role: 'user', content: this.textContent }]),
 			this.chatWithMeService
-				.chat(this.textContent, this.language, this.conversation())
+				.chat(this.textContent, this.language(), this.conversation())
 				.pipe(finalize(() => this.loading.set(false)))
 				.subscribe({
 					next: (response: ChatResponse) => {
@@ -72,7 +91,7 @@ export class ChatWithMeComponent {
 		}
 		this.loading.set(true);
 		this.gradeLoading.set(true);
-		this.chatWithMeService.grade(this.language, this.conversation()).subscribe({
+		this.chatWithMeService.grade(this.language(), this.conversation()).subscribe({
 			next: (val: Grade) => {
 				this.openDialog(val);
 			},
@@ -95,5 +114,9 @@ export class ChatWithMeComponent {
 				this.router.navigateByUrl('pages/home');
 			}
 		});
+	}
+
+	setLanguage(lang: 'English' | 'Spanish' | 'Russian' | 'Hebrew') {
+		this.language.set(lang);
 	}
 }

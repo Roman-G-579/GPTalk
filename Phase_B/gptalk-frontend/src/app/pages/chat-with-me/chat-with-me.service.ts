@@ -14,14 +14,14 @@ export class ChatWithMeService {
 
 	chat(
 		userPrompt: string,
-		language: 'English' | 'Spanish' | 'Russian' | 'Hebrew',
+		language: 'English' | 'Spanish' | 'Russian' | 'Hebrew' | '',
 		conversation: Chat[],
 	) {
 		const { href } = new URL('chat-with-me/chat', this.apiUrl);
 		return this.http.post<ChatResponse>(href, { userPrompt, language, conversation });
 	}
 
-	grade(language: 'English' | 'Spanish' | 'Russian' | 'Hebrew', conversation: Chat[]) {
+	grade(language: 'English' | 'Spanish' | 'Russian' | 'Hebrew' | '', conversation: Chat[]) {
 		const { href } = new URL('chat-with-me/grade', this.apiUrl);
 		return this.http.post<Grade>(href, { language, conversation });
 	}
