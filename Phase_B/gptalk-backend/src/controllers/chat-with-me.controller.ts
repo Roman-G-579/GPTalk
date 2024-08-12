@@ -8,7 +8,7 @@ const openai = new OpenAi({ apiKey: Config.OPENAI_API_KEY });
 export async function chatWithMeMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { userPrompt, language, conversation } = req.body;
-		const content = `Return a JSON in the following structure { feedback: string, followUpQuestion: string } for the following user response: ${userPrompt}`
+		const content = `Return a JSON in the following structure { feedback: string, followUpQuestion: string } for the following user response: ${userPrompt}`;
 		const prompt = [
 			{ role: 'system', content: `You are a language tutor for ${language}.` },
 			...conversation,
@@ -40,7 +40,7 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 			{
 				role: 'system',
 				content:
-					"Please provide a grade from 1 to 5 for the user's overall performance and assign experience points accordingly.",
+					'Return a JSON in the following structure { grade: number } where 1 <= grade <= 100 for the latests conversation where 1 is the lowest grade and 100 is the highest.',
 			},
 		];
 
