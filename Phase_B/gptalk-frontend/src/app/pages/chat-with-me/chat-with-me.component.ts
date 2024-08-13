@@ -39,6 +39,7 @@ export class ChatWithMeComponent {
 	//! TODO: Change to enum
 	language: WritableSignal<'English' | 'Spanish' | 'Russian' | 'Hebrew' | ''> = signal('');
 	conversation = signal<Chat[]>([]);
+
 	loading = signal(false);
 	gradeLoading = signal(false);
 
