@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import OpenAi from 'openai';
 import { Config } from '../config/config';
 import httpStatus from 'http-status';
+import { User } from '../models/user.interface';
+import { ResultModel } from '../models/result.interface';
 
 const openai = new OpenAi({ apiKey: Config.OPENAI_API_KEY });
 
@@ -51,8 +53,21 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 			temperature: 0.3,
 		});
 
-		return res.status(httpStatus.OK).send(completion.choices[0].message.content);
+		const gradeObj = JSON.parse(completion.choices[0].message.content);
+
+
+		await saveToDb(gradeObj as unknown as { grade: number }, req.user);
+
+		return res.status(httpStatus.OK).send(gradeObj);
 	} catch (err) {
 		next(err);
 	}
+}
+
+async function saveToDb(gradeObj: { grade: number }, user: User) {
+	const obj = {
+		exp: gradeObj.grade,
+		user: user._id.toString(),
+	};
+	return await ResultModel.create(obj);
 }
