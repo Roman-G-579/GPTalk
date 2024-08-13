@@ -22,7 +22,7 @@
           [class.user]="message.role === 'user'"
           [class.system]="message.role === 'system'"
         >
-          {{ message.content }}
+          <span dir="auto">{{ message.content }}</span>
         </div>
       } @empty {
         <div class="no-messages">
