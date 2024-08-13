@@ -1,18 +1,18 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { LottieComponent, AnimationOptions } from 'ngx-lottie';
-import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ChatWithMeService } from './chat-with-me.service';
 import { Chat } from './interfaces/chat.interface';
 import { ChatResponse } from './interfaces/chat-response.interface';
-import { GradeDialogComponent } from './grade-dialog/grade-dialog.component';
-import { Router } from '@angular/router';
 import { Grade } from './interfaces/grade.interface';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
 	selector: 'app-chat-with-me',
@@ -23,9 +23,9 @@ import { Grade } from './interfaces/grade.interface';
 		FormsModule,
 		InputTextModule,
 		ButtonModule,
-		DynamicDialogModule,
+		ConfirmDialogModule,
 	],
-	providers: [DialogService],
+	providers: [ConfirmationService],
 	templateUrl: './chat-with-me.component.html',
 	styleUrl: './chat-with-me.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,7 +33,7 @@ import { Grade } from './interfaces/grade.interface';
 export class ChatWithMeComponent {
 	private readonly chatWithMeService = inject(ChatWithMeService);
 	private readonly toastrService = inject(ToastrService);
-	private readonly dialogService = inject(DialogService);
+	private readonly confirmationService = inject(ConfirmationService);
 	private readonly router = inject(Router);
 
 	//! TODO: Change to enum
@@ -43,8 +43,6 @@ export class ChatWithMeComponent {
 	gradeLoading = signal(false);
 
 	textContent = '';
-
-	ref: DynamicDialogRef | undefined;
 
 	noMessagesOptions: AnimationOptions = {
 		path: '/assets/lottie/no-messages.json',
@@ -86,7 +84,7 @@ export class ChatWithMeComponent {
 	}
 
 	grade() {
-		if (!this.conversation.length) {
+		if (!this.conversation().length) {
 			return;
 		}
 		this.loading.set(true);
@@ -100,23 +98,21 @@ export class ChatWithMeComponent {
 	}
 
 	openDialog(grade: Grade) {
-		this.ref = this.dialogService.open(GradeDialogComponent, {
+    console.log(grade);
+		this.confirmationService.confirm({
 			header: 'Session Grade',
-			data: {
-				grade,
-			},
-		});
-
-		this.ref.onClose.subscribe((response: 'new' | 'home') => {
-			if (response === 'new') {
+			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better next time!'}`,
+			accept: () => {
+        this.setLanguage('');
 				this.conversation.set([]);
-			} else {
+			},
+			reject: () => {
 				this.router.navigateByUrl('pages/home');
-			}
+			},
 		});
 	}
 
-	setLanguage(lang: 'English' | 'Spanish' | 'Russian' | 'Hebrew') {
+	setLanguage(lang: 'English' | 'Spanish' | 'Russian' | 'Hebrew' | '') {
 		this.language.set(lang);
 	}
 }
