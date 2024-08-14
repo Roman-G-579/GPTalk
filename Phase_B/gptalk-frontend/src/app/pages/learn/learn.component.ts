@@ -54,7 +54,8 @@ export class LearnComponent implements OnInit {
     this.lgService.generateLesson(Language.Hebrew, Difficulty.Medium, 2).subscribe({
       next: (exercises: Exercise[]) => {
         this.lrn.setUpLesson(exercises);
-        this.lessonLanguage.set(Language.Hebrew); //TODO: change method of setting current lesson's language
+        //TODO: change method of setting current lesson's language
+        this.lessonLanguage.set(Language.Hebrew);
         this.isLoading.set(false);
       }
     })

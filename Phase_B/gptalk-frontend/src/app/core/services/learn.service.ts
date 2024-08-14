@@ -2,7 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Language } from '../../../models/enums/language.enum';
-import { LearnMiscUtils as util } from '../utils/learn-misc-utils';
+import { MiscUtils as util } from '../utils/misc-utils';
 import { LearnInitializerUtils as init } from '../utils/learn-initializer-utils';
 import { Subject } from 'rxjs';
 import { MyProfileService } from '../../pages/my-profile/my-profile.service';
@@ -78,7 +78,7 @@ export class LearnService {
     this.exerciseArr.set(exercisesArr);
     this.totalExercises.set(exercisesArr.length); // Sets the exercises count
 
-    init.initializeLessonParams(this.isLessonOver,this.mistakesCounter);
+    init.initializeLessonParams(this.isLessonOver,this.mistakesCounter, this.lessonExp);
 
    this.setUpNextExercise();
   }
@@ -160,9 +160,7 @@ export class LearnService {
     if (status) {
       this.headingText.set(`Correct!`);
 
-      // A specific amount of xp (based on a const's value) is added to the totalExp counter.
-      // If the current exercise is MatchTheCategory and incorrect matches were chosen,
-      // the user gets a penalty to his exp reward.
+      // Updates the exp counters for a correct answer
       this.addExp();
     }
     else {
@@ -171,20 +169,30 @@ export class LearnService {
     }
   }
 
+  /**
+   *  Adds a specific amount of xp (based on a const's value) is added to the totalExp counter.
+   *  If the current exercise is MatchTheCategory and incorrect matches were chosen,
+   *  the user gets a penalty to his exp reward.
+   */
   addExp() {
     const exp = Math.max(0, ExpVals.exercise - this.matchMistakes() * 10);
     this.lessonExp.set(this.lessonExp() + exp);
     this.totalExp.set(this.totalExp() + exp);
   }
 
+  /**
+   * Saves the lesson result to the database
+   */
   postResult() {
     const email = this.authService.userData().email;
     const { href } = new URL(`profile/postResult`, this.apiUrl);
 
-    return this.http.post(href, {exp: this.lessonExp(), email: email, numberOfQuestions: this.totalExercises(), mistakes: this.mistakesCounter()}).subscribe({
-      next: (res) => {
-        console.log(res);
-      }
+    return this.http.post(href, {
+      exp: this.lessonExp(),
+      email: email,
+      numberOfQuestions: this.totalExercises(),
+      mistakes: this.mistakesCounter()
+    }).subscribe({
     })
   }
 }

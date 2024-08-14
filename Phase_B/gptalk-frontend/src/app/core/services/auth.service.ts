@@ -1,4 +1,4 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -25,17 +25,10 @@ export class AuthService {
 
   totalExp = signal<number>(0);
   level = computed(() => {
-    let level = 1;
-    let expForNextLevel = 100;
-    let remainingExp = this.totalExp();
+    if (this.totalExp() < 100) return 1;
 
-    while (remainingExp >= expForNextLevel) {
-      remainingExp -= expForNextLevel;
-      level++;
-      expForNextLevel *= 2;
-    }
+    return Math.floor(Math.log2(this.totalExp() / 100) + 1) + 1;
 
-    return level;
   });
 
   // Calls the login middleware function, with the given email and password as parameters
@@ -48,7 +41,6 @@ export class AuthService {
             const protectedData = data.user as UserResponse;
             this.userData.set(protectedData); //stores the protected data in a signal
             this.totalExp.set(data.user.totalExp ?? 0);
-            console.log(this.userData());
           },
           error: (err: unknown) => {
             console.log('Error fetching protected data', err);

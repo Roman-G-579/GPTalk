@@ -73,39 +73,12 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 }
 
 /**
- * Returns the progress to the next level
- * And the exp required for the next level
+ * Adds a document to the results collection and the challenges (lessons) collection,
+ * containing the results of the latest lesson
  * @param req
  * @param res
  * @param next
  */
-export async function getLevelInfo(req: Request, res: Response, next: NextFunction) {
-		try {
-			const { email } = req.params;
-			const user = await UserModel.findOne({ email });
-
-			if (!user) {
-				return res.status(httpStatus.NOT_FOUND).json({ message: 'User not found' });
-			}
-
-			let level = 1;
-			let expForNextLevel = 100;
-
-			let totalExp = await calculateTotalExp(user._id);
-
-			let remainingExp = totalExp;
-			// Calculate the level and the remaining experience
-			while (remainingExp >= expForNextLevel) {
-				remainingExp -= expForNextLevel;
-				level++;
-				expForNextLevel *= 2;
-			}
-			return res.status(httpStatus.OK).send({level, totalExp, expForNextLevel});
-	} catch (err) {
-			next(err);
-	}
-}
-
 export async function postResult(req: Request, res: Response, next: NextFunction) {
 	try {
 			const { exp, email, numberOfQuestions, mistakes } = req.body
@@ -126,7 +99,7 @@ export async function postResult(req: Request, res: Response, next: NextFunction
 			});
 
 			const result = await resultDocument.save();
-
+			//TODO: change challenge to lesson in code and in database
 			const challengeDocument = new ChallengeModel({
 				numberOfQuestions,
 				mistakes,
@@ -211,7 +184,6 @@ async function calculateExpertOrMasterLanguages(userId: Schema.Types.ObjectId) {
 
 export async function calculateTotalExp(userId: Schema.Types.ObjectId) {
 	const results = await ResultModel.find({ user: userId });
-	console.log('hi');
 	return results.reduce((total: number, result: Result) => total + result.exp, 0);
 }
 

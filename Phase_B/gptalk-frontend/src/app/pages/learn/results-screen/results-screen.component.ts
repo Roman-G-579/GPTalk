@@ -21,6 +21,7 @@ export class ResultsScreenComponent {
   private readonly route = inject(ActivatedRoute);
 
   totalExercises = this.lrn.totalExercises;
+  lessonExp = this.lrn.lessonExp;
   correctAnswers = this.totalExercises() - this.lrn.mistakesCounter();
 
   navigateHome() {
