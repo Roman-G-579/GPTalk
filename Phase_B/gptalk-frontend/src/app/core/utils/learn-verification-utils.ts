@@ -2,7 +2,7 @@ import { WritableSignal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { distance } from 'fastest-levenshtein';
-import { LearnMiscUtils as util } from './learn-misc-utils';
+import { MiscUtils as util } from './misc-utils';
 
 /**
  * Contains functions related to answer verifications
