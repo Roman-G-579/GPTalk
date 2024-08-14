@@ -38,6 +38,8 @@
     "@ngneat/until-destroy": "^10.0.0",
     "fastest-levenshtein": "^1.0.16",
     "lodash": "^4.17.21",
+    "lottie-web": "^5.12.2",
+    "ngx-lottie": "^11.0.2",
     "ngx-pipes": "^3.2.2",
     "ngx-toastr": "^18.0.0",
     "primeflex": "^3.3.1",

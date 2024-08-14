@@ -2,13 +2,15 @@ import { Request, Response, NextFunction } from 'express';
 import OpenAi from 'openai';
 import { Config } from '../config/config';
 import httpStatus from 'http-status';
+import { User } from '../models/user.interface';
+import { ResultModel } from '../models/result.interface';
 
 const openai = new OpenAi({ apiKey: Config.OPENAI_API_KEY });
 
 export async function chatWithMeMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { userPrompt, language, conversation } = req.body;
-		const content = `Return a JSON in the following structure { feedback: string, followUpQuestion: string } for the following user response: ${userPrompt}`
+		const content = `Return a JSON in the following structure { feedback: string, followUpQuestion: string } for the following user response: ${userPrompt}`;
 		const prompt = [
 			{ role: 'system', content: `You are a language tutor for ${language}.` },
 			...conversation,
@@ -40,7 +42,7 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 			{
 				role: 'system',
 				content:
-					"Please provide a grade from 1 to 5 for the user's overall performance and assign experience points accordingly.",
+					'Return a JSON in the following structure { grade: number } where 1 <= grade <= 100 for the latests conversation where 1 is the lowest grade and 100 is the highest.',
 			},
 		];
 
@@ -51,8 +53,21 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 			temperature: 0.3,
 		});
 
-		return res.status(httpStatus.OK).send(completion.choices[0].message.content);
+		const gradeObj = JSON.parse(completion.choices[0].message.content);
+
+
+		await saveToDb(gradeObj as unknown as { grade: number }, req.user);
+
+		return res.status(httpStatus.OK).send(gradeObj);
 	} catch (err) {
 		next(err);
 	}
+}
+
+async function saveToDb(gradeObj: { grade: number }, user: User) {
+	const obj = {
+		exp: gradeObj.grade,
+		user: user._id.toString(),
+	};
+	return await ResultModel.create(obj);
 }

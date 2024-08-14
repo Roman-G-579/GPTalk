@@ -211,7 +211,6 @@ async function calculateExpertOrMasterLanguages(userId: Schema.Types.ObjectId) {
 
 export async function calculateTotalExp(userId: Schema.Types.ObjectId) {
 	const results = await ResultModel.find({ user: userId });
-	console.log('hi');
 	return results.reduce((total: number, result: Result) => total + result.exp, 0);
 }
 

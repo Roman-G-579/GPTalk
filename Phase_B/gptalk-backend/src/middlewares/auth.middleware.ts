@@ -17,12 +17,9 @@ export const authMiddleware = async (req: AuthenticatedRequest, res: Response, n
       return next(err);
     }
     if (!user) {
-      console.log('Unauthorized access attempt'); // Log unauthorized access
-      console.log(`Token: ${req.headers.authorization}`); // Log the token
       return res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Unauthorized' });
     }
     user.totalExp = await calculateTotalExp(user._id);
-    console.log(user);
     req.user = user;
 
     console.log('User authenticated:', user.email); // Log authenticated user
