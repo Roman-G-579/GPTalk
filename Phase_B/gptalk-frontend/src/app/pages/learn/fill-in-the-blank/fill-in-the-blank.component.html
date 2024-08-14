@@ -3,11 +3,13 @@
     <input
       #inputField
       class="fill-in-the-blank-input-field text-center"
+      autocomplete="off"
       autofocus
       type="text"
       id="inputForm"
       title="Input Field"
       [readOnly]="isDone()"
+      [placeholder]="isDone() ? '' : '____'"
       [value]="isDone() ? exerciseData().answer : ''"
       (blur)="!isDone() ? utilHtml.forceFocus(inputFieldRef) : ''"
       (keyup.enter)="inputForm.value ?
