@@ -102,7 +102,7 @@ export class ChatWithMeComponent {
     console.log(grade);
 		this.confirmationService.confirm({
 			header: 'Session Grade',
-			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better next time!'}`,
+			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'}`,
 			accept: () => {
         this.setLanguage('');
 				this.conversation.set([]);
