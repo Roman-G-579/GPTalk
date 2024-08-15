@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { MiscUtils } from '../../core/utils/misc.utils';
 import { PanelModule } from 'primeng/panel';
@@ -7,6 +7,7 @@ import { DailyWordService } from '../../core/services/daily-word.service';
 import { Language } from '../../../models/enums/language.enum';
 import { DailyWord } from '../../../models/daily-word.interface';
 import { AvatarModule } from 'primeng/avatar';
+import { MyProfileService } from '../my-profile/my-profile.service';
 
 
 @Component({
@@ -24,6 +25,9 @@ import { AvatarModule } from 'primeng/avatar';
 export class HomeComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly wtd = inject(DailyWordService);
+  private readonly myProfileService = inject(MyProfileService);
+
+
   protected readonly util = MiscUtils;
 
   languageIconRecord: Record<Language, string> = {
@@ -34,9 +38,7 @@ export class HomeComponent implements OnInit {
   };
 
   date = new Date();
-  userData = this.authService.userData;
-  totalExp = this.authService.totalExp;
-  level = this.authService.level
+  myProfile$ = this.myProfileService.getUserProfile();
 
   dailyWord = this.wtd.dailyWord;
   ngOnInit() {
