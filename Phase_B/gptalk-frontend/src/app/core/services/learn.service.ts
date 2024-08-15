@@ -2,8 +2,8 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Language } from '../../../models/enums/language.enum';
-import { MiscUtils as util } from '../utils/misc-utils';
-import { LearnInitializerUtils as init } from '../utils/learn-initializer-utils';
+import { MiscUtils as util } from '../utils/misc.utils';
+import { LearnInitializerUtils as init } from '../utils/learn-initializer.utils';
 import { Subject } from 'rxjs';
 import { MyProfileService } from '../../pages/my-profile/my-profile.service';
 import { AuthService } from './auth.service';
@@ -101,7 +101,7 @@ export class LearnService {
     }
     // If the exercise array is empty, display the results screen
     else {
-      this.postResult();
+      this.postResult().subscribe();
       this.displayResultsScreen();
     }
   }
@@ -192,7 +192,6 @@ export class LearnService {
       email: email,
       numberOfQuestions: this.totalExercises(),
       mistakes: this.mistakesCounter()
-    }).subscribe({
     })
   }
 }

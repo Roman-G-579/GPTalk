@@ -4,7 +4,7 @@ import { PrimeTemplate } from 'primeng/api';
 import { NgClass } from '@angular/common';
 import { LearnService } from '../../../core/services/learn.service';
 import { AuthService } from '../../../core/services/auth.service';
-import {MiscUtils as util} from '../../../core/utils/misc-utils';
+import {MiscUtils as util} from '../../../core/utils/misc.utils';
 
 @Component({
   selector: 'app-exp-bar',

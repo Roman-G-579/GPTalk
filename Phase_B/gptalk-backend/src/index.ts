@@ -18,6 +18,7 @@ import authRouter from './routes/auth.router';
 import profileRouter from './routes/profile.router';
 import lessonGeneratorRouter from './routes/lesson-generator.router';
 import chatWithMeRouter from './routes/chat-with-me.router';
+import dailyWordRouter from './routes/daily-word.router';
 
 // initialize express server
 const app = express();
@@ -51,6 +52,7 @@ app.use('/api/register', registerRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/generateLesson', lessonGeneratorRouter);
+app.use('/api/daily-word', dailyWordRouter);
 app.use('/api/chat-with-me', chatWithMeRouter);
 
 // Error handler
