@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Button } from 'primeng/button';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LearnService } from '../../../core/services/learn.service';
+import { LearnService } from '../learn.service';
 
 @Component({
   selector: 'app-results-screen',
@@ -21,6 +21,7 @@ export class ResultsScreenComponent {
   private readonly route = inject(ActivatedRoute);
 
   totalExercises = this.lrn.totalExercises;
+  lessonExp = this.lrn.lessonExp;
   correctAnswers = this.totalExercises() - this.lrn.mistakesCounter();
 
   navigateHome() {

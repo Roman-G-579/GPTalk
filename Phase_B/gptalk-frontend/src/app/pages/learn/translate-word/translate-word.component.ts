@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LearnHtmlUtils } from '../../../core/utils/learn-html-utils';
-import { LearnVerificationUtils } from '../../../core/utils/learn-verification-utils';
+import { LearnHtmlUtils } from '../../../core/utils/learn-html.utils';
+import { LearnVerificationUtils } from '../../../core/utils/learn-verification.utils';
 import { Button } from 'primeng/button';
-import { LearnService } from '../../../core/services/learn.service';
+import { LearnService } from '../learn.service';
 
 @Component({
   selector: 'app-translate-word',

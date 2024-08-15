@@ -6,9 +6,40 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   align-items: center;
   font-family: Poppins, sans-serif;
   font-size: 1.6rem;
   color: var(--primary-clr)
 }
+
+.statistics-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  border: 2px solid var(--primary-clr);
+  border-radius: 6px;
+
+  & .stat-block {
+    display: flex;
+    align-items: center;
+    padding: 2rem;
+    gap: 1rem;
+
+    & div {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+
+      small {
+        color: rgba(0, 0, 0, 0.454);
+      }
+
+      p {
+        font-size: 2rem;
+      }
+    }
+  }
+}
+
+
+

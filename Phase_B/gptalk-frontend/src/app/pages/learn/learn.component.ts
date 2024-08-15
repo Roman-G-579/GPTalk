@@ -5,13 +5,13 @@ import {
   inject,
   OnInit, signal,
 } from '@angular/core';
-import { LessonGeneratorService } from '../../core/services/lesson-generator.service';
+import { LessonGeneratorService } from './lesson-generator.service';
 import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { Button } from 'primeng/button';
 import { PrimeNGConfig } from 'primeng/api';
 import { Exercise } from '../../../models/exercise.interface';
-import { LearnService } from '../../core/services/learn.service';
+import { LearnService } from './learn.service';
 import { BypassSecurityPipe } from '../../../pipes/bypass-security.pipe';
 import { FillInTheBlankComponent } from './fill-in-the-blank/fill-in-the-blank.component';
 import { TranslateWordComponent } from './translate-word/translate-word.component';
@@ -54,7 +54,8 @@ export class LearnComponent implements OnInit {
     this.lgService.generateLesson(Language.Hebrew, Difficulty.Medium, 2).subscribe({
       next: (exercises: Exercise[]) => {
         this.lrn.setUpLesson(exercises);
-        this.lessonLanguage.set(Language.Hebrew); //TODO: change method of setting current lesson's language
+        //TODO: change method of setting current lesson's language
+        this.lessonLanguage.set(Language.Hebrew);
         this.isLoading.set(false);
       }
     })

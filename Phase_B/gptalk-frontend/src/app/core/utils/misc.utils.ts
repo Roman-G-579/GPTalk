@@ -5,9 +5,9 @@ import { closest, distance } from 'fastest-levenshtein';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 
 /**
- * Contains various miscellaneous functions related to learn functionality
+ * Contains miscellaneous utility functions
  */
-export class LearnMiscUtils {
+export class MiscUtils {
 
   /**
    * Converts every question and answer related string to normalized and lowercase for easier comparisons
@@ -83,5 +83,22 @@ export class LearnMiscUtils {
     return firstElement;
   }
 
+  /**
+   * Calculates the required amount of experience points
+   * needed for the next level, based on the user's current level
+   */
+  static calculateExpForNextLevel(level: number){
+    return (100 * Math.pow(2, level-1));
+  }
+
+  /**
+   * Calculates the user's current level based on his total amount of experience points
+   * @param totalExp the user's exp points
+   */
+  static calculateLevel(totalExp: number) {
+    if (totalExp < 100) return 1;
+
+    return Math.floor(Math.log2(totalExp / 100) + 1) + 1;
+  }
 
 }

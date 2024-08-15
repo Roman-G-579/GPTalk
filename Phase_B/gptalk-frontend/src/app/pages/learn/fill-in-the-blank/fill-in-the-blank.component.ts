@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { LearnHtmlUtils } from '../../../core/utils/learn-html-utils';
-import { LearnVerificationUtils } from '../../../core/utils/learn-verification-utils';
+import { LearnHtmlUtils } from '../../../core/utils/learn-html.utils';
+import { LearnVerificationUtils } from '../../../core/utils/learn-verification.utils';
 import { Button } from 'primeng/button';
 import { PaginatorModule } from 'primeng/paginator';
-import { LearnService } from '../../../core/services/learn.service';
+import { LearnService } from '../learn.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({

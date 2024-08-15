@@ -25,7 +25,7 @@ import { PasswordModule } from 'primeng/password';
 import { ToggleButtonModule } from 'primeng/togglebutton';
 import { Ripple } from 'primeng/ripple';
 import { PrimeNGConfig } from 'primeng/api';
-import { RegisterService } from '../core/services/register.service';
+import { RegisterService } from './register.service';
 import { MessageModule } from 'primeng/message';
 import { DividerModule } from 'primeng/divider';
 import { ImageModule } from 'primeng/image';

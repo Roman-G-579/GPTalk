@@ -31,7 +31,7 @@ export class LearnHtmlUtils {
    * @param language the current lesson's language
    */
   static langDirection(language: WritableSignal<Language>) {
-    return language().toString() === 'hebrew' ? 'rtl' : 'ltr';
+    return language() === Language.Hebrew ? 'rtl' : 'ltr';
   }
 
 }

@@ -40,13 +40,16 @@ export class LearnInitializerUtils {
    * Initializes lesson related parameter values
    * @param isLessonOver boolean determining whether the current lesson is over
    * @param mistakesCounter the amount of mistakes in the current lesson
+   * @param lessonExp the amount of experience points that was accumulated in the current lesson
    */
   static initializeLessonParams(
     isLessonOver: WritableSignal<boolean>,
-    mistakesCounter: WritableSignal<number>
+    mistakesCounter: WritableSignal<number>,
+    lessonExp: WritableSignal<number>
   ) {
     isLessonOver.set(false);
     mistakesCounter.set(0);
+    lessonExp.set(0);
   }
 
 }
