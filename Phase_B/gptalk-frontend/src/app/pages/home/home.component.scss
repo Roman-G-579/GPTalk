@@ -6,9 +6,17 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   align-items: center;
   font-family: Poppins, sans-serif;
   font-size: 1.6rem;
   color: var(--primary-clr)
+}
+
+::ng-deep .word-of-the-day {
+  border-radius: 15px;
+  & .p-panel-content, .p-panel-header {
+    border: 1px solid var(--primary-clr);
+    background-color: var(--background-clr);
+  }
 }
