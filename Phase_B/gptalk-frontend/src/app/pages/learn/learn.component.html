@@ -1,6 +1,10 @@
 <div class="wrapper w-full w-10">
   @if(isLoading()) {
-    Loading lesson...
+    <div class="loading-wrapper">
+      <ng-lottie [options]="loadingOptions"></ng-lottie>
+      <p class="text-center">Generating lesson...</p>
+    </div>
+
   } @else if (!isLoading()) {
     <!--    Current lesson  -->
     <app-exp-bar></app-exp-bar>
