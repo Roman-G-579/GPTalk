@@ -1,10 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, input, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { PanelModule } from 'primeng/panel';
 import { PrimeTemplate } from 'primeng/api';
-import { DailyWord } from '../daily-word.interface';
 import { Language } from '../../../../models/enums/language.enum';
-import { DailyWordService } from '../daily-word.service';
+import { DailyWordService } from './daily-word.service';
 
 @Component({
   selector: 'app-daily-word',

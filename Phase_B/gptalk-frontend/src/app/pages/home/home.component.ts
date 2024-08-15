@@ -1,11 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { AuthService } from '../../core/services/auth.service';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MiscUtils } from '../../core/utils/misc.utils';
 import { PanelModule } from 'primeng/panel';
-import { DailyWordService } from './daily-word.service';
 import { Language } from '../../../models/enums/language.enum';
-import { DailyWord } from './daily-word.interface';
 import { AvatarModule } from 'primeng/avatar';
 import { MyProfileService } from '../my-profile/my-profile.service';
 import { DailyWordComponent } from './daily-word/daily-word.component';
@@ -25,7 +22,6 @@ import { DailyWordComponent } from './daily-word/daily-word.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
-  private readonly wtd = inject(DailyWordService);
   private readonly myProfileService = inject(MyProfileService);
 
 
