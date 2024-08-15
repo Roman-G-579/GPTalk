@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnInit, sign
 import { DragDropModule } from 'primeng/dragdrop';
 import { LearnHtmlUtils } from '../../../core/utils/learn-html.utils';
 import { LearnVerificationUtils } from '../../../core/utils/learn-verification.utils';
-import { LearnService } from '../../../core/services/learn.service';
+import { LearnService } from '../learn.service';
 import { Button } from 'primeng/button';
 import { NgForOf } from '@angular/common';
 import { LearnInitializerUtils as init } from '../../../core/utils/learn-initializer.utils';

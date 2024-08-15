@@ -40,12 +40,6 @@
     }
   }
 }
-::ng-deep .word-of-the-day {
-  border-radius: 15px;
-  & .p-panel-content, .p-panel-header {
-    border: 1px solid var(--primary-clr);
-    background-color: var(--background-clr);
-  }
-}
+
 
 

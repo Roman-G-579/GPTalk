@@ -28,38 +28,7 @@
     </div>
 
     <h2 class="text-center">Word of the day:</h2>
-    <div class="word-of-the-day-wrapper grid col-offset-1">
-      <button class="border-none cursor-pointer" style="background: none" onclick="">
-        <i [class]="'pi pi-chevron-left'" style="font-size: 3rem"></i>
-      </button>
-
-      <p-panel class="word-of-the-day col-8 ">
-        <ng-template pTemplate="header">
-          <div class="flex align-items-center gap-2">
-            <p-avatar
-              [image]="languageIconRecord[dailyWord().language]"
-              size="normal"
-              shape="square" />
-            <span class="font-bold">
-                {{dailyWord().word}}
-            </span>
-          </div>
-        </ng-template>
-        <p class="mb-2">
-          {{dailyWord().definition}}
-        </p>
-        <p class="font-italic">
-          {{dailyWord().example}}
-        </p>
-        <p>
-          ({{dailyWord().translation}})
-        </p>
-      </p-panel>
-
-      <button class="border-none cursor-pointer" style="background: none" onclick="">
-        <i [class]="'pi pi-chevron-right'" style="font-size: 3rem"></i>
-      </button>
-    </div>
+    <app-daily-word></app-daily-word>
 
     <ng-container *ngIf="util.calculateLevel(myProfile.totalExp) as level">
       <p>Your current level: {{level}}</p>

@@ -2,15 +2,13 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Exercise } from '../../../models/exercise.interface';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { Language } from '../../../models/enums/language.enum';
-import { MiscUtils as util } from '../utils/misc.utils';
-import { LearnInitializerUtils as init } from '../utils/learn-initializer.utils';
+import { MiscUtils as util } from '../../core/utils/misc.utils';
+import { LearnInitializerUtils as init } from '../../core/utils/learn-initializer.utils';
 import { Subject } from 'rxjs';
-import { MyProfileService } from '../../pages/my-profile/my-profile.service';
-import { AuthService } from './auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ExpVals } from '../../../models/enums/exp-vals.enum';
-import { LevelInfo } from '../../../models/level-info.interface';
 
 @Injectable({
   providedIn: 'root'

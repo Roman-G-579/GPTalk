@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { LearnHtmlUtils } from '../../../core/utils/learn-html.utils';
 import { LearnVerificationUtils } from '../../../core/utils/learn-verification.utils';
-import { LearnService } from '../../../core/services/learn.service';
+import { LearnService } from '../learn.service';
 import { Button } from 'primeng/button';
 
 @Component({

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject
 import { ProgressBarModule } from 'primeng/progressbar';
 import { PrimeTemplate } from 'primeng/api';
 import { NgClass } from '@angular/common';
-import { LearnService } from '../../../core/services/learn.service';
+import { LearnService } from '../learn.service';
 import { AuthService } from '../../../core/services/auth.service';
 import {MiscUtils as util} from '../../../core/utils/misc.utils';
 

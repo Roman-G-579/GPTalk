@@ -3,11 +3,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } 
 import { AuthService } from '../../core/services/auth.service';
 import { MiscUtils } from '../../core/utils/misc.utils';
 import { PanelModule } from 'primeng/panel';
-import { DailyWordService } from '../../core/services/daily-word.service';
+import { DailyWordService } from './daily-word.service';
 import { Language } from '../../../models/enums/language.enum';
-import { DailyWord } from '../../../models/daily-word.interface';
+import { DailyWord } from './daily-word.interface';
 import { AvatarModule } from 'primeng/avatar';
 import { MyProfileService } from '../my-profile/my-profile.service';
+import { DailyWordComponent } from './daily-word/daily-word.component';
 
 
 @Component({
@@ -17,13 +18,13 @@ import { MyProfileService } from '../my-profile/my-profile.service';
     CommonModule,
     PanelModule,
     AvatarModule,
+    DailyWordComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HomeComponent implements OnInit {
-  private readonly authService = inject(AuthService);
+export class HomeComponent {
   private readonly wtd = inject(DailyWordService);
   private readonly myProfileService = inject(MyProfileService);
 
@@ -39,11 +40,6 @@ export class HomeComponent implements OnInit {
 
   date = new Date();
   myProfile$ = this.myProfileService.getUserProfile();
-
-  dailyWord = this.wtd.dailyWord;
-  ngOnInit() {
-    this.wtd.getDailyWord().then();
-  }
 
   // Returns the current part of day based on the user's timezone
   getTimeOfDay() {

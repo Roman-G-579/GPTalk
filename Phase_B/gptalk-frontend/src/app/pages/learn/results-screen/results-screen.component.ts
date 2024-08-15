@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Button } from 'primeng/button';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LearnService } from '../../../core/services/learn.service';
+import { LearnService } from '../learn.service';
 
 @Component({
   selector: 'app-results-screen',
