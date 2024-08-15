@@ -1,4 +1,4 @@
-import { Language } from './enums/language.enum';
+import { Language } from '../../../models/enums/language.enum';
 
 export interface DailyWord {
   word: string;

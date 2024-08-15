@@ -63,17 +63,23 @@ export async function fetchDailyWord(req: Request, res: Response, next: NextFunc
  */
 async function generateDailyWord() {
 	try {
+		// Picks a random language to generate
 		const languagesArr = Object.values(Language);
-		const randomIndex = Math.floor(Math.random() * languagesArr.length);
-		const language = languagesArr[randomIndex]; // Picks a random language to generate
+		let randomIndex = Math.floor(Math.random() * languagesArr.length);
+		const language = languagesArr[randomIndex];
 
-		const content = `Return a JSON in the following structure {word: word in ${language}, definition: definition in english, example: string in ${language}, translation: example translation to english}`;
+		// Picks a random syntactic  term of the word
+		const syntacticTermsArr = ['adjective','adverb','noun','verb'];
+		randomIndex = Math.floor(Math.random() * syntacticTermsArr.length);
+		const syntacticTerm = syntacticTermsArr[randomIndex];
+
+		const content = `Return a JSON in the following structure {word: ${syntacticTerm} in ${language} with syntactic term in english in brackets, definition: definition in english, example: string in ${language}, translation: example translation to english}`;
 		const completion = await openai.chat.completions.create({
 			messages: [
 				{ role: 'system', content: `You are a word-of-the-day generator.` },
 				{ role: 'user', content }
 			],
-			model: "gpt-4o",
+			model: "gpt-4o-mini",
 			response_format: {"type": "json_object"},
 			temperature: 0.3,
 		});
