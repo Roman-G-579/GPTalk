@@ -97,7 +97,7 @@ export class LessonGeneratorService {
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
 
       // The Chosen function
-      const generatorFunc = exerciseGenerators[4];
+      const generatorFunc = exerciseGenerators[randomIndex];
 
       // Generate an exercise prompt based on the randomized exercise index
       let exercisePrompt = generatorFunc(language,difficulty,keyWords);
@@ -105,7 +105,7 @@ export class LessonGeneratorService {
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
         map(response => {
-          const exerciseType = <ExerciseType>(4); // Sets the generated exercise's type
+          const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
           return genUtil.convertToExerciseObject(response, exerciseType, language);
         })
       );
@@ -214,7 +214,7 @@ export class LessonGeneratorService {
       numOfPairs = 6;
     }
 
-    return `Generate a "match the words" exercise in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. Focus on topics: ${keyWords[0]}. "correctPairs": { ["word","translation"] }`;
+    return `Generate an array of word pairs in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. Focus on topics: ${keyWords[0]}. Follow this json structure: "correctPairs": { ["word","translation"] }`;
   }
 
   /**
