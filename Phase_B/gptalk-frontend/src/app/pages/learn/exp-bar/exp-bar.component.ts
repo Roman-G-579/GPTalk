@@ -22,9 +22,7 @@ export class ExpBarComponent {
 
   protected readonly lrn = inject(LearnService);
   protected readonly authService = inject(AuthService);
-  protected readonly cdr = inject(ChangeDetectorRef);
 
-  isDone = this.lrn.isDone;
   totalExp = this.authService.totalExp;
   level = this.authService.level;
 
@@ -35,13 +33,5 @@ export class ExpBarComponent {
 
     return (totalExp - expAtLevelStart) / (expForNextLevel - expAtLevelStart) * 100;
   });
-
-  /**
-   * Calculates the required amount of experience points
-   * needed for the next level, based on the user's current level
-   */
-  calculateExpForNextLevel(){
-      return (100 * Math.pow(2, this.level()-1));
-  }
 
 }
