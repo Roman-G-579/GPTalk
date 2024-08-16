@@ -1,1 +1,41 @@
-<p>about works!</p>,
+<main>
+  <div class="content">
+
+    <h1>About GPTalk</h1>
+    <p>Welcome to GPTalk, the ultimate language learning platform designed to make mastering a new language fun, engaging, and effective. At GPTalk, we believe that learning should never feel like a chore. That's why we've combined cutting-edge technology with gamification to create an immersive experience that keeps you motivated and eager to learn more every day.</p>
+    <h3>Gamified Learning</h3>
+    <p>Say goodbye to boring textbooks and repetitive drills. With GPTalk, learning is a game! Earn points, unlock achievements, and progress through levels as you complete exercises and challenges. Our gamified approach turns learning into an adventure, making it easier to stay motivated and track your progress.</p>
+    <h3>AI-Powered Content</h3>
+    <p>At the heart of GPTalk is OpenAI's powerful language model, which generates dynamic and engaging content across multiple languages. From interactive dialogues and vocabulary exercises to grammar challenges and cultural insights, our AI ensures that every lesson is fresh, relevant, and unique.</p>
+    <h3>Join the GPTalk Community</h3>
+    <p>Whether you're learning for travel, work, or personal growth, GPTalk is here to support your journey. Join our community of learners from around the world and start speaking your new language with confidence.</p>
+    <div class="technology-carousel-wrapper">
+      <p-carousel
+        [value]="software"
+        [numVisible]="3"
+        [numScroll]="1"
+        [circular]="true"
+        [showIndicators]="false"
+        [showNavigators]="false"
+        autoplayInterval="3000">
+        <ng-template let-software pTemplate="item">
+          <div class="border-0 surface-border border-round m-2 p-3">
+            <div class="mb-3">
+              <div class="relative mx-auto">
+                <img
+                  src="{{ software.image }}"
+                  [alt]="software.name"
+                  class="w-full border-round" />
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </p-carousel>
+    </div>
+
+    <p>Ready to level up your language skills? Start your adventure with GPTalk today!</p>
+
+    <img src="assets/GPTalk_Logo3_no_text.svg" alt="" />
+    <p>2024 GPTalk Inc. All rights reserved.</p>
+  </div>
+</main>
