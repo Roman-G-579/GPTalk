@@ -4,28 +4,34 @@
 <!--      <i [class]="'pi pi-chevron-left'" style="font-size: 3rem"></i>-->
 <!--    </button>-->
 
+
     <p-panel class="daily-word col-9 w-30rem ">
       <ng-template pTemplate="header">
         <div class="flex align-items-center gap-2">
-          <p-avatar
-            [image]="languageIconRecord[dailyWord().language]"
-            size="normal"
-            shape="square" />
-          <span class="font-bold">
-                {{dailyWord().word}}
+          @if(dailyWord().word != "") {
+            <p-avatar
+              [image]="languageIconRecord[dailyWord().language]"
+              size="normal"
+              shape="square" />
+            <span class="font-bold">
+              {{dailyWord().word}}
             </span>
+          }
         </div>
       </ng-template>
-      <p class="mb-2">
+      @if(dailyWord().word != "") {
+        <p class="mb-2">
         {{dailyWord().definition}}
-      </p>
-      <p class="font-italic">
-        {{dailyWord().example}}
-      </p>
-      <p>
-        ({{dailyWord().translation}})
-      </p>
+        </p>
+        <p class="font-italic">
+          {{dailyWord().example}}
+        </p>
+        <p>
+          ({{dailyWord().translation}})
+        </p>
+      }
     </p-panel>
+
 
 <!--    <button class="border-none cursor-pointer" style="background: none" onclick="">-->
 <!--      <i [class]="'pi pi-chevron-right'" style="font-size: 3rem"></i>-->

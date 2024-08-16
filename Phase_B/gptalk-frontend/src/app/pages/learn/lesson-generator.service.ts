@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Language } from '../../../models/enums/language.enum';
 import { Difficulty } from '../../../models/enums/difficulty.enum';
 import { Exercise } from '../../../models/exercise.interface';
-import { LearnGeneratorUtils as genUtil } from '../../core/utils/learn-generator.utils';
+import { LessonGeneratorUtils as genUtil } from './utils/lesson-generator.utils';
 import { forkJoin, map, Observable, of } from 'rxjs';
 import { ExerciseType } from '../../../models/enums/exercise-type.enum';
 import { cloneDeep } from 'lodash';
@@ -97,7 +97,7 @@ export class LessonGeneratorService {
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
 
       // The Chosen function
-      const generatorFunc = exerciseGenerators[randomIndex];
+      const generatorFunc = exerciseGenerators[4];
 
       // Generate an exercise prompt based on the randomized exercise index
       let exercisePrompt = generatorFunc(language,difficulty,keyWords);
@@ -105,7 +105,7 @@ export class LessonGeneratorService {
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
         map(response => {
-          const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
+          const exerciseType = <ExerciseType>(4); // Sets the generated exercise's type
           return genUtil.convertToExerciseObject(response, exerciseType, language);
         })
       );

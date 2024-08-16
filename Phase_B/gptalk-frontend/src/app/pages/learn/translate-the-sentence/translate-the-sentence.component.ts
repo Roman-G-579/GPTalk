@@ -1,8 +1,8 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { LearnService } from '../learn.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { LearnHtmlUtils } from '../../../core/utils/learn-html.utils';
-import { LearnVerificationUtils } from '../../../core/utils/learn-verification.utils';
+import { LearnHtmlUtils } from '../utils/learn-html.utils';
+import { LearnVerificationUtils } from '../utils/learn-verification.utils';
 import { Button } from 'primeng/button';
 
 @Component({

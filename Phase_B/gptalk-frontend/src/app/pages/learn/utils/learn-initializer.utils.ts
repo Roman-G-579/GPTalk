@@ -1,6 +1,6 @@
 import { WritableSignal } from '@angular/core';
-import { Exercise } from '../../../models/exercise.interface';
-import { LevelInfo } from '../../../models/level-info.interface';
+import { Exercise } from '../../../../models/exercise.interface';
+import { LevelInfo } from '../../../../models/level-info.interface';
 
 export class LearnInitializerUtils {
   /**
