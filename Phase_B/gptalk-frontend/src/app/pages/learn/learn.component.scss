@@ -18,6 +18,17 @@
   font-size: 2.6rem;
 }
 
+.loading-wrapper {
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & p {
+    font-size: 1.5rem;
+  }
+}
+
 ::ng-deep .translation-wrapper p {
   font-size: var(--t_large);
 }

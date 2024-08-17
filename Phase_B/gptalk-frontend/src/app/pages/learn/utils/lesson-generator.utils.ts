@@ -1,14 +1,14 @@
-import {Difficulty} from '../../../models/enums/difficulty.enum';
-import {Exercise} from '../../../models/exercise.interface';
+import {Difficulty} from '../../../../models/enums/difficulty.enum';
+import {Exercise} from '../../../../models/exercise.interface';
 import _ from 'lodash';
-import {ExerciseType} from '../../../models/enums/exercise-type.enum';
-import {Language} from '../../../models/enums/language.enum';
-import {TOPICS} from './topics';
+import {ExerciseType} from '../../../../models/enums/exercise-type.enum';
+import {Language} from '../../../../models/enums/language.enum';
+import {TOPICS} from '../../../core/utils/topics';
 
 /*
   Contains functions related to lesson generation
  */
-export class LearnGeneratorUtils {
+export class LessonGeneratorUtils {
 
   /**
    * Inserts strings into the keyWords array based on the given difficulty
@@ -247,6 +247,7 @@ export class LearnGeneratorUtils {
    *                  Second element in pair - right word
    */
   private static shuffleWordPairs(wordPairs: [string, string][]): [string, string][] {
+    console.log(wordPairs)
     const leftWords = wordPairs.map(pair => pair[0]);
     const rightWords = wordPairs.map(pair => pair[1]);
 

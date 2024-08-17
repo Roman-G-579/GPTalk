@@ -22,6 +22,7 @@ import { ReorderSentenceComponent } from './reorder-sentence/reorder-sentence.co
 import { MatchTheCategoryComponent } from './match-the-category/match-the-category.component';
 import { ResultsScreenComponent } from './results-screen/results-screen.component';
 import { ExpBarComponent } from './exp-bar/exp-bar.component';
+import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 
 @Component({
   selector: 'app-learn',
@@ -31,6 +32,7 @@ import { ExpBarComponent } from './exp-bar/exp-bar.component';
     Button,
     BypassSecurityPipe,
     ExpBarComponent,
+    LottieComponent,
   ],
   templateUrl: './learn.component.html',
   styleUrl: './learn.component.scss',
@@ -50,6 +52,10 @@ export class LearnComponent implements OnInit {
   exerciseData = this.lrn.exerciseData;
   lessonLanguage = this.lrn.lessonLanguage;
 
+  // The lottie file path of the loading animation
+  loadingOptions: AnimationOptions = {
+    path: '/assets/lottie/loading.json'
+  };
   ngOnInit() {
     this.lgService.generateLesson(Language.Hebrew, Difficulty.Medium, 2).subscribe({
       next: (exercises: Exercise[]) => {

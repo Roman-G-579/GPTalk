@@ -188,16 +188,9 @@ export async function calculateTotalExp(userId: Schema.Types.ObjectId) {
 }
 
 export function calculateLevel(totalExp: number): number {
-	let level = 1;
-	let expForNextLevel = 100;
+	if (totalExp < 100) return 1;
 
-	while (totalExp >= expForNextLevel) {
-		totalExp -= expForNextLevel;
-		level++;
-		expForNextLevel *= 2;
-	}
-
-	return level;
+	return Math.floor(Math.log2(totalExp / 100) + 1) + 1;
 }
 
 
