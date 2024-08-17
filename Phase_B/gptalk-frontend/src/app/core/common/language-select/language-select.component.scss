@@ -1,0 +1,34 @@
+.language-wrapper {
+	align-items: center;
+	justify-content: center;
+
+	& h1 {
+		text-align: center;
+	}
+}
+
+.languages {
+	margin-top: 1.5rem;
+	padding: 8rem;
+	display: grid;
+	grid-template-columns: auto auto;
+	gap: 7rem;
+
+	.language {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		transition: 0.4s;
+		cursor: pointer;
+
+		&:hover {
+			transform: scale(1.1);
+		}
+
+		& span {
+			font-size: 1.5rem;
+			margin-top: 1.5rem;
+		}
+	}
+}

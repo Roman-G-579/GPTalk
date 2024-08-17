@@ -1,18 +1,6 @@
-<!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
-<!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/elements-content -->
 @if (!language()) {
-  <div class="language-wrapper">
-    <h1>Choose a language you would like to learn!</h1>
-    <div class="languages">
-      @for (lang of languages; track lang) {
-        <div class="language" (click)="setLanguage(lang.language)">
-          <img [src]="lang.img" [alt]="lang.language" />
-          <span>{{ lang.language }}</span>
-        </div>
-      }
-    </div>
-	</div>
+  <app-language-select (languageSelectionEvent)="setLanguage($event)"></app-language-select>
 } @else {
 	<div class="messages-wrapper">
     <div class="messages">

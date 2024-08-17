@@ -8,11 +8,13 @@ import { LottieComponent, AnimationOptions } from 'ngx-lottie';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 import { ChatWithMeService } from './chat-with-me.service';
 import { Chat } from './interfaces/chat.interface';
 import { ChatResponse } from './interfaces/chat-response.interface';
 import { Grade } from './interfaces/grade.interface';
-import { ConfirmationService } from 'primeng/api';
+import { LanguageSelectComponent } from '../../../app/core/common/language-select/language-select.component';
+import { Language } from '../../core/enums/languages.enums';
 
 @Component({
 	selector: 'app-chat-with-me',
@@ -24,6 +26,7 @@ import { ConfirmationService } from 'primeng/api';
 		InputTextModule,
 		ButtonModule,
 		ConfirmDialogModule,
+    LanguageSelectComponent,
 	],
 	providers: [ConfirmationService],
 	templateUrl: './chat-with-me.component.html',
@@ -37,7 +40,7 @@ export class ChatWithMeComponent {
 	private readonly router = inject(Router);
 
 	//! TODO: Change to enum
-	language: WritableSignal<'English' | 'Spanish' | 'Russian' | 'Hebrew' | ''> = signal('');
+	language: WritableSignal<Language | ''> = signal('');
 	conversation = signal<Chat[]>([]);
 
 	loading = signal(false);
@@ -48,25 +51,6 @@ export class ChatWithMeComponent {
 	noMessagesOptions: AnimationOptions = {
 		path: '/assets/lottie/no-messages.json',
 	};
-
-	languages: { language: 'English' | 'Spanish' | 'Russian' | 'Hebrew'; img: string }[] = [
-		{
-			language: 'English',
-			img: 'assets/languages/english.png',
-		},
-		{
-			language: 'Spanish',
-			img: 'assets/languages/spanish.png',
-		},
-		{
-			language: 'Russian',
-			img: 'assets/languages/russian.png',
-		},
-		{
-			language: 'Hebrew',
-			img: 'assets/languages/hebrew.png',
-		},
-	];
 
 	chat() {
 		this.loading.set(true);
@@ -113,7 +97,7 @@ export class ChatWithMeComponent {
 		});
 	}
 
-	setLanguage(lang: 'English' | 'Spanish' | 'Russian' | 'Hebrew' | '') {
+	setLanguage(lang: Language | '') {
 		this.language.set(lang);
 	}
 }
