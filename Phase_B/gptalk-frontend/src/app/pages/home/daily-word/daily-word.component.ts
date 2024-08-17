@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { AvatarModule } from 'primeng/avatar';
 import { PanelModule } from 'primeng/panel';
 import { PrimeTemplate } from 'primeng/api';
-import { Language } from '../../../../models/enums/language.enum';
+import { Language } from '../../../core/enums/language.enum';
 import { DailyWordService } from './daily-word.service';
 
 @Component({

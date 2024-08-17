@@ -1,14 +1,14 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Exercise } from '../../../models/exercise.interface';
-import { ExerciseType } from '../../../models/enums/exercise-type.enum';
-import { Language } from '../../../models/enums/language.enum';
+import { Exercise } from '../../core/interfaces/exercise.interface';
+import { ExerciseType } from '../../core/enums/exercise-type.enum';
+import { Language } from '../../core/enums/language.enum';
 import { MiscUtils as util } from '../../core/utils/misc.utils';
 import { LearnInitializerUtils as init } from './utils/learn-initializer.utils';
 import { Subject } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ExpVals } from '../../../models/enums/exp-vals.enum';
+import { ExpVals } from '../../core/enums/exp-vals.enum';
 
 @Injectable({
   providedIn: 'root'

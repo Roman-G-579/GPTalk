@@ -1,6 +1,6 @@
 import { ElementRef, WritableSignal } from '@angular/core';
-import { Exercise } from '../../../../models/exercise.interface';
-import { Language } from '../../../../models/enums/language.enum';
+import { Exercise } from '../../../core/interfaces/exercise.interface';
+import { Language } from '../../../core/enums/language.enum';
 
 /**
  * Contains functions used by the Learn component's html templates

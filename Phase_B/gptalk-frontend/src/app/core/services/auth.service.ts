@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { UserResponse } from '../../../models/user-response.interface';
+import { UserResponse } from '../interfaces/user-response.interface';
 
 @Injectable({
   providedIn: 'root',

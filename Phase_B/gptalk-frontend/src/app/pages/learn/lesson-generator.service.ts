@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Language } from '../../../models/enums/language.enum';
-import { Difficulty } from '../../../models/enums/difficulty.enum';
-import { Exercise } from '../../../models/exercise.interface';
+import { Language } from '../../core/enums/language.enum';
+import { Difficulty } from '../../core/enums/difficulty.enum';
+import { Exercise } from '../../core/interfaces/exercise.interface';
 import { LessonGeneratorUtils as genUtil } from './utils/lesson-generator.utils';
 import { forkJoin, map, Observable, of } from 'rxjs';
-import { ExerciseType } from '../../../models/enums/exercise-type.enum';
+import { ExerciseType } from '../../core/enums/exercise-type.enum';
 import { cloneDeep } from 'lodash';
 
 @Injectable({
@@ -48,10 +48,19 @@ export class LessonGeneratorService {
       ["מכונית", "car"],
       ["בית", "house"],
       ["חתול", "cat"],
-      ["עץ", "tree"],
-      ["ספר", "book"]
     ]
   }
+
+  // mockExercise_MatchTheWords: Exercise = {
+  //   type: ExerciseType.MatchTheWords,
+  //   "correctPairs": [
+  //     ["מכונית", "car"],
+  //     ["בית", "house"],
+  //     ["חתול", "cat"],
+  //     ["עץ", "tree"],
+  //     ["ספר", "book"]
+  //   ]
+  // }
   //
   // mockExercise_ReorderSentence: Exercise = {
   //   type: ExerciseType.ReorderSentence,
@@ -97,7 +106,7 @@ export class LessonGeneratorService {
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
 
       // The Chosen function
-      const generatorFunc = exerciseGenerators[randomIndex];
+      const generatorFunc = exerciseGenerators[4];
 
       // Generate an exercise prompt based on the randomized exercise index
       let exercisePrompt = generatorFunc(language,difficulty,keyWords);
@@ -105,7 +114,7 @@ export class LessonGeneratorService {
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
         map(response => {
-          const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
+          const exerciseType = <ExerciseType>(4); // Sets the generated exercise's type
           return genUtil.convertToExerciseObject(response, exerciseType, language);
         })
       );
@@ -261,10 +270,10 @@ export class LessonGeneratorService {
     const {href} = new URL('generateLesson', this.apiUrl);
 
     // API CONNECTION
-    return this.http.post(href,{userPrompt: promptString});
+    // return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    // return of(cloneDeep(this.mockExercise_FillInTheBlank));
+    return of(cloneDeep(this.mockExercise_MatchTheWords));
   }
 
 }

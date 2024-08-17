@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import { WritableSignal } from '@angular/core';
-import { Exercise } from '../../../models/exercise.interface';
+import { Exercise } from '../interfaces/exercise.interface';
 import { closest, distance } from 'fastest-levenshtein';
-import { Difficulty } from '../../../models/enums/difficulty.enum';
+import { Difficulty } from '../enums/difficulty.enum';
 
 /**
  * Contains miscellaneous utility functions
