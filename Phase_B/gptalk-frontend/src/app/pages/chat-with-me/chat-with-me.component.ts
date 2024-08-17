@@ -14,6 +14,7 @@ import { Chat } from './interfaces/chat.interface';
 import { ChatResponse } from './interfaces/chat-response.interface';
 import { Grade } from './interfaces/grade.interface';
 import { LanguageSelectComponent } from '../../../app/core/common/language-select/language-select.component';
+import { Language } from '../../core/enums/languages.enums';
 
 @Component({
 	selector: 'app-chat-with-me',
@@ -39,7 +40,7 @@ export class ChatWithMeComponent {
 	private readonly router = inject(Router);
 
 	//! TODO: Change to enum
-	language: WritableSignal<'English' | 'Spanish' | 'Russian' | 'Hebrew' | ''> = signal('');
+	language: WritableSignal<Language | ''> = signal('');
 	conversation = signal<Chat[]>([]);
 
 	loading = signal(false);
@@ -96,7 +97,7 @@ export class ChatWithMeComponent {
 		});
 	}
 
-	setLanguage(lang: 'English' | 'Spanish' | 'Russian' | 'Hebrew' | '') {
+	setLanguage(lang: Language | '') {
 		this.language.set(lang);
 	}
 }

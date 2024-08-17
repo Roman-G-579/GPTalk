@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { Language } from '../../enums/languages.enums';
 
 @Component({
 	selector: 'app-language-select',
@@ -10,28 +11,28 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LanguageSelectComponent {
-  @Output() languageSelectionEvent = new EventEmitter<'English' | 'Spanish' | 'Russian' | 'Hebrew' | ''>();
+  @Output() languageSelectionEvent = new EventEmitter<Language | ''>();
 
-	languages: { language: 'English' | 'Spanish' | 'Russian' | 'Hebrew'; img: string }[] = [
+	languages: { language: Language; img: string }[] = [
 		{
-			language: 'English',
+			language: Language.English,
 			img: 'assets/languages/english.png',
 		},
 		{
-			language: 'Spanish',
+			language: Language.Spanish,
 			img: 'assets/languages/spanish.png',
 		},
 		{
-			language: 'Russian',
+			language: Language.Russian,
 			img: 'assets/languages/russian.png',
 		},
 		{
-			language: 'Hebrew',
+			language: Language.Hebrew,
 			img: 'assets/languages/hebrew.png',
 		},
 	];
 
-	setLanguage(language: 'English' | 'Spanish' | 'Russian' | 'Hebrew' | '') {
+	setLanguage(language: Language | '') {
     this.languageSelectionEvent.emit(language);
   }
 }
