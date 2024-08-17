@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { Language } from '../../enums/languages.enums';
+import { Language } from '../../enums/language.enum';
 
 @Component({
 	selector: 'app-language-select',

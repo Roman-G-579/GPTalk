@@ -14,7 +14,7 @@ import { Chat } from './interfaces/chat.interface';
 import { ChatResponse } from './interfaces/chat-response.interface';
 import { Grade } from './interfaces/grade.interface';
 import { LanguageSelectComponent } from '../../../app/core/common/language-select/language-select.component';
-import { Language } from '../../core/enums/languages.enums';
+import { Language } from '../../core/enums/language.enum';
 
 @Component({
 	selector: 'app-chat-with-me',

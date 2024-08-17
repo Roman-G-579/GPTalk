@@ -4,7 +4,7 @@ import { Chat } from './interfaces/chat.interface';
 import { environment } from '../../../environments/environment';
 import { ChatResponse } from './interfaces/chat-response.interface';
 import { Grade } from './interfaces/grade.interface';
-import { Language } from '../../core/enums/languages.enums';
+import { Language } from '../../core/enums/language.enum';
 
 @Injectable({
 	providedIn: 'root',

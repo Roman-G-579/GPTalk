@@ -1,6 +1,6 @@
 import { WritableSignal } from '@angular/core';
-import { Exercise } from '../../../../models/exercise.interface';
-import { ExerciseType } from '../../../../models/enums/exercise-type.enum';
+import { Exercise } from '../../../core/interfaces/exercise.interface';
+import { ExerciseType } from '../../../core/enums/exercise-type.enum';
 import { distance } from 'fastest-levenshtein';
 import { MiscUtils as util } from '../../../core/utils/misc.utils';
 

@@ -6,13 +6,13 @@ import {
   OnInit, signal,
 } from '@angular/core';
 import { LessonGeneratorService } from './lesson-generator.service';
-import { Language } from '../../../models/enums/language.enum';
-import { Difficulty } from '../../../models/enums/difficulty.enum';
+import { Language } from '../../core/enums/language.enum';
+import { Difficulty } from '../../core/enums/difficulty.enum';
 import { Button } from 'primeng/button';
 import { PrimeNGConfig } from 'primeng/api';
-import { Exercise } from '../../../models/exercise.interface';
+import { Exercise } from '../../core/interfaces/exercise.interface';
 import { LearnService } from './learn.service';
-import { BypassSecurityPipe } from '../../../pipes/bypass-security.pipe';
+import { BypassSecurityPipe } from '../../core/pipes/bypass-security.pipe';
 import { FillInTheBlankComponent } from './fill-in-the-blank/fill-in-the-blank.component';
 import { TranslateWordComponent } from './translate-word/translate-word.component';
 import { TranslateTheSentenceComponent } from './translate-the-sentence/translate-the-sentence.component';

@@ -1,8 +1,8 @@
-import {Difficulty} from '../../../../models/enums/difficulty.enum';
-import {Exercise} from '../../../../models/exercise.interface';
+import {Difficulty} from '../../../core/enums/difficulty.enum';
+import {Exercise} from '../../../core/interfaces/exercise.interface';
 import _ from 'lodash';
-import {ExerciseType} from '../../../../models/enums/exercise-type.enum';
-import {Language} from '../../../../models/enums/language.enum';
+import {ExerciseType} from '../../../core/enums/exercise-type.enum';
+import {Language} from '../../../core/enums/language.enum';
 import {TOPICS} from '../../../core/utils/topics';
 
 /*
@@ -247,7 +247,6 @@ export class LessonGeneratorUtils {
    *                  Second element in pair - right word
    */
   private static shuffleWordPairs(wordPairs: [string, string][]): [string, string][] {
-    console.log(wordPairs)
     const leftWords = wordPairs.map(pair => pair[0]);
     const rightWords = wordPairs.map(pair => pair[1]);
 
