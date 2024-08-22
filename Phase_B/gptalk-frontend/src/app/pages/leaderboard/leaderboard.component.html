@@ -1,1 +1,26 @@
-<p>leaderboard works!</p>,
+<main>
+	<h1>Leaderboard</h1>
+	@if (!loading()) {
+		<div class="top-3">
+			<div class="placement">
+				<ng-lottie [options]="goldMedalOptions"></ng-lottie>
+        <app-user-avatar [size]="'large'"></app-user-avatar>
+				<p>{{ top3Users()[0].firstName }}</p>
+				<p>{{ top3Users()[0].lastName }}</p>
+				<p>{{ top3Users()[0].totalExp }}</p>
+				<p>{{ calculateLevelFunc(top3Users()[0].totalExp) }}</p>
+			</div>
+			<div class="placement">
+				<ng-lottie [options]="silverMedalOptions"></ng-lottie>
+				<p>{{ top3Users()[1] | json }}</p>
+			</div>
+			<div class="placement">
+				<ng-lottie [options]="bronzeMedalOptions"></ng-lottie>
+				<p>{{ top3Users()[2] | json }}</p>
+			</div>
+		</div>
+		<div class="leadboard-table">
+      {{ top4To10Users() | json }}
+    </div>
+	}
+</main>
