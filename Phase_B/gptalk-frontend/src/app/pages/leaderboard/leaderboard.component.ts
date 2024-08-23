@@ -2,15 +2,17 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 import { ToastrService } from 'ngx-toastr';
+import { TableModule } from 'primeng/table';
 import { LeaderboardService } from './leaderboard.service';
 import { MiscUtils } from '../../../app/core/utils/misc.utils';
 import { LeadboardRow } from './leaderboard.interface';
 import { UserAvatarComponent } from '../../../app/core/common/user-avatar/user-avatar.component';
+import { SinceDatePipe } from '../../../app/core/pipes/since-date.pipe';
 
 @Component({
 	selector: 'app-leaderboard',
 	standalone: true,
-	imports: [CommonModule, LottieComponent, UserAvatarComponent],
+	imports: [CommonModule, LottieComponent, UserAvatarComponent, SinceDatePipe, TableModule],
 	templateUrl: './leaderboard.component.html',
 	styleUrl: './leaderboard.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,20 +25,13 @@ export class LeaderboardComponent implements OnInit {
 	loading = signal(false);
 	calculateLevelFunc = MiscUtils.calculateLevel;
 
-	goldMedalOptions: AnimationOptions = {
-		path: '/assets/lottie/gold-medal.json',
-	};
-
-	silverMedalOptions: AnimationOptions = {
-		path: '/assets/lottie/silver-medal.json',
-	};
-
-	bronzeMedalOptions: AnimationOptions = {
-		path: '/assets/lottie/bronze-medal.json',
-	};
+	medalOptions: AnimationOptions[] = [
+		{ path: '/assets/lottie/gold-medal.json' },
+		{ path: '/assets/lottie/silver-medal.json' },
+		{ path: '/assets/lottie/bronze-medal.json' },
+	];
 
 	ngOnInit() {
-		//! TODO: Add type
 		this.leaderboardService.getLeaderboard().subscribe({
 			next: (res: { top3Users: LeadboardRow[]; top4To10Users: LeadboardRow[] }) => {
 				this.top3Users.set(res.top3Users);

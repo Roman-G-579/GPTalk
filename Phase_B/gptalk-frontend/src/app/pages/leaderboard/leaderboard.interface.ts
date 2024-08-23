@@ -3,6 +3,6 @@ export interface LeadboardRow {
   username: string,
   firstName: string,
   lastName: string,
-  createdAt: Date,
+  createdAt: string,
   totalExp: number,
 }
