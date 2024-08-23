@@ -41,11 +41,11 @@ export async function getTopUsers(req: Request, res: Response, next: NextFunctio
     const top4To10Users = userExp.slice(3, 10);
 
     while (top3Users.length < 3) {
-      top3Users.push({});
+      top3Users.push(null);
     }
 
-    while (top4To10Users.length < 7) {
-      top4To10Users.push({});
+    while (top4To10Users.length < 7) {  
+      top4To10Users.push(null);
     }
 
     return res.send({top3Users, top4To10Users});
