@@ -50,7 +50,14 @@
 					class="p-mt-2"
 					[disabled]="loginForm.invalid"
 				></button>
+        <small>Don't have an account? Sign Up <a href="/#/register">here</a></small>
 			</form>
 		</ng-container>
 	</div>
 </div>
+
+<p-dialog [visible]="loading()" modal="true" draggable="false" showHeader="false" styleClass="loading-dialog">
+  <div class="loading">
+    <app-loading></app-loading>
+  </div>
+</p-dialog>

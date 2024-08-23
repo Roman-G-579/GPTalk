@@ -4,6 +4,12 @@
 	place-items: center;
 	min-height: 100dvh;
 }
+
+.wrapper {
+  grid-row: 1;
+  grid-column: 1;
+}
+
 .form-wrapper {
 	position: relative;
 	background-color: #fff;
@@ -22,4 +28,24 @@
 			color: var(--primary-clr) !important;
 		}
 	}
+}
+
+.loading {
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  display: grid;
+  place-items: center;
+}
+
+p-dialog {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+::ng-deep .loading-dialog {
+  &.p-dialog .p-dialog-content:last-of-type {
+    border-radius: 6px !important;
+    padding: 4rem;
+  }
 }
