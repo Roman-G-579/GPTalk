@@ -1,6 +1,6 @@
-<main>
-	<h1>Leaderboard</h1>
-	@if (!loading()) {
+@if (!loading()) {
+	<main>
+		<h1>Leaderboard</h1>
 		<div class="top-3">
 			@for (user of top3Users(); track user; let idx = $index) {
 				<div class="placement">
@@ -66,10 +66,10 @@
 					</tr>
 				}
 			</div>
-			<p-table [value]="top4To10Users()" [tableStyle]="{ 'min-width': '50rem' }">
-				<ng-template pTemplate="header"> </ng-template>
-				<ng-template pTemplate="body" let-user> </ng-template>
-			</p-table>
 		</div>
-	}
-</main>
+	</main>
+} @else {
+  <div class="loading">
+    <app-loading></app-loading>
+  </div>
+}

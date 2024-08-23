@@ -2,17 +2,17 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 import { ToastrService } from 'ngx-toastr';
-import { TableModule } from 'primeng/table';
 import { LeaderboardService } from './leaderboard.service';
 import { MiscUtils } from '../../../app/core/utils/misc.utils';
 import { LeadboardRow } from './leaderboard.interface';
 import { UserAvatarComponent } from '../../../app/core/common/user-avatar/user-avatar.component';
 import { SinceDatePipe } from '../../../app/core/pipes/since-date.pipe';
+import { LoadingComponent } from 'src/app/core/common/loading/loading.component';
 
 @Component({
 	selector: 'app-leaderboard',
 	standalone: true,
-	imports: [CommonModule, LottieComponent, UserAvatarComponent, SinceDatePipe, TableModule],
+	imports: [CommonModule, LottieComponent, UserAvatarComponent, SinceDatePipe, LoadingComponent],
 	templateUrl: './leaderboard.component.html',
 	styleUrl: './leaderboard.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,

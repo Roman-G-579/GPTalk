@@ -92,3 +92,10 @@ main {
 h1 {
 	align-self: flex-start;
 }
+
+.loading {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
