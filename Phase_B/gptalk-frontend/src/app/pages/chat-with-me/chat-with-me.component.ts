@@ -65,7 +65,8 @@ export class ChatWithMeComponent {
 						this.conversation.update((values) => [...values, { role: 'system', content }]);
 						this.textContent = '';
 					},
-				});
+          error: () => this.toastrService.error('Chat error occured!', 'Error!'),
+        });
 	}
 
 	grade() {
