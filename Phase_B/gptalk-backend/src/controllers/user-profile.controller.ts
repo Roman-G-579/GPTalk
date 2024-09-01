@@ -81,41 +81,40 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
  */
 export async function postResult(req: Request, res: Response, next: NextFunction) {
 	try {
-			const { exp, email, numberOfQuestions, mistakes } = req.body
+		const { exp, email, numberOfQuestions, mistakes, language } = req.body;
 
-			if (!exp || !email) {
-				return res.status(400).json({ message: 'Missing data in postResult function' });
-			}
-			const user = await UserModel.findOne({ email });
+		if (!exp || !email) {
+			return res.status(400).json({ message: 'Missing data in postResult function' });
+		}
+		const user = await UserModel.findOne({ email });
 
-			if (!user) {
-				return res.status(httpStatus.NOT_FOUND).json({ message: 'User not found' });
-			}
+		if (!user) {
+			return res.status(httpStatus.NOT_FOUND).json({ message: 'User not found' });
+		}
 
-			// Create and save the new result document
-			const resultDocument = new ResultModel({
-				exp,
-				user: user._id
-			});
+		// Create and save the new result document
+		const resultDocument = new ResultModel({
+			exp,
+			user: user._id,
+			language,
+		});
 
-			const result = await resultDocument.save();
-			//TODO: change challenge to lesson in code and in database
-			const challengeDocument = new ChallengeModel({
-				numberOfQuestions,
-				mistakes,
-				user: user._id,
-				result: result._id
-			});
+		const result = await resultDocument.save();
+		//TODO: change challenge to lesson in code and in database
+		const challengeDocument = new ChallengeModel({
+			numberOfQuestions,
+			mistakes,
+			user: user._id,
+			result: result._id,
+		});
 
-			await challengeDocument.save();
+		await challengeDocument.save();
 
-			res.status(200).json(result);
-
+		res.status(200).json(result);
 	} catch (err) {
 		next(err);
 	}
 }
-
 
 async function calculateTopPercentage(userId: Schema.Types.ObjectId): Promise<number> {
 	const users = await UserModel.find().sort({ totalExp: -1 }).exec();
@@ -153,7 +152,7 @@ async function calculateStreak(userId: Schema.Types.ObjectId): Promise<number> {
 	return streak;
 }
 
-async function calculateMaxStreak(userId: Schema.Types.ObjectId, streak: number) {
+export async function calculateMaxStreak(userId: Schema.Types.ObjectId, streak: number) {
 	const user = await UserModel.findOne({ _id: userId });
 	if (streak > user.maxStreak) {
 		UserModel.findOneAndUpdate({ _id: userId }, { maxStreak: streak }).exec();
@@ -192,8 +191,6 @@ export function calculateLevel(totalExp: number): number {
 
 	return Math.floor(Math.log2(totalExp / 100) + 1) + 1;
 }
-
-
 
 async function getAchievements(
 	currentStreak: number,
