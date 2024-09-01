@@ -3,7 +3,7 @@ import { Config } from '../config/config';
 import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { DailyWord, DailyWordModel } from '../models/daily-word.interface';
-import { Language } from '../models/enums/language.enum';
+import { LanguageEnum } from '../models/enums/language.enum';
 
 const openai = new OpenAI({ apiKey: Config.OPENAI_API_KEY});
 
@@ -64,7 +64,7 @@ export async function fetchDailyWord(req: Request, res: Response, next: NextFunc
 async function generateDailyWord() {
 	try {
 		// Picks a random language to generate
-		const languagesArr = Object.values(Language);
+		const languagesArr = Object.values(LanguageEnum);
 		let randomIndex = Math.floor(Math.random() * languagesArr.length);
 		const language = languagesArr[randomIndex];
 
