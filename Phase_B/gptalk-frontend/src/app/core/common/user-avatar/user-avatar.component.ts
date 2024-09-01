@@ -11,6 +11,6 @@ import { AvatarModule } from 'primeng/avatar';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserAvatarComponent {
-	imgUrl = input('');
+	imgUrl = input<string | undefined>('');
 	size = input<'xlarge' | 'large'>('large');
 }

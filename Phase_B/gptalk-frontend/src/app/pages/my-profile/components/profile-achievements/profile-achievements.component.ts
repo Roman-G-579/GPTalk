@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ProgressBarModule } from 'primeng/progressbar';
+import { UserAchievement } from '../../interfaces/user-achievements.interface';
 
 @Component({
 	selector: 'app-profile-achievements',
@@ -11,6 +12,5 @@ import { ProgressBarModule } from 'primeng/progressbar';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileAchievementsComponent {
-	//! TODO: add typing
-	achievements = input<any[]>([]);
+	achievements = input<UserAchievement[]>([]);
 }

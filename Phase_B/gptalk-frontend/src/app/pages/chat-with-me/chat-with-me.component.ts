@@ -39,7 +39,6 @@ export class ChatWithMeComponent {
 	private readonly confirmationService = inject(ConfirmationService);
 	private readonly router = inject(Router);
 
-	//! TODO: Change to enum
 	language: WritableSignal<Language | ''> = signal('');
 	conversation = signal<Chat[]>([]);
 

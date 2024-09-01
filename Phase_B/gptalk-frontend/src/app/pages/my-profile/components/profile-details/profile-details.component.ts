@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { UserAvatarComponent } from '../../../../core/common/user-avatar/user-avatar.component';
 import { SinceDatePipe } from '../../../../core/pipes/since-date.pipe';
+import { UserProfile } from '../../interfaces/user-profile.interface';
 
 @Component({
 	selector: 'app-profile-details',
@@ -13,6 +14,5 @@ import { SinceDatePipe } from '../../../../core/pipes/since-date.pipe';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileDetailsComponent {
-	//! TODO: add types
-	profile = input<any>();
+	profile = input.required<UserProfile>();
 }
