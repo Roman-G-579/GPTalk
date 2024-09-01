@@ -1,11 +1,10 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DragDropModule } from 'primeng/dragdrop';
 import { LearnHtmlUtils } from '../utils/learn-html.utils';
 import { LearnVerificationUtils } from '../utils/learn-verification.utils';
 import { LearnService } from '../learn.service';
 import { Button } from 'primeng/button';
 import { NgForOf } from '@angular/common';
-import { LearnInitializerUtils as init } from '../utils/learn-initializer.utils';
 
 @Component({
   selector: 'app-match-the-category',
