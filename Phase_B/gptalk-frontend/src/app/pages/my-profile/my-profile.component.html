@@ -1,4 +1,4 @@
-<main *ngIf="myProfile$ | async as myProfile">
+<main *ngIf="myProfile$ | async as myProfile; else loading">
 	<app-profile-details
 		[profile]="myProfile"
 		class="profile__details grid-block"
@@ -22,3 +22,9 @@
 		class="profile__latest-results grid-block"
 	></app-profile-latest-results>
 </main>
+
+<ng-template #loading>
+  <div class="loading">
+    <app-loading></app-loading>
+  </div>
+</ng-template>

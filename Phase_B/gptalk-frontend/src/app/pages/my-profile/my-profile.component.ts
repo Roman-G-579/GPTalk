@@ -6,6 +6,7 @@ import { ProfileStatisticsComponent } from './components/profile-statistics/prof
 import { ProfileAchievementsComponent } from './components/profile-achievements/profile-achievements.component';
 import { ProfileLanguagesComponent } from './components/profile-languages/profile-languages.component';
 import { ProfileLatestResultsComponent } from './components/profile-latest-results/profile-latest-results.component';
+import { LoadingComponent } from 'src/app/core/common/loading/loading.component';
 
 @Component({
 	selector: 'app-my-profile',
@@ -17,6 +18,7 @@ import { ProfileLatestResultsComponent } from './components/profile-latest-resul
 		ProfileAchievementsComponent,
 		ProfileLanguagesComponent,
 		ProfileLatestResultsComponent,
+    LoadingComponent,
 	],
 	templateUrl: './my-profile.component.html',
 	styleUrl: './my-profile.component.scss',

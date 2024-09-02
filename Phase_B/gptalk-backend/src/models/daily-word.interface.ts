@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose';
-import { Language } from './language.interface';
+import { LanguageEnum } from './enums/language.enum';
 
 export interface DailyWord {
 	_id: Schema.Types.ObjectId;
@@ -8,7 +8,7 @@ export interface DailyWord {
 	definition: string;
 	example: string;
 	translation: string;
-	language: string;
+	language: LanguageEnum;
 }
 
 const dailyWordSchema = new Schema(
@@ -35,6 +35,7 @@ const dailyWordSchema = new Schema(
 		},
 		language: {
 			type: String,
+			enum: LanguageEnum,
 			required: true,
 		}
 	},

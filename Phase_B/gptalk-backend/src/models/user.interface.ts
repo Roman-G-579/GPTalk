@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import { UserAchievement, userAchievementSchema } from './user-achievment.interface';
+import { LanguageEnum } from './enums/language.enum';
 
 export interface User {
 	_id: Schema.Types.ObjectId;
@@ -12,7 +13,7 @@ export interface User {
 	totalExp: number;
 	achievements: UserAchievement[];
 	languages: {
-    language: string;
+    language: LanguageEnum;
     level: string;
   }[];
 }
@@ -52,6 +53,7 @@ const userSchema = new Schema(
       {
         language: {
           type: String,
+					enum: Object.values(LanguageEnum),
           required: true,
         },
         level: {

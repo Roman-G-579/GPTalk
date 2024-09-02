@@ -4,6 +4,7 @@ import { Config } from '../config/config';
 import httpStatus from 'http-status';
 import { User } from '../models/user.interface';
 import { ResultModel } from '../models/result.interface';
+import { LanguageEnum } from '../models/enums/language.enum';
 
 const openai = new OpenAi({ apiKey: Config.OPENAI_API_KEY });
 
@@ -55,8 +56,7 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 
 		const gradeObj = JSON.parse(completion.choices[0].message.content);
 
-
-		await saveToDb(gradeObj as unknown as { grade: number }, req.user);
+		await saveToDb(gradeObj as unknown as { grade: number }, req.user, language);
 
 		return res.status(httpStatus.OK).send(gradeObj);
 	} catch (err) {
@@ -64,10 +64,11 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 	}
 }
 
-async function saveToDb(gradeObj: { grade: number }, user: User) {
+async function saveToDb(gradeObj: { grade: number }, user: User, language: LanguageEnum) {
 	const obj = {
 		exp: gradeObj.grade,
 		user: user._id.toString(),
+		language,
 	};
 	return await ResultModel.create(obj);
 }

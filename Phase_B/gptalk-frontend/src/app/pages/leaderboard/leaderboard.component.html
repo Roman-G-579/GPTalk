@@ -1,1 +1,75 @@
-<p>leaderboard works!</p>,
+@if (!loading()) {
+	<main>
+		<h1>Leaderboard</h1>
+		<div class="top-3">
+			@for (user of top3Users(); track user; let idx = $index) {
+				<div class="placement">
+					<ng-lottie [options]="medalOptions[idx]"></ng-lottie>
+					<div class="content">
+						<app-user-avatar [size]="'large'"></app-user-avatar>
+						@if (user) {
+							<div class="details">
+								<p>
+									{{ user.firstName | titlecase }}
+									{{ user.lastName | titlecase }}
+								</p>
+								<span>{{ user.totalExp }} EXP</span>
+								<br />
+								<small>Level {{ calculateLevelFunc(user.totalExp) }}</small>
+								<br />
+								<small>Member {{ user.createdAt | sinceDate }}</small>
+							</div>
+						} @else {
+							<div class="details">
+								<p>--</p>
+								<span>--</span>
+								<br />
+								<small>--</small>
+								<br />
+								<small>--</small>
+							</div>
+						}
+					</div>
+				</div>
+			}
+		</div>
+		<div class="leaderboard-table">
+			<div class="header">
+				<tr>
+					<th>Place</th>
+					<th>Name</th>
+					<th>Total EXP</th>
+					<th>Level</th>
+					<th>Joined</th>
+				</tr>
+			</div>
+			<div class="body">
+				@for (user of top4To10Users(); track user; let idx = $index) {
+					<tr>
+						@if (user) {
+							<td>
+								<span class="place">{{ idx + 4 }}</span>
+							</td>
+							<td>{{ user.firstName | titlecase }} {{ user.lastName | titlecase }}</td>
+							<td>{{ user.totalExp }}</td>
+							<td>{{ calculateLevelFunc(user.totalExp) }}</td>
+							<td>{{ user.createdAt | sinceDate }}</td>
+						} @else {
+							<td>
+								<span class="place">{{ idx + 4 }}</span>
+							</td>
+							<td>--</td>
+							<td>--</td>
+							<td>--</td>
+							<td>--</td>
+						}
+					</tr>
+				}
+			</div>
+		</div>
+	</main>
+} @else {
+  <div class="loading">
+    <app-loading></app-loading>
+  </div>
+}

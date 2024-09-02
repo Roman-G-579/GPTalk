@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { environment } from '../../../environments/environment';
+import { UserProfile } from './interfaces/user-profile.interface';
 
 @Injectable({
 	providedIn: 'root',
@@ -12,10 +13,9 @@ export class MyProfileService {
 	private readonly http = inject(HttpClient);
 	private readonly apiUrl = `${environment.apiUrl}`;
 
-  //! TODO: add typing
-	getUserProfile(): Observable<any> {
+	getUserProfile(): Observable<UserProfile> {
 		const email = this.authService.userData().email;
 		const { href } = new URL(`profile/${email}`, this.apiUrl);
-		return this.http.get<any>(href);
+		return this.http.get<UserProfile>(href);
 	}
 }

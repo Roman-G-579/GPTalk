@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -9,9 +9,11 @@ import { ButtonModule } from 'primeng/button';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DividerModule } from 'primeng/divider';
 import { ImageModule } from 'primeng/image';
+import { DialogModule } from 'primeng/dialog';
 import { ToastrService } from 'ngx-toastr';
 
 import { AuthService } from '../core/services/auth.service';
+import { LoadingComponent } from '../core/common/loading/loading.component';
 
 @Component({
 	selector: 'app-login',
@@ -26,11 +28,14 @@ import { AuthService } from '../core/services/auth.service';
 		FloatLabelModule,
 		DividerModule,
 		ImageModule,
+    DialogModule,
+    LoadingComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
 	errorMessage: string = '';
+  loading = signal(false);
 
 	private readonly fb = inject(FormBuilder);
 	private readonly authService = inject(AuthService);
@@ -43,6 +48,7 @@ export class LoginComponent {
 	});
 
 	login() {
+    this.loading.set(true);
 		if (this.loginForm.valid) {
 			const { email, password } = this.loginForm.value;
 			if (!email || !password) {
@@ -50,11 +56,13 @@ export class LoginComponent {
 			}
 			this.authService.login(email, password).subscribe({
 				next: (res) => {
+          this.loading.set(false);
 					localStorage.setItem('token', res.token);
 					this.router.navigate(['/pages']);
           this.toastr.success('Logged in successfully', 'Success 🎉')
 				},
 				error: (err) => {
+          this.loading.set(false);
 					this.errorMessage = 'Invalid email or password';
           console.error('Could not login:', err);
           this.toastr.error('Could not login', 'Error!');

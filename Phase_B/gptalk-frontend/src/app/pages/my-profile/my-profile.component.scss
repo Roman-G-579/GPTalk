@@ -33,6 +33,13 @@ main {
 	}
 }
 
+.loading {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
 @media (max-width: 600px) {
   main {
     display: flex;
