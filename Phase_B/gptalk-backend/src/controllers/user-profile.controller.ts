@@ -1,14 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
+import { Schema } from 'mongoose';
+import httpStatus from 'http-status';
 import { UserModel } from '../models/user.interface';
 import { VisitLogModel } from '../models/visit-log.interface';
-import { Schema } from 'mongoose';
 import { Result, ResultModel } from '../models/result.interface';
 import { UserProfile } from '../models/user-profile.interface';
-import httpStatus from 'http-status';
 import { ChallengeModel } from '../models/challenge.interface';
 import { AchievementModel } from '../models/achievment.interface';
-import { Language, LanguageModel } from '../models/language.interface';
+import { Language } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
+import { RankEnum } from '../models/enums/rank.enum';
 
 export async function getUserProfile(req: Request, res: Response, next: NextFunction) {
 	try {
@@ -27,7 +28,6 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			challengesCompleted,
 			noMistakes,
 			languages,
-			allLanguages,
 		] = await Promise.all([
 			calculateTopPercentage(user._id),
 			calculateStreak(user._id),
@@ -35,19 +35,19 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			calculateTotalExp(user._id),
 			calculateChallengesCompleted(user._id),
 			calculateNoMistakesChallenges(user._id),
-			calculateExpertOrMasterLanguages(user._id),
-			getAllLanguages(user._id),
+			calculageUserLanguages(user._id),
 		]);
 
 		const maxStreak = await calculateMaxStreak(user._id, streak);
 		const level = calculateLevel(totalExp);
+		const expertOrMasterLanguages = calculateExpertOrMasterLanguages(languages);
 
 		const achievements = await getAchievements(
 			maxStreak,
 			totalExp,
 			noMistakes,
 			challengesCompleted,
-			languages.length,
+			expertOrMasterLanguages,
 		);
 
 		const userProfile: UserProfile = {
@@ -62,7 +62,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			topPercentage,
 			streak,
 			latestResults: latestResults as Result[],
-			languages: allLanguages as Language[],
+			languages,
 			achievements,
 		};
 
@@ -173,12 +173,15 @@ async function calculateNoMistakesChallenges(userId: Schema.Types.ObjectId) {
 	return ChallengeModel.countDocuments({ user: userId, mistakes: 0 });
 }
 
-async function getAllLanguages(userId: Schema.Types.ObjectId) {
-	return LanguageModel.find({ user: userId });
-}
-
-async function calculateExpertOrMasterLanguages(userId: Schema.Types.ObjectId) {
-	return LanguageModel.find({ user: userId, rank: { $in: ['Expert', 'Master'] } });
+function calculateExpertOrMasterLanguages(languages: Language[]) {
+	return languages.reduce(
+		(accumulator, language) =>
+			language.rank === RankEnum.Expert || language.rank === RankEnum.Master
+				? accumulator + 1
+				: accumulator,
+		0,
+	);
+	// return LanguageModel.find({ user: userId, rank: { $in: ['Expert', 'Master'] } });
 }
 
 export async function calculateTotalExp(userId: Schema.Types.ObjectId) {
@@ -242,4 +245,40 @@ async function getAchievements(
 	updateAchievement(languages, totalLanguages, 4);
 
 	return achievements;
+}
+
+async function calculageUserLanguages(userId: Schema.Types.ObjectId): Promise<Language[]> {
+	const aggregatedResults = await ResultModel.aggregate([
+		{ $match: { user: userId } },
+		{
+			$group: {
+				_id: '$language',
+				totalExp: { $sum: '$exp' },
+			},
+		},
+		{
+			$project: {
+				language: '$_id',
+				totalExp: 1,
+				_id: 0,
+			},
+		},
+	]);
+
+	const languagesWithRanks: Language[] = aggregatedResults.map((result) => ({
+		language: result.language,
+		rank: calculateRank(result.totalExp),
+	}));
+
+	return languagesWithRanks;
+}
+
+function calculateRank(totalExp: number): RankEnum {
+	if (totalExp < 5000) {
+		return RankEnum.Novice;
+	} else if (totalExp < 10000) {
+		return RankEnum.Expert;
+	} else {
+		return RankEnum.Master;
+	}
 }
