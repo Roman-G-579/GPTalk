@@ -9,7 +9,7 @@
 					<p-progressBar
 						[value]="
 							(achievement.progress / achievement.goal) * 100 <= 100
-								? (achievement.progress / achievement.goal) * 100
+								? formatToTwoDecimalPlaces((achievement.progress / achievement.goal) * 100)
 								: 100
 						"
 					></p-progressBar>
