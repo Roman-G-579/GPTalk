@@ -144,13 +144,13 @@ export class RegisterComponent implements OnInit{
 
     // Calls the register service's registration function
         this.registerService.registerUser(formData).subscribe({
-          next: res => {
+          next: () => {
             this.active = 3;
             this.loading = false;
             this.cdr.detectChanges();
             this.toastr.success('Registration successful!', 'Success 🎉')
           },
-          error: err => {
+          error: () => {
             this.loading = false;
             this.cdr.detectChanges();
             this.toastr.error("Registration failed", "Error!");

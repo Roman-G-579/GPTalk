@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LearnHtmlUtils } from '../utils/learn-html.utils';
 import { LearnVerificationUtils } from '../utils/learn-verification.utils';
 import { LearnService } from '../learn.service';

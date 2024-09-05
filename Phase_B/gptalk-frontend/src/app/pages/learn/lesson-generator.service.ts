@@ -103,19 +103,20 @@ export class LessonGeneratorService {
 
     for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
-      const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
+      // const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
+      const randomIndex: number = 4;
 
       // The Chosen function
-      const generatorFunc = exerciseGenerators[4];
+      const generatorFunc = exerciseGenerators[randomIndex];
 
       // Generate an exercise prompt based on the randomized exercise index
-      let exercisePrompt = generatorFunc(language,difficulty,keyWords);
+      const exercisePrompt = generatorFunc(language,difficulty,keyWords);
 
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
         map(response => {
-          const exerciseType = <ExerciseType>(4); // Sets the generated exercise's type
-          return genUtil.convertToExerciseObject(response, exerciseType, language);
+          const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
+          return genUtil.convertToExerciseObject(response as Exercise, exerciseType, language);
         })
       );
 

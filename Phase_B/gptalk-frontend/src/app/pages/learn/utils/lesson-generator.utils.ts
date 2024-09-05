@@ -80,8 +80,8 @@ export class LessonGeneratorUtils {
    * @param language the lesson's selected language
    * @returns an Exercise object
    */
-  static convertToExerciseObject(exerciseJson: any, exerciseType: ExerciseType, language: Language): Exercise {
-    let exercise: Exercise = {
+  static convertToExerciseObject(exerciseJson: Exercise, exerciseType: ExerciseType, language: Language): Exercise {
+    const exercise: Exercise = {
       type: exerciseType,
       question: exerciseJson.question,
       cat_a: exerciseJson.cat_a,
@@ -95,7 +95,7 @@ export class LessonGeneratorUtils {
       translations: exerciseJson.translations
     }
 
-    return this.addExerciseSpecificData(exercise, language);
+    return this.addExerciseSpecificData(exercise);
   }
 
   /**
@@ -104,7 +104,7 @@ export class LessonGeneratorUtils {
    * @param exercise the given exercise
    * @returns the updated exercise object
    */
-  private static addExerciseSpecificData(exercise: Exercise, language: Language): Exercise {
+  private static addExerciseSpecificData(exercise: Exercise): Exercise {
 
     // Adds heading and instruction based on the exercise type
     exercise.heading = HEADINGS_MAP[exercise.type];
@@ -140,10 +140,10 @@ export class LessonGeneratorUtils {
   private static setFillInTheBlank(exercise: Exercise): Exercise {
     // Takes the answer sentence and converts it to an array
     const fullSentence = exercise.answer ?? "";
-    let sentenceArr = fullSentence.replace(/[,.!?:]/g,'').split(' ');
+    const sentenceArr = fullSentence.replace(/[,.!?:]/g,'').split(' ');
 
     // Takes the choices array
-    let choices = exercise.choices ?? [];
+    const choices = exercise.choices ?? [];
     let randIndex = Math.floor(Math.random() * sentenceArr.length);
 
     // Takes out a random word from the full sentence

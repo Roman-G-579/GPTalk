@@ -8,7 +8,7 @@
     <p-panel class="daily-word col-9 w-30rem ">
       <ng-template pTemplate="header">
         <div class="flex align-items-center gap-2">
-          @if(dailyWord().word != "") {
+          @if(dailyWord().word !== "") {
             <p-avatar
               [image]="languageIconRecord[dailyWord().language]"
               size="normal"
@@ -19,7 +19,7 @@
           }
         </div>
       </ng-template>
-      @if(dailyWord().word != "") {
+      @if(dailyWord().word !== "") {
         <p class="mb-2">
         {{dailyWord().definition}}
         </p>
