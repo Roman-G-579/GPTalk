@@ -16,12 +16,12 @@ export class LessonGeneratorService {
   private readonly apiUrl = environment.apiUrl;
   private readonly http = inject(HttpClient);
 
-  mockExercise_FillInTheBlank: Exercise = {
-    type: ExerciseType.FillInTheBlank,
-    answer: "הטיסה ממריאה מחר בבוקר",
-    choices: ["חתול","קפה","לרוץ"],
-    translation: "The flight takes off tomorrow"
-  }
+  // mockExercise_FillInTheBlank: Exercise = {
+  //   type: ExerciseType.FillInTheBlank,
+  //   answer: "הטיסה ממריאה מחר בבוקר",
+  //   choices: ["חתול","קפה","לרוץ"],
+  //   translation: "The flight takes off tomorrow"
+  // }
   //
   // mockExercise_TranslateWord: Exercise = {
   //   type: ExerciseType.TranslateWord,
@@ -139,11 +139,11 @@ export class LessonGeneratorService {
     let numOfAnswers: number;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty >= 0 && difficulty < 2) {
+    if (difficulty == 0) {
       numOfAnswers = 3;
     }
     // Parameters for medium and hard difficulties
-    else if (difficulty >= 3 && difficulty < 4) {
+    else if (difficulty == 1) {
       numOfAnswers = 4;
     }
     // Parameters for very hard and expert difficulties
@@ -151,7 +151,7 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
-    return `generate an object in ${language}, ${difficulty} difficulty. 'answer' is the sentence, 'translation' is its english translation, 'choices' is ${numOfAnswers} random words, not found in "answer". Focus on topics: ${keyWords[0]}. {"answer": "", "choices:" [], "translation": ""}`;
+    return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its english translation, 'choices' is ${numOfAnswers} random words, not found in "answer". Focus on topics: ${keyWords[0]}. {"answer": "", "choices:" [], "translation": ""}`;
   }
 
   /**
@@ -165,11 +165,11 @@ export class LessonGeneratorService {
     let numOfAnswers: number;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty >= 0 && difficulty < 2) {
+    if (difficulty == 0) {
       numOfAnswers = 3;
     }
     // Parameters for medium and hard difficulties
-    else if (difficulty >= 3 && difficulty < 4) {
+    else if (difficulty == 1) {
       numOfAnswers = 4;
     }
     // Parameters for very hard and expert difficulties
@@ -177,7 +177,7 @@ export class LessonGeneratorService {
       numOfAnswers = 5;
     }
 
-    return `generate word array, difficulty: ${difficulty}, language: ${language}. number of words: ${numOfAnswers}. Focus on topics: ${keyWords[0]}. {"choices": [array_of_words] "translations": [array_of_translations] }`;
+    return `generate word array, difficulty: ${Difficulty[difficulty]}, language: ${language}. number of words: ${numOfAnswers}. Focus on topics: ${keyWords[0]}. {"choices": [array_of_words] "translations": [array_of_translations] }`;
   }
 
   /**
@@ -187,7 +187,7 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateTranslateTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]): string {
-    return `generate a "translate the sentence" exercise, difficulty: ${difficulty}. Focus on topics: ${keyWords[0]}. {"question": "english_sentence", "answer": "${language}_translation"}`;
+    return `generate a "translate the sentence" exercise, difficulty: ${Difficulty[difficulty]}. Focus on topics: ${keyWords[0]}. {"question": "english_sentence", "answer": "${language}_translation"}`;
   }
 
   /**
@@ -197,7 +197,7 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]): string {
-    return `generate a "complete the conversation" exercise, difficulty: ${difficulty}, language: ${language}. First choice is grammatically correct and makes sense, second choice doesn't. Focus on topics: ${keyWords[0]}. { "question": "question/statement", "choices": ["reply1","reply2"] "translation": "english_translation_of_question_&_correct_reply" }`;
+    return `generate a "complete the conversation" exercise, difficulty: ${Difficulty[difficulty]}, language: ${language}. First choice is grammatically correct and makes sense, second choice doesn't. Focus on topics: ${keyWords[0]}. { "question": "question/statement", "choices": ["reply1","reply2"] "translation": "english_translation_of_question_&_correct_reply" }`;
   }
 
   /**
@@ -211,11 +211,11 @@ export class LessonGeneratorService {
     let numOfPairs: number;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty >= 0 && difficulty < 2) {
+    if (difficulty == 0) {
       numOfPairs = 4;
     }
     // Parameters for medium and hard difficulties
-    else if (difficulty >= 3 && difficulty < 4) {
+    else if (difficulty == 1) {
       numOfPairs = 5;
     }
     // Parameters for very hard and expert difficulties
@@ -223,7 +223,7 @@ export class LessonGeneratorService {
       numOfPairs = 6;
     }
 
-    return `Generate an array of word pairs in ${language}, ${difficulty} difficulty. ${numOfPairs} pairs. Focus on topics: ${keyWords[0]}. Follow this json structure: "correctPairs": { ["word","translation"] }`;
+    return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Focus on topics: ${keyWords[0]}. Follow this json structure: "correctPairs": { ["word","translation"] }`;
   }
 
   /**
@@ -236,11 +236,11 @@ export class LessonGeneratorService {
     let sentenceLength: string;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty >= 0 && difficulty < 2) {
+    if (difficulty == 0) {
       sentenceLength = "short";
     }
     // Parameters for medium and hard difficulties
-    else if (difficulty >= 3 && difficulty < 4) {
+    else if (difficulty == 1) {
       sentenceLength = "medium";
     }
     // Parameters for very hard and expert difficulties
@@ -248,7 +248,7 @@ export class LessonGeneratorService {
       sentenceLength = "long";
     }
 
-    return `generate a sentence, in ${language}, ${difficulty} difficulty, ${sentenceLength} length. Focus on topics: ${keyWords[0]} { "answer": "", "translation": "" }`;
+    return `generate a sentence, in ${language}, ${Difficulty[difficulty]} difficulty, ${sentenceLength} length. Focus on topics: ${keyWords[0]} { "answer": "", "translation": "" }`;
   }
 
   /**
@@ -258,7 +258,7 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateMatchTheCategory(language: Language, difficulty: Difficulty, keyWords: string[]): string {
-    return `Generate 2 distinct categories and 4 words for each, in ${language}, ${difficulty} difficulty. Focus on topics: ${keyWords[0]} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
+    return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topics: ${keyWords[0]} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
   }
 
   /**
