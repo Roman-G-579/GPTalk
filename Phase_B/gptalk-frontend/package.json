@@ -20,8 +20,17 @@
   },
   "jest": {
     "preset": "jest-preset-angular",
+    "testEnvironment": "@happy-dom/jest-environment",
     "setupFilesAfterEnv": [
       "<rootDir>/setup-jest.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/dist/",
+      "<rootDir>/vscode/",
+      "<rootDir>/nx/",
+      "<rootDir>/cypress/",
+      "<rootDir>/src/test.ts"
     ]
   },
   "private": true,
@@ -35,7 +44,9 @@
     "@angular/platform-browser": "^17.3.8",
     "@angular/platform-browser-dynamic": "^17.3.8",
     "@angular/router": "^17.3.8",
+    "@babel/preset-env": "^7.25.4",
     "@ngneat/until-destroy": "^10.0.0",
+    "babel-jest": "^29.7.0",
     "fastest-levenshtein": "^1.0.16",
     "lodash": "^4.17.21",
     "lottie-web": "^5.12.2",
@@ -58,18 +69,22 @@
     "@angular-eslint/template-parser": "17.4.0",
     "@angular/cli": "~17.3.7",
     "@angular/compiler-cli": "^17.3.8",
+    "@happy-dom/jest-environment": "^15.6.0",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.6",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "cypress": "^13.9.0",
     "eslint": "^8.57.0",
+    "happy-dom": "^15.6.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
-    "jest-preset-angular": "^14.0.4",
+    "jest-preset-angular": "^14.2.2",
     "ngx-stats": "^0.1.2",
     "prettier": "^3.2.5",
     "stylelint": "^16.5.0",
     "stylelint-config-standard-scss": "^13.1.0",
+    "ts-jest": "^29.2.5",
     "typescript": "~5.4.5"
   }
 }
