@@ -5,6 +5,28 @@ import {ExerciseType} from '../../../core/enums/exercise-type.enum';
 import {Language} from '../../../core/enums/language.enum';
 import {TOPICS} from '../../../core/utils/topics';
 
+// The heading strings of the available exercise types
+const HEADINGS_MAP: { [key in ExerciseType]: string } = {
+  0: 'Fill in the blank',
+  1: 'Choose the correct translation',
+  2: 'Translate the sentence',
+  3: 'Complete the conversation',
+  4: 'Match the words',
+  5: 'Arrange the words to form a correct sentence',
+  6: 'Match the words to their correct category',
+};
+
+// The instruction strings of the available exercise types
+const INSTRUCTIONS_MAP: { [key in ExerciseType]: string } = {
+  0: 'Click on an answer or type it and hit the <i>enter</i> key to submit',
+  1: 'Click on the correct translation of the given word',
+  2: `Write the given sentence in a given language`,
+  3: `Click on an answer or type it and hit the <i>enter</i> key to submit`,
+  4: `Match the words in a given language to their English translations`,
+  5: `Click the words sequentially to place them onto the board. Click submit when finished.`,
+  6: 'Drag and drop the words to their category container. Click submit when finished.',
+};
+
 /*
   Contains functions related to lesson generation
  */
@@ -23,11 +45,11 @@ export class LessonGeneratorUtils {
     keyWords.push(TOPICS[randomIndex]);
 
     // Parameters for very easy and easy difficulties
-    if (difficulty >= 0 && difficulty < 2) {
+    if (difficulty == 0) {
       keyWords.push('simple', 'beginners');
     }
     // Parameters for medium and hard difficulties
-    else if (difficulty >= 3 && difficulty < 4) {
+    else if (difficulty == 1) {
       keyWords.push('some familiarity with the language');
     }
     // Parameters for very hard and expert difficulties
@@ -49,7 +71,6 @@ export class LessonGeneratorUtils {
 
     return keywords;
   }
-
 
   /**
    * Converts a JSON object of generated exercise to Exercise object
@@ -85,31 +106,9 @@ export class LessonGeneratorUtils {
    */
   private static addExerciseSpecificData(exercise: Exercise, language: Language): Exercise {
 
-    // The heading strings of the available exercise types
-    const headingsMap: {[key in ExerciseType]: string } = {
-      0: 'Fill in the blank',
-      1: 'Choose the correct translation',
-      2: 'Translate the sentence',
-      3: 'Complete the conversation',
-      4: 'Match the words',
-      5: 'Arrange the words to form a correct sentence',
-      6: 'Match the words to their correct category'
-    }
-
-    // The instruction strings of the available exercise types
-    const instructionsMap: {[key in ExerciseType]: string } = {
-      0: 'Click on an answer or type it and hit the <i>enter</i> key to submit',
-      1: 'Click on the correct translation of the given word',
-      2: `Write the given sentence in ${language}`,
-      3: `Click on an answer or type it and hit the <i>enter</i> key to submit`,
-      4: `Match the words in ${language} to their English translations`,
-      5: `Click the words sequentially to place them onto the board. Click submit when finished.`,
-      6: 'Drag and drop the words to their category container. Click submit when finished.'
-    }
-
     // Adds heading and instruction based on the exercise type
-    exercise.heading = headingsMap[exercise.type];
-    exercise.instructions = instructionsMap[exercise.type];
+    exercise.heading = HEADINGS_MAP[exercise.type];
+    exercise.instructions = INSTRUCTIONS_MAP[exercise.type];
 
     // Sets data according to each exercise's needs
     switch (exercise.type) {
@@ -225,7 +224,10 @@ export class LessonGeneratorUtils {
    */
   private static setReorderSentence(exercise: Exercise): Exercise {
     let choices = exercise.answer?.split(' ') ?? [];
-    choices = _.shuffle(choices);
+
+    // Shuffles the sentence's words and removes empty strings if they exist
+    choices = _.shuffle(choices).filter(word => word.trim() !== '');
+
     exercise.choices = choices;
     return exercise;
   }
@@ -237,7 +239,7 @@ export class LessonGeneratorUtils {
    */
   private static setMatchTheCategory(exercise: Exercise): Exercise {
     const choices = [...exercise.words_a ?? "", ...exercise.words_b ?? ""];
-    exercise.choices = _.shuffle(choices);
+    exercise.choices = _.shuffle(choices).filter(word => word.trim() !== '');
     return exercise;
   }
 
