@@ -70,13 +70,16 @@ a:hover {
   color: #1f58d7;
 }
 
+// List of password criteria
 .password-notes {
   width: 250px;
 
+  // Highlights valid password criteria
   & li.pass {
     color: var(--blue-400);
   }
 
+  // Highlights invalid password criteria
   & li.fail {
     color: var(--red-400);
   }

@@ -64,7 +64,7 @@ export class RegisterComponent implements OnInit{
 
   // Dependency injection
   private readonly primengConfig = inject(PrimeNGConfig);
-  private readonly registerService = inject(RegisterService);
+  readonly registerService = inject(RegisterService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly toastr = inject(ToastrService);
 
@@ -78,11 +78,17 @@ export class RegisterComponent implements OnInit{
       username: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.email,Validators.required]),
     }),
+
+    // Password contains:
+    // At least one lowercase character,
+    // At least one uppercase character
+    // At least one number
+    // Between 6 and 100 characters total
     passwordAndConfirm: new FormGroup({
       password: new FormControl<string>('', [
         Validators.minLength(6),
         Validators.maxLength(100),
-        Validators.pattern('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$'),
+        Validators.pattern('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).*$'),
         Validators.required]),
       confirmPassword: new FormControl<string>('', Validators.required),
     },
@@ -98,7 +104,6 @@ export class RegisterComponent implements OnInit{
   }
   active = 0; // Active page number of the registration section
   loading = false;
-  errorMsg: string = "";
 
   ngOnInit() {
     this.primengConfig.ripple = true;
@@ -106,7 +111,7 @@ export class RegisterComponent implements OnInit{
 
   // Validates the input fields for first and last name
   submitFullName() {
-    this.highlightIfEmpty(this.registerForm.controls.fullName);
+    this.highlightIfInvalid(this.registerForm.controls.fullName);
 
     if (this.isValid(this.registerForm.controls.fullName)) {
       this.active = 1;
@@ -115,7 +120,7 @@ export class RegisterComponent implements OnInit{
 
   // Validates the input fields for username and email
   submitUsernameAndEmail() {
-    this.highlightIfEmpty(this.registerForm.controls.usernameAndEmail);
+    this.highlightIfInvalid(this.registerForm.controls.usernameAndEmail);
 
     if (this.isValid(this.registerForm.controls.usernameAndEmail)) {
       this.active = 2;
@@ -124,7 +129,7 @@ export class RegisterComponent implements OnInit{
 
   // Validates the input fields for password and confirmation
   submitPassword() {
-    this.highlightIfEmpty(this.registerForm.controls.passwordAndConfirm);
+    this.highlightIfInvalid(this.registerForm.controls.passwordAndConfirm);
 
     if (this.isValid(this.registerForm.controls.passwordAndConfirm)) {
       this.registerUser();
@@ -139,16 +144,16 @@ export class RegisterComponent implements OnInit{
 
     // Calls the register service's registration function
         this.registerService.registerUser(formData).subscribe({
-          next: res => {
+          next: () => {
             this.active = 3;
             this.loading = false;
             this.cdr.detectChanges();
-            console.log("registration successful!",res);
+            this.toastr.success('Registration successful!', 'Success 🎉')
           },
-          error: err => {
+          error: () => {
             this.loading = false;
             this.cdr.detectChanges();
-            this.toastr.error(err.error.message,"Registration failed");
+            this.toastr.error("Registration failed", "Error!");
           }
         })
   }
@@ -166,7 +171,7 @@ export class RegisterComponent implements OnInit{
   }
 
   // Marks invalid form inputs from the given FormGroup as dirty if they are invalid
-  highlightIfEmpty(formGroup: FormGroup): void {
+  highlightIfInvalid(formGroup: FormGroup): void {
     for (const controlName in formGroup.controls) {
       if (Object.prototype.hasOwnProperty.call(formGroup.controls, controlName) && !formGroup.controls[controlName].valid) {
         formGroup.controls[controlName].markAsDirty();

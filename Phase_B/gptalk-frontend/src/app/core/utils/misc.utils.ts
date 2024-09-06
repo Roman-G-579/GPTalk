@@ -1,8 +1,6 @@
-import _ from 'lodash';
 import { WritableSignal } from '@angular/core';
 import { Exercise } from '../interfaces/exercise.interface';
 import { closest, distance } from 'fastest-levenshtein';
-import { Difficulty } from '../enums/difficulty.enum';
 
 /**
  * Contains miscellaneous utility functions
@@ -33,9 +31,9 @@ export class MiscUtils {
    * @param exercise the data of the currently active exercise
    */
   static findClosestString(str: string, exercise: WritableSignal<Exercise>) {
-
+    const answer = exercise().answer?.toLowerCase() ?? '';
     // If the given string doesn't start with the first letter of the answer, dismiss the answer
-    if (!exercise().answer?.startsWith(str[0])) {
+    if (!answer.startsWith(str[0])) {
       return "";
     }
 
@@ -44,7 +42,7 @@ export class MiscUtils {
       return "";
     }
 
-    return closest(str, exercise().choices ?? []);
+    return closest(str, exercise().choices ?? []).toLowerCase();
   }
 
   /**

@@ -26,7 +26,7 @@ export class DailyWordService {
    * @returns an observable of the API's response JSON
    */
   async getDailyWord() {
-    let {href} = new URL('daily-word/fetch', this.apiUrl);
+    const {href} = new URL('daily-word/fetch', this.apiUrl);
 
     this.http.post<DailyWord>(href, { date: new Date() }).subscribe({
       next: (data: DailyWord) => {

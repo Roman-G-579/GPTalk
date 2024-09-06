@@ -1,6 +1,4 @@
 import { ExerciseType } from '../enums/exercise-type.enum';
-import { Language } from '../enums/language.enum';
-import { SafeHtml } from '@angular/platform-browser';
 
 export interface Exercise {
   type: ExerciseType;

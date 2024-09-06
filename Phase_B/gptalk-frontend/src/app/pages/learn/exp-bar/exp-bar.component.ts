@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { PrimeTemplate } from 'primeng/api';
 import { NgClass } from '@angular/common';

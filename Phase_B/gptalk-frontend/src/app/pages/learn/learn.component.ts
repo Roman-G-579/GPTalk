@@ -43,6 +43,8 @@ export class LearnComponent implements OnInit {
   protected readonly lrn = inject(LearnService);
   private readonly primengConfig = inject(PrimeNGConfig);
 
+  LESSON_AMOUNT = 2;
+
   isLoading = signal<boolean>(true);
   isDone = this.lrn.isDone;
   isLessonOver = this.lrn.isLessonOver;
@@ -57,7 +59,7 @@ export class LearnComponent implements OnInit {
     path: '/assets/lottie/loading.json'
   };
   ngOnInit() {
-    this.lgService.generateLesson(Language.Hebrew, Difficulty.Medium, 2).subscribe({
+    this.lgService.generateLesson(Language.Hebrew, Difficulty.Expert, this.LESSON_AMOUNT).subscribe({
       next: (exercises: Exercise[]) => {
         this.lrn.setUpLesson(exercises);
         //TODO: change method of setting current lesson's language

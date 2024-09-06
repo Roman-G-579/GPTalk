@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LearnService } from '../learn.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LearnHtmlUtils } from '../utils/learn-html.utils';
