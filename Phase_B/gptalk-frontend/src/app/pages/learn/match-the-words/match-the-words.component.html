@@ -27,8 +27,8 @@
       }
     </div>
 
-    @if (isDone() && matchMistakes()) {
+    @if (isDone() && penalties()) {
       <div class="flex flex-column text-center justify-content-center">
-        <p>Total incorrect matches: {{matchMistakes()}}</p>
+        <p>Total incorrect matches: {{penalties()}}</p>
       </div>
     }

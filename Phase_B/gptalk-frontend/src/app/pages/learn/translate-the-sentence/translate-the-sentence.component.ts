@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { LearnHtmlUtils } from '../utils/learn-html.utils';
 import { LearnVerificationUtils } from '../utils/learn-verification.utils';
 import { Button } from 'primeng/button';
+import {TooltipModule} from "primeng/tooltip";
 
 @Component({
   selector: 'app-translate-the-sentence',
@@ -11,6 +12,7 @@ import { Button } from 'primeng/button';
   imports: [
     ReactiveFormsModule,
     Button,
+    TooltipModule,
   ],
   templateUrl: './translate-the-sentence.component.html',
   styleUrl: './translate-the-sentence.component.scss',
@@ -28,6 +30,7 @@ export class TranslateTheSentenceComponent implements AfterViewInit {
   exerciseData = this.lrn.exerciseData;
   lessonLanguage = this.lrn.lessonLanguage;
   isDone = this.lrn.isDone;
+  hintText = this.lrn.hintText;
 
   ngAfterViewInit() {
     this.lrn.onExerciseSwitch.subscribe(() => {

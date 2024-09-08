@@ -1,7 +1,7 @@
 /**
  * Exp rewards for various activities in the application
  */
-export enum ExpVals {
+export enum RewardVals {
   exercise = 50,
-  chat = 150
+  hardExercise = 150 // Given for difficult exercise types: TranslateSentence, MatchTheCategory
 }
