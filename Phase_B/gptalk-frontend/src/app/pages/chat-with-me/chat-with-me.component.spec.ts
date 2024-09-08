@@ -182,7 +182,7 @@ describe('ChatWithMeComponent', () => {
     }) as (confirmation: Confirmation) => ConfirmationService);
     chatComp.openDialog(mockGrade);
 
-    expect(chatComp.language()).toBe('');
+    expect(chatComp.language()).toBe(Language.NOT_SELECTED);
     expect(chatComp.conversation()).toEqual([]);
   });
 });

@@ -30,6 +30,7 @@ class MockLearnService {
     translation: ''
   });
   lessonLanguage = { set: jest.fn() };
+  setUpLesson = jest.fn();
 }
 
 describe('LearnComponent', () => {
@@ -74,27 +75,29 @@ describe('LearnComponent', () => {
       }
     ];
 
-    jest.spyOn(lrnComp['lgService'], 'generateLesson').mockImplementation(() => {
-      return of(mockExercises);
-    });
+    // Mock the generateLesson method to return an observable
+    mockLgService.generateLesson.mockReturnValue(of(mockExercises));
 
-    jest.spyOn(lrnComp['lrn'], 'setUpLesson').mockImplementation(() => {
-      return;
-    })
+    // Call the callGenerator method
+    lrnComp.callGenerator(Language.English);
 
-    lrnComp.ngOnInit();
+    // Check that generateLesson is called with correct arguments
+    expect(mockLgService.generateLesson).toHaveBeenCalledWith(Language.English, Difficulty.Expert, lrnComp.EXERCISE_AMOUNT);
 
-    expect(lrnComp['lgService'].generateLesson).toHaveBeenCalledWith(Language.Hebrew, Difficulty.Expert, LESSON_AMOUNT);
-    expect(lrnComp['lrn'].setUpLesson).toHaveBeenCalledWith(mockExercises);
+    // Check that setUpLesson is called with the mock exercises
+    expect(mockLearnService.setUpLesson).toHaveBeenCalledWith(mockExercises);
   });
 
   it('should return the correct component based on current exercise type', () => {
+    // Checks if the returned currentComponent matches the exercise type in exerciseData
     const currentComponent = lrnComp.currentExercise;
     expect(currentComponent).toBe(TranslateWordComponent);
 
     lrnComp.isLessonOver.set(true);
 
+    // Checks if the returned currentComponent is ResultsScreenComponent once a lesson is over
     const currentComponentAfterLesson = lrnComp.currentExercise;
     expect(currentComponentAfterLesson).toBe(ResultsScreenComponent);
   });
+
 });

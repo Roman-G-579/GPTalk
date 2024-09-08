@@ -137,7 +137,7 @@ describe('LessonGeneratorService', () => {
     it('should generate a correct prompt format for valid input', () => {
       const result = lessonGeneratorService.generateReorderSentence(language,difficulty,keyWords);
 
-      expect(result).toMatch(`generate a sentence, in English, Novice difficulty, short length. Focus on topics: technology { "answer": "", "translation": "" }`);
+      expect(result).toMatch(`generate a 4 words long sentence, in English, Novice difficulty. Focus on topics: technology { "answer": "", "translation": "" }`);
     });
   });
 

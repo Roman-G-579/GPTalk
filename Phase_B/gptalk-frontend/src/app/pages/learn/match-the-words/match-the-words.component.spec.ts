@@ -22,7 +22,7 @@ class MockLearnService {
 
   matchResults = signal<[boolean,boolean][]>([]);
   chosenPair = signal<[string, string]>(["",""]);
-  matchMistakes = signal<number>(0);
+  penalties = signal<number>(0);
 
   setExerciseResult = jest.fn();
 }
@@ -89,7 +89,7 @@ describe('MatchTheWordsComponent', () => {
     expect(mockLearnService.chosenPair()).toEqual(['', '']);
   });
 
-  it('should increment match mistakes on wrong match', () => {
+  it('should increment penalty counter on wrong match', () => {
     // Mocks the verification of a word match
     jest.spyOn(mtwComp['vrf'],'verifyMatch').mockImplementation((): "wrongMatch" => {
       return "wrongMatch";
@@ -97,7 +97,7 @@ describe('MatchTheWordsComponent', () => {
     mtwComp.chooseMatch('leftWord', 0);
     mtwComp.chooseMatch('rightWord', 1);
 
-    expect(mockLearnService.matchMistakes()).toBe(1);
+    expect(mockLearnService.penalties()).toBe(1);
     expect(mockLearnService.chosenPair()).toEqual(['', '']);
   });
 });

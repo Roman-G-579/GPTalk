@@ -80,13 +80,11 @@ describe('LearnInitializerUtils', () => {
 
   describe('initializeLessonParams', () => {
     it('should initialize lesson parameters correctly', () => {
-      const isLessonOver: WritableSignal<boolean> = signal(true);
       const mistakesCounter: WritableSignal<number> = signal(5);
       const lessonExp: WritableSignal<number> = signal(100);
 
-      LearnInitializerUtils.initializeLessonParams(isLessonOver, mistakesCounter, lessonExp);
+      LearnInitializerUtils.initializeLessonParams(mistakesCounter, lessonExp);
 
-      expect(isLessonOver()).toBe(false);
       expect(mistakesCounter()).toBe(0);
       expect(lessonExp()).toBe(0);
     });

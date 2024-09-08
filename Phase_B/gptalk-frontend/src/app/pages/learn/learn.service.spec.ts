@@ -1,16 +1,17 @@
-import { TestBed } from '@angular/core/testing';
-import { LearnService } from './learn.service';
+import {TestBed} from '@angular/core/testing';
+import {LearnService} from './learn.service';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {Exercise} from "../../core/interfaces/exercise.interface";
 import {ExerciseType} from "../../core/enums/exercise-type.enum";
 import {AuthService} from "../../core/services/auth.service";
 import {LearnInitializerUtils} from "./utils/learn-initializer.utils";
 import {MiscUtils} from "../../core/utils/misc.utils";
-import {ExpVals} from "../../core/enums/exp-vals.enum";
+import {RewardVals} from "../../core/enums/exp-vals.enum";
 import {signal} from "@angular/core";
 import {UserResponse} from "../../core/interfaces/user-response.interface";
 import {environment} from "../../../environments/environment";
 import {of} from "rxjs";
+import {Language} from "../../core/enums/language.enum";
 
 class MockAuthService {
   totalExp = signal<number>(0);
@@ -85,11 +86,9 @@ describe('LearnService', () => {
       learnService.setUpLesson(mockExercises);
 
       expect(learnService.exerciseArr()).toEqual(mockExercises);
-
       expect(learnService.totalExercises()).toBe(mockExercises.length);
 
       expect(initializeLessonParamsSpy).toHaveBeenCalledWith(
-        learnService.isLessonOver,
         learnService.mistakesCounter,
         learnService.lessonExp
       );
@@ -110,7 +109,7 @@ describe('LearnService', () => {
 
       expect(initializeMatchTheWordsSpy).toHaveBeenCalledWith(
         learnService.matchResults,
-        learnService.matchMistakes,
+        learnService.penalties,
         learnService.exerciseData
       );
       expect(initializeMatchTheCategorySpy).not.toHaveBeenCalled();
@@ -151,7 +150,7 @@ describe('LearnService', () => {
 
       // Mock postResult returning an observable
       const postResultSpy = jest.spyOn(learnService, 'postResult').mockReturnValue(of({}));
-      const displayResultsScreenSpy = jest.spyOn(learnService, 'displayResultsScreen');
+      const displayResultsScreenSpy = jest.spyOn(learnService, 'endLesson');
 
       learnService.setUpNextExercise();
 
@@ -191,21 +190,21 @@ describe('LearnService', () => {
       // Initialize the lessonExp and totalExp to be zero
       learnService.lessonExp.set(0);
       learnService.totalExp.set(0);
-      learnService.matchMistakes.set(0);
+      learnService.penalties.set(0);
 
       learnService.addExp();
 
       // Check if values of lessonExp and totalExp are equal to the amount of added exp
-      expect(learnService.lessonExp()).toBe(ExpVals.exercise);
-      expect(learnService.totalExp()).toBe(ExpVals.exercise);
+      expect(learnService.lessonExp()).toBe(RewardVals.exercise);
+      expect(learnService.totalExp()).toBe(RewardVals.exercise);
     });
 
     it('should correctly calculate and add experience points with mistakes', () => {
       learnService.lessonExp.set(0);
       learnService.totalExp.set(0);
-      learnService.matchMistakes.set(2);
+      learnService.penalties.set(2);
 
-      const expectedExp = Math.max(0, ExpVals.exercise - 2 * 10);
+      const expectedExp = Math.max(0, RewardVals.exercise - 2 * 10);
 
       learnService.addExp();
 
@@ -217,7 +216,7 @@ describe('LearnService', () => {
     it('should not add negative experience points', () => {
       learnService.lessonExp.set(0);
       learnService.totalExp.set(0);
-      learnService.matchMistakes.set(20); // Assume many mistakes leading to negative exp
+      learnService.penalties.set(20); // Assume many mistakes leading to negative exp
 
       learnService.addExp();
 
@@ -235,22 +234,26 @@ describe('LearnService', () => {
       const lessonExp = 50;
       const totalExercises = 10;
       const mistakesCounter = 2;
+      const language = Language.English;
 
       const expectedUrl = `${environment.apiUrl}profile/postResult`;
 
       learnService.lessonExp.set(lessonExp);
       learnService.totalExercises.set(totalExercises);
       learnService.mistakesCounter.set(mistakesCounter);
+      learnService.lessonLanguage.set(language);
 
       learnService.postResult().subscribe();
 
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('POST');
+      //TODO: handle language related nonesense
       expect(req.request.body).toEqual({
         exp: lessonExp,
         email: email,
         numberOfQuestions: totalExercises,
         mistakes: mistakesCounter,
+        language: language
       });
 
       // Flush the mock HTTP response to ensure the request completes
