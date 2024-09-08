@@ -29,19 +29,19 @@ export class LessonGeneratorService {
   //   translations: ["car", "book", "table", "apple"]
   // }
   //
-  // mockExercise_TranslateSentence: Exercise = {
-  //   type: ExerciseType.TranslateTheSentence,
-  //   question: "קוראים לי דני",
-  //   answer: "My name is Danny"
-  // }
+  mockExercise_TranslateSentence: Exercise = {
+    type: ExerciseType.TranslateTheSentence,
+    question: "I love climbing mountains",
+    answer: "אני אוהב לטפס על הרים"
+  }
   //
-  // mockExercise_CompleteTheConversation: Exercise = {
-  //   type: ExerciseType.CompleteTheConversation,
-  //   question: "מתי אתה מתכנן לסיים את הפרויקט?",
-  //   choices: ["אני מתכנן לסיים את הפרויקט בסוף השבוע.", "אני מתכננים לסיים את הפרויקט בסוף השבוע."],
-  //   translation: "When do you plan to finish the project? / I plan to finish the project by the end of the week."
-  // }
-  //
+  mockExercise_CompleteTheConversation: Exercise = {
+    type: ExerciseType.CompleteTheConversation,
+    question: "מתי אתה מתכנן לסיים את הפרויקט?",
+    choices: ["אני מתכנן לסיים את הפרויקט בסוף השבוע.", "אני מתכננים לסיים את הפרויקט בסוף השבוע."],
+    translation: "When do you plan to finish the project? / I plan to finish the project by the end of the week."
+  }
+
   mockExercise_MatchTheWords: Exercise = {
     type: ExerciseType.MatchTheWords,
     "correctPairs": [
@@ -104,7 +104,7 @@ export class LessonGeneratorService {
     for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
       // const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-      const randomIndex: number = 4;
+      const randomIndex: number = 2;
 
       // The Chosen function
       const generatorFunc = exerciseGenerators[randomIndex];
@@ -115,8 +115,9 @@ export class LessonGeneratorService {
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
         map(response => {
+          console.log(response)
           const exerciseType = <ExerciseType>(randomIndex); // Sets the generated exercise's type
-          return genUtil.convertToExerciseObject(response as Exercise, exerciseType, language);
+          return genUtil.convertToExerciseObject(response as Exercise, exerciseType);
         })
       );
 
@@ -140,17 +141,11 @@ export class LessonGeneratorService {
     let numOfAnswers: number;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty == 0) {
-      numOfAnswers = 3;
-    }
+    if (difficulty == 0) { numOfAnswers = 3; }
     // Parameters for medium and hard difficulties
-    else if (difficulty == 1) {
-      numOfAnswers = 4;
-    }
+    else if (difficulty == 1) { numOfAnswers = 4; }
     // Parameters for very hard and expert difficulties
-    else {
-      numOfAnswers = 5;
-    }
+    else { numOfAnswers = 5; }
 
     return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its english translation, 'choices' is ${numOfAnswers} random words, not found in "answer". Focus on topics: ${keyWords[0]}. {"answer": "", "choices:" [], "translation": ""}`;
   }
@@ -166,17 +161,11 @@ export class LessonGeneratorService {
     let numOfAnswers: number;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty == 0) {
-      numOfAnswers = 3;
-    }
+    if (difficulty == 0) { numOfAnswers = 3; }
     // Parameters for medium and hard difficulties
-    else if (difficulty == 1) {
-      numOfAnswers = 4;
-    }
+    else if (difficulty == 1) { numOfAnswers = 4; }
     // Parameters for very hard and expert difficulties
-    else {
-      numOfAnswers = 5;
-    }
+    else { numOfAnswers = 5; }
 
     return `generate word array, difficulty: ${Difficulty[difficulty]}, language: ${language}. number of words: ${numOfAnswers}. Focus on topics: ${keyWords[0]}. {"choices": [array_of_words] "translations": [array_of_translations] }`;
   }
@@ -212,17 +201,11 @@ export class LessonGeneratorService {
     let numOfPairs: number;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty == 0) {
-      numOfPairs = 4;
-    }
+    if (difficulty == 0) { numOfPairs = 4; }
     // Parameters for medium and hard difficulties
-    else if (difficulty == 1) {
-      numOfPairs = 5;
-    }
+    else if (difficulty == 1) { numOfPairs = 5; }
     // Parameters for very hard and expert difficulties
-    else {
-      numOfPairs = 6;
-    }
+    else { numOfPairs = 6; }
 
     return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Focus on topics: ${keyWords[0]}. Follow this json structure: "correctPairs": { ["word","translation"] }`;
   }
@@ -234,22 +217,16 @@ export class LessonGeneratorService {
    * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
    */
   generateReorderSentence(language: Language, difficulty: Difficulty, keyWords: string[]): string {
-    let sentenceLength: string;
+    let sentenceLength: number;
 
     // Parameters for very easy and easy difficulties
-    if (difficulty == 0) {
-      sentenceLength = "short";
-    }
+    if (difficulty == 0) { sentenceLength = 4; }
     // Parameters for medium and hard difficulties
-    else if (difficulty == 1) {
-      sentenceLength = "medium";
-    }
+    else if (difficulty == 1) { sentenceLength = 5; }
     // Parameters for very hard and expert difficulties
-    else {
-      sentenceLength = "long";
-    }
+    else { sentenceLength = 6; }
 
-    return `generate a sentence, in ${language}, ${Difficulty[difficulty]} difficulty, ${sentenceLength} length. Focus on topics: ${keyWords[0]} { "answer": "", "translation": "" }`;
+    return `generate a ${sentenceLength} words long sentence, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topics: ${keyWords[0]} { "answer": "", "translation": "" }`;
   }
 
   /**
@@ -271,10 +248,10 @@ export class LessonGeneratorService {
     const {href} = new URL('generateLesson', this.apiUrl);
 
     // API CONNECTION
-    // return this.http.post(href,{userPrompt: promptString});
+    return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    return of(cloneDeep(this.mockExercise_MatchTheWords));
+    // return of(cloneDeep(this.mockExercise_CompleteTheConversation));
   }
 
 }
