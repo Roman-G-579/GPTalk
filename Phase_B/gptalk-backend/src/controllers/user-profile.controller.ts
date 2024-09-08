@@ -83,7 +83,7 @@ export async function postResult(req: Request, res: Response, next: NextFunction
 	try {
 		const { exp, email, numberOfQuestions, mistakes, language } = req.body;
 
-		if (!exp || !email) {
+		if (!email) {
 			return res.status(400).json({ message: 'Missing data in postResult function' });
 		}
 		const user = await UserModel.findOne({ email });
