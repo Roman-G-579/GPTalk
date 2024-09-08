@@ -33,7 +33,7 @@ export class MiscUtils {
   static findClosestString(str: string, exercise: WritableSignal<Exercise>) {
     const answer = exercise().answer?.toLowerCase() ?? '';
     // If the given string doesn't start with the first letter of the answer, dismiss the answer
-    if (!answer.startsWith(str[0])) {
+    if (!str.startsWith(answer[0])) {
       return "";
     }
 
@@ -58,7 +58,6 @@ export class MiscUtils {
 
     exercise().choices?.forEach(choice => {
       const curDist = distance(str, choice);
-
       //update the smallest distance value if a smaller one than the current minimum is found
       if (curDist < dist) {
         dist = curDist;
