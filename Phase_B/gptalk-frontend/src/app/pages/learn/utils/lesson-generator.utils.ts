@@ -77,10 +77,9 @@ export class LessonGeneratorUtils {
    * and adds relevant data
    * @param exerciseJson the JSON object
    * @param exerciseType the type of the current exercise
-   * @param language the lesson's selected language
    * @returns an Exercise object
    */
-  static convertToExerciseObject(exerciseJson: Exercise, exerciseType: ExerciseType, language: Language): Exercise {
+  static convertToExerciseObject(exerciseJson: Exercise, exerciseType: ExerciseType): Exercise {
     const exercise: Exercise = {
       type: exerciseType,
       question: exerciseJson.question,
@@ -100,7 +99,6 @@ export class LessonGeneratorUtils {
 
   /**
    * Adds heading, instructions and other exercise-specific data to the exercise
-   * @param language the lesson's selected language
    * @param exercise the given exercise
    * @returns the updated exercise object
    */

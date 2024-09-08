@@ -42,11 +42,9 @@ export class LearnInitializerUtils {
    * @param lessonExp the amount of experience points that was accumulated in the current lesson
    */
   static initializeLessonParams(
-    isLessonOver: WritableSignal<boolean>,
     mistakesCounter: WritableSignal<number>,
     lessonExp: WritableSignal<number>
   ) {
-    isLessonOver.set(false);
     mistakesCounter.set(0);
     lessonExp.set(0);
   }
