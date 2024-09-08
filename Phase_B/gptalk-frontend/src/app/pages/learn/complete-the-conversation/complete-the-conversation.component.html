@@ -1,6 +1,7 @@
     <!--    Chat bubbles-->
     <div class="chat-wrapper flex flex-column  mb-4">
-      <div class="bubble left  justify-content-start mb-4">
+      <div class="bubble left  justify-content-start mb-4"
+           [dir]="utilHtml.langDirection(lessonLanguage)">
         {{exerciseData().question}}
       </div>
 
