@@ -1,20 +1,21 @@
-import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
-import { ToastrService } from 'ngx-toastr';
-import { LottieComponent, AnimationOptions } from 'ngx-lottie';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
-import { ChatWithMeService } from './chat-with-me.service';
-import { Chat } from './interfaces/chat.interface';
-import { ChatResponse } from './interfaces/chat-response.interface';
-import { Grade } from './interfaces/grade.interface';
-import { LanguageSelectComponent } from '../../core/common/language-select/language-select.component';
-import { Language } from '../../core/enums/language.enum';
+import {ChangeDetectionStrategy, Component, inject, signal, WritableSignal} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {Router} from '@angular/router';
+import {FormsModule} from '@angular/forms';
+import {finalize} from 'rxjs';
+import {ToastrService} from 'ngx-toastr';
+import {AnimationOptions, LottieComponent} from 'ngx-lottie';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {ConfirmationService} from 'primeng/api';
+import {ChatWithMeService} from './chat-with-me.service';
+import {Chat} from './interfaces/chat.interface';
+import {ChatResponse} from './interfaces/chat-response.interface';
+import {Grade} from './interfaces/grade.interface';
+import {LanguageSelectComponent} from '../../core/common/language-select/language-select.component';
+import {Language} from '../../core/enums/language.enum';
+import {LearnHtmlUtils} from "../learn/utils/learn-html.utils";
 
 @Component({
 	selector: 'app-chat-with-me',
@@ -34,12 +35,14 @@ import { Language } from '../../core/enums/language.enum';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChatWithMeComponent {
-	private readonly chatWithMeService = inject(ChatWithMeService);
+  protected readonly utilHtml = LearnHtmlUtils;
+  private readonly chatWithMeService = inject(ChatWithMeService);
 	private readonly toastrService = inject(ToastrService);
 	private readonly confirmationService = inject(ConfirmationService);
 	private readonly router = inject(Router);
+  protected readonly Language = Language;
 
-	language: WritableSignal<Language | ''> = signal('');
+  language: WritableSignal<Language> = signal(Language.NOT_SELECTED);
 	conversation = signal<Chat[]>([]);
 
 	loading = signal(false);
@@ -88,7 +91,7 @@ export class ChatWithMeComponent {
 			header: 'Session Grade',
 			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'}`,
 			accept: () => {
-        this.setLanguage('');
+        this.setLanguage(Language.NOT_SELECTED);
 				this.conversation.set([]);
 			},
 			reject: () => {
@@ -97,7 +100,8 @@ export class ChatWithMeComponent {
 		});
 	}
 
-	setLanguage(lang: Language | '') {
+	setLanguage(lang: Language) {
 		this.language.set(lang);
 	}
+
 }

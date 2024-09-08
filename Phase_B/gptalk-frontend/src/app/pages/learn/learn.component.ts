@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  inject,
+  inject, Injector,
   OnInit, signal,
 } from '@angular/core';
 import { LessonGeneratorService } from './lesson-generator.service';
@@ -23,6 +24,7 @@ import { MatchTheCategoryComponent } from './match-the-category/match-the-catego
 import { ResultsScreenComponent } from './results-screen/results-screen.component';
 import { ExpBarComponent } from './exp-bar/exp-bar.component';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
+import {LanguageSelectComponent} from "../../core/common/language-select/language-select.component";
 
 @Component({
   selector: 'app-learn',
@@ -33,6 +35,7 @@ import { AnimationOptions, LottieComponent } from 'ngx-lottie';
     BypassSecurityPipe,
     ExpBarComponent,
     LottieComponent,
+    LanguageSelectComponent,
   ],
   templateUrl: './learn.component.html',
   styleUrl: './learn.component.scss',
@@ -42,8 +45,9 @@ export class LearnComponent implements OnInit {
   private readonly lgService = inject(LessonGeneratorService);
   protected readonly lrn = inject(LearnService);
   private readonly primengConfig = inject(PrimeNGConfig);
+  protected readonly Language = Language;
 
-  LESSON_AMOUNT = 2;
+  EXERCISE_AMOUNT = 3;
 
   isLoading = signal<boolean>(true);
   isDone = this.lrn.isDone;
@@ -58,18 +62,10 @@ export class LearnComponent implements OnInit {
   loadingOptions: AnimationOptions = {
     path: '/assets/lottie/loading.json'
   };
+
   ngOnInit() {
-    this.lgService.generateLesson(Language.Hebrew, Difficulty.Expert, this.LESSON_AMOUNT).subscribe({
-      next: (exercises: Exercise[]) => {
-        this.lrn.setUpLesson(exercises);
-        //TODO: change method of setting current lesson's language
-        this.lessonLanguage.set(Language.Hebrew);
-        this.isLoading.set(false);
-      }
-    })
-
     this.primengConfig.ripple = true;
-
+    this.lrn.isLessonOver.set(false);
   }
 
   // All exercise components
@@ -91,4 +87,17 @@ export class LearnComponent implements OnInit {
     return ResultsScreenComponent;
   }
 
+  /**
+   * Calls the lesson generation function and calls setUpLesson using the generated result
+   * @param language the generated lesson's language
+   */
+  callGenerator(language: Language) {
+    this.lrn.lessonLanguage.set(language);
+    this.lgService.generateLesson(language, Difficulty.Expert, this.EXERCISE_AMOUNT).subscribe({
+      next: (exercises: Exercise[]) => {
+        this.lrn.setUpLesson(exercises);
+        this.isLoading.set(false);
+      }
+    });
+  }
 }

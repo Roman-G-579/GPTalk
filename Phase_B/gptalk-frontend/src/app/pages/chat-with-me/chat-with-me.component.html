@@ -1,9 +1,9 @@
 <!-- eslint-disable @angular-eslint/template/elements-content -->
-@if (!language()) {
+@if (language() === Language.NOT_SELECTED) {
   <app-language-select (languageSelectionEvent)="setLanguage($event)"></app-language-select>
 } @else {
 	<div class="messages-wrapper">
-    <div class="messages">
+    <div class="messages" [dir]="utilHtml.langDirection(language)">
       @for (message of conversation(); track message) {
         <div
           class="message text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round"
@@ -23,10 +23,11 @@
 			class="input p-3 md:p-4 w-full lg:p-6 flex flex-column sm:flex-row align-items-center border-top-1 surface-border gap-3"
 		>
 			<input
+        [dir]="utilHtml.langDirection(language)"
 				id="message"
 				type="text"
 				pInputText
-				placeholder="Type a message"
+				[placeholder]="'Type a message in ' + language()"
 				class="flex-1 w-full sm:w-auto border-round"
 				[(ngModel)]="textContent"
 				(keydown.enter)="chat()"

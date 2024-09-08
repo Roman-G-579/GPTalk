@@ -25,6 +25,7 @@ export class DailyWordComponent  implements OnInit{
     Spanish: 'assets/profile/languages/spanish.png',
     Russian: 'assets/profile/languages/russian.png',
     Hebrew: 'assets/profile/languages/hebrew.png',
+    NOT_SELECTED: 'assets/profile/languages/english.png'
   };
 
   dailyWord = this.wtd.dailyWord;
