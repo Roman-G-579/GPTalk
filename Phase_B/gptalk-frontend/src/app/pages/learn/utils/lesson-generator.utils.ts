@@ -44,14 +44,14 @@ export class LessonGeneratorUtils {
     keyWords.push(TOPICS[randomIndex]);
 
     // Parameters for very easy and easy difficulties
-    if (difficulty == 0) {
+    if (difficulty == Difficulty.Novice) {
       keyWords.push('simple', 'beginners');
     }
     // Parameters for medium and hard difficulties
-    else if (difficulty == 1) {
+    else if (difficulty == Difficulty.Advanced) {
       keyWords.push('some familiarity with the language');
     }
-    // Parameters for very hard and expert difficulties
+    // Parameters for very hard and advanced difficulties
     else {
       keyWords.push('high level learners', 'challenge');
     }
@@ -200,7 +200,6 @@ export class LessonGeneratorUtils {
 
     // If the generated choices are identical, remove a random letter from the wrong choice
     if (choices[0] == choices[1]) {
-      console.log("IDENTICAL CHOICES FOUND");
       // Convert the sentence into an array of characters
       const chars = choices[1].split("");
 

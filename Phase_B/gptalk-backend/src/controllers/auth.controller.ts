@@ -4,7 +4,7 @@ import HttpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
 import { UserModel } from '../models/user.interface';
 import { Config } from '../config/config';
-import { calculateTotalExp } from './user-profile.controller';
+import { calculateTotalExp, calculateUserLanguages } from './user-profile.controller';
 
 /**
  * Logs a user to the app
@@ -40,6 +40,7 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
 		user.password = undefined;
 
 		user.totalExp = await calculateTotalExp(user._id);
+		user.languages = await calculateUserLanguages(user._id);
 		// Return the token
 		return res.status(HttpStatus.OK).json({ token, user });
 	} catch (err) {

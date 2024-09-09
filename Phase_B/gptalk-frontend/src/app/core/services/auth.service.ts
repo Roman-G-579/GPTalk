@@ -3,6 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserResponse } from '../interfaces/user-response.interface';
+import { Language } from '../../../app/pages/my-profile/components/profile-languages/language.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
 
   // Stores the details of the user that is currently logged in
-  userData = signal<Omit<UserResponse, 'totalExp'>>({
+  userData = signal<Omit<UserResponse, 'totalExp' | 'languages'>>({
     __v: 0,
     _id: '',
     createdAt: new Date(),
@@ -30,6 +31,7 @@ export class AuthService {
     return Math.floor(Math.log2(this.totalExp() / 100) + 1) + 1;
 
   });
+  languages = signal<Language[]>([]);
 
   // Calls the login middleware function, with the given email and password as parameters
   login(email: string, password: string): Observable<{ token: string; user: UserResponse }> {
@@ -41,9 +43,10 @@ export class AuthService {
             const protectedData = data.user as UserResponse;
             this.userData.set(protectedData); //stores the protected data in a signal
             this.totalExp.set(data.user.totalExp ?? 0);
+            this.languages.set(data.user.languages ?? []);
           },
           error: (err: unknown) => {
-            console.log('Error fetching protected data', err);
+            console.error('Error fetching protected data', err);
           },
         }),
       );
@@ -57,9 +60,10 @@ export class AuthService {
         next: (data: UserResponse) => {
           this.userData.set(data);
           this.totalExp.set(data.totalExp ?? 0);
+          this.languages.set(data.languages ?? []);
         },
         error: (err: unknown) => {
-          console.log('Error fetching user data', err);
+          console.error('Error fetching user data', err);
         },
       }),
     );

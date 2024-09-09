@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {inject, Injectable} from '@angular/core';
 import {environment} from '../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
@@ -192,9 +193,9 @@ export class LessonGeneratorService {
     const translationLanguage = language == Language.English ? Language.Hebrew : Language.English;
 
     // Parameters for novice difficulty
-    if (difficulty == 0) { numOfAnswers = 3; }
-    // Parameters for expert difficulty
-    else if (difficulty == 1) { numOfAnswers = 4; }
+    if (difficulty == Difficulty.Novice) { numOfAnswers = 3; }
+    // Parameters for advanced difficulty
+    else if (difficulty == Difficulty.Advanced) { numOfAnswers = 4; }
     // Parameters for master difficulty
     else { numOfAnswers = 5; }
 
@@ -217,9 +218,9 @@ export class LessonGeneratorService {
     const translationLanguage = wordLanguage == Language.Hebrew ? Language.English : language;
 
     // Parameters for novice difficulty
-    if (difficulty == 0) { numOfAnswers = 3; }
-    // Parameters for expert difficulty
-    else if (difficulty == 1) { numOfAnswers = 4; }
+    if (difficulty == Difficulty.Novice) { numOfAnswers = 3; }
+    // Parameters for advanced difficulty
+    else if (difficulty == Difficulty.Advanced) { numOfAnswers = 4; }
     // Parameters for master difficulty
     else { numOfAnswers = 5; }
 
@@ -263,9 +264,9 @@ export class LessonGeneratorService {
     const mistakeType = MISTAKE_TYPES[randomIndex];
 
     // Parameters for novice difficulty
-    if (difficulty == 0) { replyLengthLimit = 4; }
-    // Parameters for expert difficulty
-    else if (difficulty == 1) { replyLengthLimit = 8; }
+    if (difficulty == Difficulty.Novice) { replyLengthLimit = 4; }
+    // Parameters for advanced difficulty
+    else if (difficulty == Difficulty.Advanced) { replyLengthLimit = 8; }
     // Parameters for master difficulty
     else { replyLengthLimit = 10; }
 
@@ -287,9 +288,9 @@ export class LessonGeneratorService {
     const secondWordLanguage = language == Language.English ? Language.Hebrew : Language.English;
 
     // Parameters for novice difficulty
-    if (difficulty == 0) { numOfPairs = 4; }
-    // Parameters for expert difficulty
-    else if (difficulty == 1) { numOfPairs = 5; }
+    if (difficulty == Difficulty.Novice) { numOfPairs = 4; }
+    // Parameters for advanced difficulty
+    else if (difficulty == Difficulty.Advanced) { numOfPairs = 5; }
     // Parameters for master difficulty
     else { numOfPairs = 6; }
 
@@ -310,9 +311,9 @@ export class LessonGeneratorService {
     const translationLanguage = language == Language.English ? Language.Hebrew : Language.English;
 
     // Parameters for novice difficulty
-    if (difficulty == 0) { sentenceLength = 4; }
-    // Parameters for expert difficulty
-    else if (difficulty == 1) { sentenceLength = 5; }
+    if (difficulty == Difficulty.Novice) { sentenceLength = 4; }
+    // Parameters for advanced difficulty
+    else if (difficulty == Difficulty.Advanced) { sentenceLength = 5; }
     // Parameters for master difficulty
     else { sentenceLength = 6; }
 

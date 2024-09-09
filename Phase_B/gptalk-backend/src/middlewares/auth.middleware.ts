@@ -4,7 +4,7 @@ import HttpStatus from 'http-status';
 import { User } from '../models/user.interface'; // Import the IUser interface
 import { VisitLogModel } from '../models/visit-log.interface';
 import mongoose from 'mongoose';
-import { calculateTotalExp } from '../controllers/user-profile.controller';
+import { calculateTotalExp, calculateUserLanguages } from '../controllers/user-profile.controller';
 
 interface AuthenticatedRequest extends Request {
   user?: User; // Extend the Request interface to include user
@@ -20,9 +20,8 @@ export const authMiddleware = async (req: AuthenticatedRequest, res: Response, n
       return res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Unauthorized' });
     }
     user.totalExp = await calculateTotalExp(user._id);
+    user.languages = await calculateUserLanguages(user._id);
     req.user = user;
-
-    console.log('User authenticated:', user.email); // Log authenticated user
 
     await logUserVisit(user);
 

@@ -82,7 +82,7 @@ describe('LearnComponent', () => {
     lrnComp.callGenerator(Language.English);
 
     // Check that generateLesson is called with correct arguments
-    expect(mockLgService.generateLesson).toHaveBeenCalledWith(Language.English, Difficulty.Expert, lrnComp.EXERCISE_AMOUNT);
+    expect(mockLgService.generateLesson).toHaveBeenCalledWith(Language.English, Difficulty.Advanced, lrnComp.EXERCISE_AMOUNT);
 
     // Check that setUpLesson is called with the mock exercises
     expect(mockLearnService.setUpLesson).toHaveBeenCalledWith(mockExercises);

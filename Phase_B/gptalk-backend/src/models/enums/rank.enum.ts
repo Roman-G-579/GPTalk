@@ -1,5 +1,5 @@
 export enum RankEnum {
 	Novice = 'Novice',
-	Expert = 'Expert',
+	Advanced = 'Advanced',
 	Master = 'Master',
 }
