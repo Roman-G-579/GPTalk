@@ -40,14 +40,14 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 
 		const maxStreak = await calculateMaxStreak(user._id, streak);
 		const level = calculateLevel(totalExp);
-		const expertOrMasterLanguages = calculateExpertOrMasterLanguages(languages);
+		const advancedOrMasterLanguages = calculateAdvancedOrMasterLanguages(languages);
 
 		const achievements = await getAchievements(
 			maxStreak,
 			totalExp,
 			noMistakes,
 			challengesCompleted,
-			expertOrMasterLanguages,
+			advancedOrMasterLanguages,
 		);
 
 		const userProfile: UserProfile = {
@@ -173,15 +173,14 @@ async function calculateNoMistakesChallenges(userId: Schema.Types.ObjectId) {
 	return ChallengeModel.countDocuments({ user: userId, mistakes: 0 });
 }
 
-function calculateExpertOrMasterLanguages(languages: Language[]) {
+function calculateAdvancedOrMasterLanguages(languages: Language[]) {
 	return languages.reduce(
 		(accumulator, language) =>
-			language.rank === RankEnum.Expert || language.rank === RankEnum.Master
+			language.rank === RankEnum.Advanced || language.rank === RankEnum.Master
 				? accumulator + 1
 				: accumulator,
 		0,
 	);
-	// return LanguageModel.find({ user: userId, rank: { $in: ['Expert', 'Master'] } });
 }
 
 export async function calculateTotalExp(userId: Schema.Types.ObjectId) {
@@ -277,7 +276,7 @@ function calculateRank(totalExp: number): RankEnum {
 	if (totalExp < 5000) {
 		return RankEnum.Novice;
 	} else if (totalExp < 10000) {
-		return RankEnum.Expert;
+		return RankEnum.Advanced;
 	} else {
 		return RankEnum.Master;
 	}

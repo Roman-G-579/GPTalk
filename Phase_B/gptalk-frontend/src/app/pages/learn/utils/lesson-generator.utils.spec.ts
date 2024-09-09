@@ -19,8 +19,8 @@ describe('LessonGeneratorUtils', () => {
       expect(keyWords).toContain('beginners');
     });
 
-    it('should insert keywords for expert difficulty', () => {
-      const difficulty = Difficulty.Expert;
+    it('should insert keywords for advanced difficulty', () => {
+      const difficulty = Difficulty.Advanced;
       const keyWords = LessonGeneratorUtils.insertKeyWords(difficulty);
 
       expect(keyWords).toHaveLength(2);

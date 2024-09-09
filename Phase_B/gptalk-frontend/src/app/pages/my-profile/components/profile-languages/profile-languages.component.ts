@@ -21,7 +21,7 @@ export class ProfileLanguagesComponent {
 
 	languageRankClassRecord: Record<string, 'success' | 'info' | 'danger'> = {
 		Novice: 'success',
-		Expert: 'info',
+		Advanced: 'info',
 		Master: 'danger',
 	};
 

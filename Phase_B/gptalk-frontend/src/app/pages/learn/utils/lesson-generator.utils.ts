@@ -51,7 +51,7 @@ export class LessonGeneratorUtils {
     else if (difficulty == 1) {
       keyWords.push('some familiarity with the language');
     }
-    // Parameters for very hard and expert difficulties
+    // Parameters for very hard and advanced difficulties
     else {
       keyWords.push('high level learners', 'challenge');
     }

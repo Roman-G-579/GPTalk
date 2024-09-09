@@ -1,5 +1,5 @@
 export enum Difficulty {
   Novice,
-  Expert,
+  Advanced,
   Master,
 }

@@ -193,7 +193,7 @@ export class LessonGeneratorService {
 
     // Parameters for novice difficulty
     if (difficulty == 0) { numOfAnswers = 3; }
-    // Parameters for expert difficulty
+    // Parameters for advanced difficulty
     else if (difficulty == 1) { numOfAnswers = 4; }
     // Parameters for master difficulty
     else { numOfAnswers = 5; }
@@ -218,7 +218,7 @@ export class LessonGeneratorService {
 
     // Parameters for novice difficulty
     if (difficulty == 0) { numOfAnswers = 3; }
-    // Parameters for expert difficulty
+    // Parameters for advanced difficulty
     else if (difficulty == 1) { numOfAnswers = 4; }
     // Parameters for master difficulty
     else { numOfAnswers = 5; }
@@ -264,7 +264,7 @@ export class LessonGeneratorService {
 
     // Parameters for novice difficulty
     if (difficulty == 0) { replyLengthLimit = 4; }
-    // Parameters for expert difficulty
+    // Parameters for advanced difficulty
     else if (difficulty == 1) { replyLengthLimit = 8; }
     // Parameters for master difficulty
     else { replyLengthLimit = 10; }
@@ -288,7 +288,7 @@ export class LessonGeneratorService {
 
     // Parameters for novice difficulty
     if (difficulty == 0) { numOfPairs = 4; }
-    // Parameters for expert difficulty
+    // Parameters for advanced difficulty
     else if (difficulty == 1) { numOfPairs = 5; }
     // Parameters for master difficulty
     else { numOfPairs = 6; }
@@ -311,7 +311,7 @@ export class LessonGeneratorService {
 
     // Parameters for novice difficulty
     if (difficulty == 0) { sentenceLength = 4; }
-    // Parameters for expert difficulty
+    // Parameters for advanced difficulty
     else if (difficulty == 1) { sentenceLength = 5; }
     // Parameters for master difficulty
     else { sentenceLength = 6; }
