@@ -2,7 +2,7 @@
     <div class="chat-wrapper flex flex-column  mb-4">
       <div class="bubble left  justify-content-start mb-4"
            [dir]="utilHtml.langDirection(lessonLanguage)">
-        {{exerciseData().question}}
+        {{exerciseData().prompt}}
       </div>
 
         <div class="bubble right justify-content-end">
@@ -44,7 +44,8 @@
     </div>
 
     @if (isDone()) {
-      <div class="translation-wrapper flex justify-content-center">
-        <p><b>Translation:</b> {{exerciseData().translation}}</p>
+      <div class="translation-wrapper flex-row justify-content-center">
+        <p><b>Translation:</b></p>
+        <p>{{exerciseData().translation?.replace('&', '-')}}</p>
       </div>
     }
