@@ -1,9 +1,8 @@
 import { CommonModule } from '@angular/common';
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
-  inject, Injector,
+  inject,
   OnInit, signal,
 } from '@angular/core';
 import { LessonGeneratorService } from './lesson-generator.service';

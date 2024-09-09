@@ -4,18 +4,14 @@ import {
   Component,
   ElementRef,
   inject,
-  signal,
   ViewChild,
-  WritableSignal
 } from '@angular/core';
 import { LearnService } from '../learn.service';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { LearnHtmlUtils } from '../utils/learn-html.utils';
-import { MiscUtils as util } from "../../../core/utils/misc.utils";
 import { LearnVerificationUtils } from '../utils/learn-verification.utils';
 import { Button } from 'primeng/button';
 import {TooltipModule} from "primeng/tooltip";
-import {Exercise} from "../../../core/interfaces/exercise.interface";
 
 @Component({
   selector: 'app-translate-the-sentence',

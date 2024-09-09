@@ -2,7 +2,6 @@ import {Difficulty} from '../../../core/enums/difficulty.enum';
 import {Exercise} from '../../../core/interfaces/exercise.interface';
 import _ from 'lodash';
 import {ExerciseType} from '../../../core/enums/exercise-type.enum';
-import {Language} from '../../../core/enums/language.enum';
 import {TOPICS} from '../../../core/utils/topics';
 
 // The heading strings of the available exercise types
