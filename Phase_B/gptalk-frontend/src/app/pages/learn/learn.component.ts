@@ -47,7 +47,7 @@ export class LearnComponent implements OnInit {
   private readonly primengConfig = inject(PrimeNGConfig);
   protected readonly Language = Language;
 
-  EXERCISE_AMOUNT = 3;
+  EXERCISE_AMOUNT = 5;
 
   isLoading = signal<boolean>(true);
   isDone = this.lrn.isDone;
@@ -86,7 +86,7 @@ export class LearnComponent implements OnInit {
     }
     return ResultsScreenComponent;
   }
-
+//TODO: make lesson difficulty be based on language knowledge level
   /**
    * Calls the lesson generation function and calls setUpLesson using the generated result
    * @param language the generated lesson's language
