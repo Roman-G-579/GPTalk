@@ -139,7 +139,6 @@
 
                 <div class="formgrid grid justify-content-center">
                   <p-floatLabel class="form-input-group">
-    <!--                <p-password class="password-field" name="password" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password" />-->
                     <p-password (input)="checkPasswordValidity()" class="password-field" id="password" [toggleMask]="true" autocomplete="new-password" pAutoFocus  [autofocus]="true" formControlName="password">
                       <ng-template pTemplate="header">
                         <h6>Pick a password</h6>
@@ -195,7 +194,7 @@
                 <div class="text-center">
                   <img alt="logo" src="https://primefaces.org/cdn/primeng/images/stepper/content.svg" />
                 </div>
-                <p-button class="flex justify-content-center mb-4" label="Return To Home Screen" icon="pi pi-home" iconPos="right"/>
+                <p-button class="flex justify-content-center mb-4" label="Go To Login Screen" icon="pi pi-home" iconPos="right" routerLink="/pages/home"/>
               </div>
             </ng-template>
           </p-stepperPanel>

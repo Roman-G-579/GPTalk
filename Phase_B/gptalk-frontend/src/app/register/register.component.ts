@@ -31,6 +31,7 @@ import { DividerModule } from 'primeng/divider';
 import { ImageModule } from 'primeng/image';
 import { ToastContainerDirective, ToastrService } from 'ngx-toastr';
 import { ConfirmPasswordValidator } from '../core/validators/confirm-password.validator';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -55,6 +56,7 @@ import { ConfirmPasswordValidator } from '../core/validators/confirm-password.va
     ImageModule,
     ReactiveFormsModule,
     ToastContainerDirective,
+    RouterLink,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
