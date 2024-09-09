@@ -4,7 +4,13 @@
 <!--      <i [class]="'pi pi-chevron-left'" style="font-size: 3rem"></i>-->
 <!--    </button>-->
 
+    @if(isLoading()) {
+      <div class="loading-wrapper">
+        <ng-lottie [options]="loadingOptions"></ng-lottie>
+        <p class="text-center">Generating daily word...</p>
+      </div>
 
+    } @else if (!isLoading()) {
     <p-panel class="daily-word col-9 w-30rem ">
       <ng-template pTemplate="header">
         <div class="flex align-items-center gap-2">
@@ -31,7 +37,7 @@
         </p>
       }
     </p-panel>
-
+    }
 
 <!--    <button class="border-none cursor-pointer" style="background: none" onclick="">-->
 <!--      <i [class]="'pi pi-chevron-right'" style="font-size: 3rem"></i>-->
