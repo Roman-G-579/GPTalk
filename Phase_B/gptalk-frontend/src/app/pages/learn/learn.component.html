@@ -1,3 +1,6 @@
+@if (lessonLanguage() === Language.NOT_SELECTED && !isLessonOver()) {
+    <app-language-select (languageSelectionEvent)="callGenerator($event)"></app-language-select>
+} @else {
 <div class="wrapper w-full w-10">
   @if(isLoading()) {
     <div class="loading-wrapper">
@@ -35,5 +38,5 @@
       </div>
     }
   }
-
 </div>
+}

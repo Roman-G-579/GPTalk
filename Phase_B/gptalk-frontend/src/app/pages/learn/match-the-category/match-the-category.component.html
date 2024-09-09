@@ -57,9 +57,9 @@
     </div>
 
     @if (isDone()) {
-      <div class="translation-wrapper flex flex-column text-center justify-content-center">
+      <div class="answer-wrapper flex flex-column text-center justify-content-center">
         <p>Actual answer:</p>
-        <p><b>{{exerciseData().cat_a}}:</b> {{exerciseData().words_a}}</p>
-        <p><b>{{exerciseData().cat_b}}:</b> {{exerciseData().words_b}}</p>
+        <p><b>{{exerciseData().cat_a}}:</b> {{exerciseData().words_a?.join(', ')}}</p>
+        <p><b>{{exerciseData().cat_b}}:</b> {{exerciseData().words_b?.join(', ')}}</p>
       </div>
     }

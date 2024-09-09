@@ -2,7 +2,6 @@ import {Difficulty} from '../../../core/enums/difficulty.enum';
 import {Exercise} from '../../../core/interfaces/exercise.interface';
 import _ from 'lodash';
 import {ExerciseType} from '../../../core/enums/exercise-type.enum';
-import {Language} from '../../../core/enums/language.enum';
 import {TOPICS} from '../../../core/utils/topics';
 
 // The heading strings of the available exercise types
@@ -77,13 +76,13 @@ export class LessonGeneratorUtils {
    * and adds relevant data
    * @param exerciseJson the JSON object
    * @param exerciseType the type of the current exercise
-   * @param language the lesson's selected language
    * @returns an Exercise object
    */
-  static convertToExerciseObject(exerciseJson: Exercise, exerciseType: ExerciseType, language: Language): Exercise {
+  static convertToExerciseObject(exerciseJson: Exercise, exerciseType: ExerciseType): Exercise {
     const exercise: Exercise = {
       type: exerciseType,
       question: exerciseJson.question,
+      prompt: exerciseJson.prompt,
       cat_a: exerciseJson.cat_a,
       cat_b: exerciseJson.cat_b,
       words_a: exerciseJson.words_a,
@@ -100,7 +99,6 @@ export class LessonGeneratorUtils {
 
   /**
    * Adds heading, instructions and other exercise-specific data to the exercise
-   * @param language the lesson's selected language
    * @param exercise the given exercise
    * @returns the updated exercise object
    */
@@ -199,6 +197,28 @@ export class LessonGeneratorUtils {
   private static setCompleteTheConversation(exercise: Exercise) {
     let choices = exercise.choices ?? [];
     choices = choices.map(str => str.replace(/[,.!?:]/g,''));
+
+    // If the generated choices are identical, remove a random letter from the wrong choice
+    if (choices[0] == choices[1]) {
+      console.log("IDENTICAL CHOICES FOUND");
+      // Convert the sentence into an array of characters
+      const chars = choices[1].split("");
+
+      // Select a random index from the characters array
+      const randomIndex = Math.floor(Math.random() * chars.length);
+
+      // Remove the character at the random index
+      chars.splice(randomIndex, 1);
+
+      // Join the characters back into a modified sentence
+      choices[1] = chars.join("");
+    }
+
+    // If more than 2 choices were generated, remove them
+    if (choices.length > 2) {
+      choices = choices.slice(0,2);
+    }
+
     exercise.answer = choices[0];
 
     choices = _.shuffle(choices);

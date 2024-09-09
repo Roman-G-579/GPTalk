@@ -30,7 +30,7 @@ export class MatchTheWordsComponent {
 
   matchResults = this.lrn.matchResults;
   chosenPair = this.lrn.chosenPair;
-  matchMistakes = this.lrn.matchMistakes;
+  penalties = this.lrn.penalties;
 
   /**
    *
@@ -57,7 +57,7 @@ export class MatchTheWordsComponent {
       }
       // The match was incorrect
       else if (matchResult == "wrongMatch") {
-        this.matchMistakes.update(value => value + 1);
+        this.penalties.update(value => value + 1);
       }
       this.chosenPair.set(["",""]); // Resets the chosen pair
     }

@@ -5,6 +5,7 @@ export interface Exercise {
   heading?: string; // Concise goal of the current exercise
   instructions?: string; // Detailed instructions of the current exercise
   question?: string;
+  prompt?: string; // Opening statement in conversation (CompleteTheConversation)
   cat_a?: string; // category a (MatchTheCategory)
   cat_b?: string; // category b (MatchTheCategory)
   words_a?: string[]; // category a words (MatchTheCategory)

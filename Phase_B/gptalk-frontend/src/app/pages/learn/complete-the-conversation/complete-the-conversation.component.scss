@@ -39,8 +39,9 @@
   background: var(--blue-400);
 }
 .right {
+  display: flex;
   --_p: 100%;
   border-bottom-right-radius: 0 0;
-  place-self: end;
+  place-self: auto;
   background: var(--blue-500);
 }

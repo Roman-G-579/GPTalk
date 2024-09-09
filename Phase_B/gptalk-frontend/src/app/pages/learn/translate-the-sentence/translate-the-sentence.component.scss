@@ -6,6 +6,22 @@
   border-radius: 15px;
   border-width: 4px;
   background: var(--gray-200);
-  resize: none;
   max-width: 70vw;
+  height: 6em;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.buttons-group {
+  justify-content: center;
+  position: relative;
+}
+
+#hintBtn {
+  position: absolute;
+  right: 5px;
+}
+
+.hint-wrapper, .sentence-wrapper {
+  font-size: 26px;
 }

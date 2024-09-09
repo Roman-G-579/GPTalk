@@ -5,6 +5,9 @@ import {FormBuilder, ReactiveFormsModule, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 import {of, throwError} from "rxjs";
+import {provideLottieOptions} from "ngx-lottie";
+
+
 
 class MockAuthService {
   login = jest.fn();
@@ -19,13 +22,18 @@ class MockToastrService {
   error = jest.fn();
 }
 
+const mockPlayer = {
+};
+
 describe('LoginComponent', () => {
   let loginComponent: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let mockAuthService: MockAuthService;
   let mockRouter: MockRouter;
   let mockToastrService: MockToastrService;
+
   let formBuilder: FormBuilder;
+
 
   beforeEach(async () => {
     mockAuthService = new MockAuthService();
@@ -34,11 +42,14 @@ describe('LoginComponent', () => {
     formBuilder = new FormBuilder();
 
     await TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
+      imports: [LoginComponent, ReactiveFormsModule],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
         { provide: Router, useValue: mockRouter },
-        { provide: ToastrService, useValue: mockToastrService }
+        { provide: ToastrService, useValue: mockToastrService },
+        provideLottieOptions({
+          player: () => mockPlayer as any // Provide a mock player for Lottie
+        })
       ]
     }).compileComponents();
 

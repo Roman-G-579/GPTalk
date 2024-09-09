@@ -19,6 +19,8 @@ export class DailyWordService {
     example: "",
     translation: ""
   });
+  isLoading = signal<boolean>(true);
+
 
   /**
    * Sends a request to the backend to fetch the daily word
@@ -31,6 +33,7 @@ export class DailyWordService {
     this.http.post<DailyWord>(href, { date: new Date() }).subscribe({
       next: (data: DailyWord) => {
           this.dailyWord.set(data);
+          this.isLoading.set(false);
       },
       error: (err: unknown) => {
         console.log('Error fetching daily word', err);

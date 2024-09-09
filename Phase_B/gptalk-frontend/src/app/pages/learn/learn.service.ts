@@ -8,7 +8,7 @@ import { Subject } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ExpVals } from '../../core/enums/exp-vals.enum';
+import { RewardVals } from '../../core/enums/exp-vals.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -19,7 +19,7 @@ export class LearnService {
 	private readonly apiUrl = `${environment.apiUrl}`;
 
 	// Signals child components that the active exercise has changed
-	onExerciseSwitch = new Subject();
+	onExerciseSwitch: Subject<unknown> = new Subject();
 
 	// Booleans
 	isDone = signal<boolean>(false); // Changes to true once an exercise is over
@@ -30,16 +30,22 @@ export class LearnService {
 	mistakesCounter = signal<number>(0); // Counts the mistakes in the lesson's exercises
 	totalExercises = signal<number>(0); // Stores the total amount of exercises in the current lesson
 
-	// Stores user's exp and level values
+  // Stores user's exp values
 	totalExp = this.authService.totalExp;
-	lessonExp = signal<number>(0);
+	lessonExp = signal<number>(0); // exp gained in current lesson
+
+  // Counts the number of penalties for the exercise
+  // Penalties are given for wrong matches in MatchTheWords and hints used by the user
+  penalties = signal<number>(0);
+
+  // Contains a string that gives a hint related to the solution of the current exercise
+  hintText = signal<string>('');
 
 	headingText = signal<string>(''); // Contains instructions or exercise feedback
 
 	// MatchTheWords-specific signals
 	matchResults = signal<[boolean, boolean][]>([]); // Contains boolean pairs that signify whether the matches are correct or not
 	chosenPair = signal<[string, string]>(['', '']); // Contains the current chosen pair of words in the "match the words" exercise
-	matchMistakes = signal<number>(0); // Counts the number of wrong matches
 
 	// MatchTheCategory-specific signals
 	categoryMatches = signal<{ wordBank: string[]; cat1: string[]; cat2: string[] }>({
@@ -50,7 +56,8 @@ export class LearnService {
 	draggedWord = signal<string>('');
 
 	// ReorderWords-specific signal
-	chosenWords = signal<string[]>([]); // Contains an array of strings that are used to construct the answer sentence
+  // Contains an array of strings that are used to construct the answer sentence
+	chosenWords = signal<string[]>([]);
 
 	exerciseArr = signal<Exercise[]>([]);
 
@@ -66,7 +73,7 @@ export class LearnService {
 		translation: '',
 	});
 
-	lessonLanguage = signal<Language>(Language.Hebrew);
+	lessonLanguage = signal<Language>(Language.NOT_SELECTED);
 
 	/**
 	 * Sets up the data and parameters for the current lesson
@@ -76,7 +83,7 @@ export class LearnService {
 		this.exerciseArr.set(exercisesArr);
 		this.totalExercises.set(exercisesArr.length); // Sets the exercises count
 
-		init.initializeLessonParams(this.isLessonOver, this.mistakesCounter, this.lessonExp);
+		init.initializeLessonParams(this.mistakesCounter, this.lessonExp);
 
 		this.setUpNextExercise();
 	}
@@ -98,17 +105,18 @@ export class LearnService {
 		// If the exercise array is empty, display the results screen
 		else {
 			this.postResult().subscribe();
-			this.displayResultsScreen();
+			this.endLesson();
 		}
 	}
 
 	/**
 	 * Prepares the signal values for the results screen at the end of a lesson
 	 */
-	displayResultsScreen() {
+	endLesson() {
 		this.headingText.set(`Lesson finished`);
 		this.isLessonOver.set(true);
 		this.isDone.set(true);
+    this.lessonLanguage.set(Language.NOT_SELECTED);
 	}
 
 	/**
@@ -118,14 +126,14 @@ export class LearnService {
 		// Resets the states of all exercise-data related signals
 		this.isDone.set(false);
 		this.isCorrectAnswer.set(false);
-
+    this.hintText.set('');
 		// Signals the child components to initialize their input fields
 		this.onExerciseSwitch.next(true);
 
 		// Exercise-specific initializations
 
 		if (this.exerciseData().type === ExerciseType.MatchTheWords) {
-			init.initializeMatchTheWords(this.matchResults, this.matchMistakes, this.exerciseData);
+			init.initializeMatchTheWords(this.matchResults, this.penalties, this.exerciseData);
 		}
 
 		if (this.exerciseData().type === ExerciseType.MatchTheCategory) {
@@ -164,15 +172,47 @@ export class LearnService {
 		}
 	}
 
+  /**
+   * Updates the hint text string using a word from the exercise's answer at the cost of some exp
+   */
+  displayHint() {
+    this.hintText.update((text) => {
+      const curHintWords = text.split(' '); // Create a Set of current words in the hint text
+      const answerWords = this.exerciseData().answer?.split(' '); // Split answer into individual words
+
+      // Find the first word in the answer that isn't already in the hint text
+      const nextWord = answerWords?.find((word) => !curHintWords.includes(word));
+
+      // If a new word is found, add it to the text
+      if (nextWord) {
+        text += ' ' + nextWord;
+      }
+      return text;
+    });
+
+    this.penalties.update(value => value + 1);
+  }
 	/**
 	 *  Adds a specific amount of xp (based on a const's value) is added to the totalExp counter.
-	 *  If the current exercise is MatchTheCategory and incorrect matches were chosen,
-	 *  the user gets a penalty to his exp reward.
+	 *  If the current the mistakes counter is not zero,
+	 *  the user gets a penalty to his exp reward based on the amount of mistakes.
 	 */
 	addExp() {
-		const exp = Math.max(0, ExpVals.exercise - this.matchMistakes() * 10);
-		this.lessonExp.set(this.lessonExp() + exp);
-		this.totalExp.set(this.totalExp() + exp);
+    // Sets the exp reward based on the current exercise type
+    const expAmount = (
+      this.exerciseData().type == ExerciseType.TranslateTheSentence
+      ||
+      this.exerciseData().type == ExerciseType.MatchTheCategory)
+      ?
+      RewardVals.hardExercise
+      :
+      RewardVals.exercise;
+
+    // Deducts exp from the final reward sum based on mistakes or hints used
+		const expAfterPenalties = Math.max(0, expAmount - this.penalties() * 10);
+
+		this.lessonExp.set(this.lessonExp() + expAfterPenalties);
+		this.totalExp.set(this.totalExp() + expAfterPenalties);
 	}
 
 	/**
@@ -182,7 +222,7 @@ export class LearnService {
 		const email = this.authService.userData().email;
 		const { href } = new URL(`profile/postResult`, this.apiUrl);
 
-		return this.http.post(href, {
+ 		return this.http.post(href, {
 			exp: this.lessonExp(),
 			email: email,
 			numberOfQuestions: this.totalExercises(),

@@ -61,7 +61,7 @@ describe('MiscUtils', () => {
     });
 
     it('should return an empty string if the closest distance is greater than 2', () => {
-      const result = MiscUtils.findClosestString('apl', mockExercise_TranslateWord);
+      const result = MiscUtils.findClosestString('zzz', mockExercise_TranslateWord);
       expect(result).toBe('');
     });
 

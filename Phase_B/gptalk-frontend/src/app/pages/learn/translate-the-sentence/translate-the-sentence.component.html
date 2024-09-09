@@ -1,35 +1,45 @@
-    <div class="flex justify-content-center">
-      <p>{{exerciseData().question}}</p>
+    <div class="sentence-wrapper flex justify-content-center">
+      <p style="text-transform: capitalize;">{{exerciseData().question}}</p>
     </div>
     <div class="flex justify-content-center mb-2">
-      <textarea
+      <div
+        #inputArea
+        [contentEditable]="!isDone()"
         [dir]="utilHtml.langDirection(lessonLanguage)"
         autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
-        [readOnly]="isDone()"
-        id="sentenceInputForm"
+        id="inputArea"
         title="Input Field"
-        [formControl]="inputForm"
-        rows="3"
-        cols="30"
-        >
-      </textarea>
+        (input)="onInput($event)"
+        [innerHTML]="highlightedContent"
+      >
+      </div>
     </div>
-    <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
+    <div class="buttons-group flex">
       @if (!isDone()) {
         <p-button
-          id="writSentenceSubmitBtn"
+          id="submitTranslationBtn"
           label="Submit"
           severity="primary"
-          (onClick)="inputForm.value ?
-          lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"/>
+          (onClick)="inputText ?
+          submitAnswer() : null"/>
+
+        <p-button
+          id="hintBtn"
+          label="?"
+          pTooltip="Get a hint. Will deduct 10 EXP from the exercise's reward."
+          tooltipPosition="left"
+          severity="info"
+          (onClick)="lrn.displayHint()"/>
       }
     </div>
 
+    <div class="hint-wrapper flex justify-content-start mt-2" [dir]="utilHtml.langDirection(lessonLanguage)">
+      <p>{{hintText() ? 'Hint: ' + hintText() : ''}}</p>
+    </div>
     @if (isDone()) {
       <div class="translation-wrapper flex justify-content-center flex-column text-center ">
           <p><b>Translation:</b></p>
-          <p>{{exerciseData().question}} means:</p>
           <p>{{exerciseData().answer}}</p>
       </div>
     }

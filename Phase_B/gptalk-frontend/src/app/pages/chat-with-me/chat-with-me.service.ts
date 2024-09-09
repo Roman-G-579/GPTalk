@@ -13,12 +13,12 @@ export class ChatWithMeService {
 	private readonly http = inject(HttpClient);
 	private readonly apiUrl = `${environment.apiUrl}`;
 
-	chat(userPrompt: string, language: Language | '', conversation: Chat[]) {
+	chat(userPrompt: string, language: Language, conversation: Chat[]) {
 		const { href } = new URL('chat-with-me/chat', this.apiUrl);
 		return this.http.post<ChatResponse>(href, { userPrompt, language, conversation });
 	}
 
-	grade(language: Language | '', conversation: Chat[]) {
+	grade(language: Language, conversation: Chat[]) {
 		const { href } = new URL('chat-with-me/grade', this.apiUrl);
 		return this.http.post<Grade>(href, { language, conversation });
 	}

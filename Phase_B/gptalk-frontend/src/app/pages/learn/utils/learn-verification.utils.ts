@@ -1,7 +1,6 @@
 import { WritableSignal } from '@angular/core';
 import { Exercise } from '../../../core/interfaces/exercise.interface';
 import { ExerciseType } from '../../../core/enums/exercise-type.enum';
-import { distance } from 'fastest-levenshtein';
 import { MiscUtils as util } from '../../../core/utils/misc.utils';
 
 /**
@@ -25,18 +24,52 @@ export class LearnVerificationUtils {
     // Exact answer
     if (answer === actualAnswer) return true;
 
-    // Close match (3 or fewer characters apart)
+    // Close match (Similarity percentage between sentences is at least 75%)
     // (Exclusive to TranslateTheSentence exercise)
-    if(exercise().type == ExerciseType.TranslateTheSentence && distance(answer, actualAnswer) < 4) {
+    if(exercise().type == ExerciseType.TranslateTheSentence
+        &&
+      util.getSimilarityRatio(answer, exercise) >= 0.75) {
       return true;
     }
 
     // Approximate the answer if it was submitted by manually typing it
-    // (Done only in exercises where a single word is evaluated)
     // and compare it to the actual answer
     else return util.findClosestString(answer, exercise) === actualAnswer;
   }
 
+  /**
+   * Verifies the user's answer in the translateTheSentence exercise
+   * Gives a penalty based on the level of inaccuracy of the user's answer
+   * compared to the actual answer
+   * @param answer the user's answer
+   * @param exercise the exercise object containing the actual answer string
+   * @param penalties exp penalty counter
+   */
+  static verifyTranslateSentence(answer: string, exercise: WritableSignal<Exercise>, penalties: WritableSignal<number>) {
+    const ratio = util.getSimilarityRatio(answer, exercise);
+    if (ratio == 1) {
+      return true;
+    }
+
+    // Correct answer with penalty of 10 exp
+    else if (ratio > 0.9 && ratio < 1) {
+      penalties.update(value => value + 1);
+      return true;
+    }
+
+    // Correct answer with penalty of 20 exp
+    else if (ratio > 0.8 && ratio <= 0.9) {
+      penalties.update(value => value + 2);
+      return true;
+    }
+
+    // Correct answer with penalty of 30 exp
+    else if (ratio >= 0.75 && ratio <= 0.8 ) {
+      penalties.update(value => value + 3);
+      return true;
+    }
+    else return false;
+  }
   /**
    * Checks if the chosen pair matches a pair in the answer array
    * If the pair is a match, returns "matchFound"

@@ -4,6 +4,8 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { DailyWord, DailyWordModel } from '../models/daily-word.interface';
 import { LanguageEnum } from '../models/enums/language.enum';
+import {SYNTATIC_TERMS} from "../utils/syntaticTerms";
+import {TOPICS} from "../utils/topics";
 
 const openai = new OpenAI({ apiKey: Config.OPENAI_API_KEY});
 
@@ -69,11 +71,14 @@ async function generateDailyWord() {
 		const language = languagesArr[randomIndex];
 
 		// Picks a random syntactic  term of the word
-		const syntacticTermsArr = ['adjective','adverb','noun','verb'];
-		randomIndex = Math.floor(Math.random() * syntacticTermsArr.length);
-		const syntacticTerm = syntacticTermsArr[randomIndex];
+		randomIndex = Math.floor(Math.random() * SYNTATIC_TERMS.length);
+		const syntacticTerm = SYNTATIC_TERMS[randomIndex];
 
-		const content = `Return a JSON in the following structure {word: ${syntacticTerm} in ${language} with syntactic term in english in brackets, definition: definition in english, example: string in ${language}, translation: example translation to english}`;
+		// Picks a random topic for the daily word
+		randomIndex = Math.floor(Math.random() * TOPICS.length);
+		const topic = TOPICS[randomIndex];
+
+		const content = `Return a JSON in consisting of 4 keys: { 1. word: ${syntacticTerm} related to ${topic} in ${language}, followed by the word's transliteration, followed by syntactic term in english in brackets. 2.definition: definition in english 3.example: string in ${language} 4.translation: example translation to english}`;
 		const completion = await openai.chat.completions.create({
 			messages: [
 				{ role: 'system', content: `You are a word-of-the-day generator.` },
