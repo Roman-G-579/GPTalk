@@ -6,7 +6,7 @@ export interface Achievement {
   level: number;
   goal: number;
   icon: string;
-  type: 'streak' | 'exp' | 'mistakes' | 'challenges' | 'languages';
+  type: 'streak' | 'exp' | 'mistakes' | 'lessons' | 'languages';
 }
 
 const achievementSchema = new Schema<Achievement>({

@@ -14,7 +14,7 @@ export interface UserProfile {
 	streak: number;
 	maxStreak: number;
 	topPercentage: number;
-	challengesCompleted: number;
+	lessonsCompleted: number;
 	totalExp: number;
 	country: string;
 	bio: string;
