@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import httpStatus from 'http-status';
 import { UserModel } from '../../models/user.interface';
 import { ResultModel } from '../../models/result.interface';
-import { ChallengeModel } from '../../models/challenge.interface';
+import { LessonModel } from '../../models/lesson.interface';
 import {
 	getUserProfile,
 	postResult,
@@ -16,7 +16,7 @@ jest.mock('../../controllers/user-profile.controller', () =>
 );
 jest.mock('../../models/user.interface');
 jest.mock('../../models/result.interface');
-jest.mock('../../models/challenge.interface');
+jest.mock('../../models/lesson.interface');
 jest.mock('../../models/visit-log.interface');
 jest.mock('../../models/language.interface');
 jest.mock('../../models/achievment.interface');
@@ -85,19 +85,19 @@ describe('User Controller', () => {
 			expect(res.json).toHaveBeenCalledWith({ message: 'User not found' });
 		});
 
-		it('should create and save a result and challenge', async () => {
+		it('should create and save a result and lesson', async () => {
 			const mockUser = { _id: mockUserId };
 			req.body = { email: 'test@example.com', exp: 50, numberOfQuestions: 10, mistakes: 1 };
 			(UserModel.findOne as jest.Mock).mockResolvedValue(mockUser);
 
 			const mockResult = { _id: 'resultId' };
 			(ResultModel.prototype.save as jest.Mock).mockResolvedValue(mockResult);
-			(ChallengeModel.prototype.save as jest.Mock).mockResolvedValue(true);
+			(LessonModel.prototype.save as jest.Mock).mockResolvedValue(true);
 
 			await postResult(req as Request, res as Response, next);
 
 			expect(ResultModel.prototype.save).toHaveBeenCalled();
-			expect(ChallengeModel.prototype.save).toHaveBeenCalled();
+			expect(LessonModel.prototype.save).toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(httpStatus.OK);
 			expect(res.json).toHaveBeenCalledWith(mockResult);
 		});

@@ -5,7 +5,7 @@ import { UserModel } from '../models/user.interface';
 import { VisitLogModel } from '../models/visit-log.interface';
 import { Result, ResultModel } from '../models/result.interface';
 import { UserProfile } from '../models/user-profile.interface';
-import { ChallengeModel } from '../models/challenge.interface';
+import { LessonModel } from '../models/lesson.interface';
 import { AchievementModel } from '../models/achievment.interface';
 import { Language } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
@@ -25,7 +25,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			streak,
 			latestResults,
 			totalExp,
-			challengesCompleted,
+			lessonsCompleted,
 			noMistakes,
 			languages,
 		] = await Promise.all([
@@ -33,8 +33,8 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			calculateStreak(user._id),
 			fetchLatestResults(user._id),
 			calculateTotalExp(user._id),
-			calculateChallengesCompleted(user._id),
-			calculateNoMistakesChallenges(user._id),
+			calculateLessonsCompleted(user._id),
+			calculateNoMistakesLessons(user._id),
 			calculateUserLanguages(user._id),
 		]);
 
@@ -46,7 +46,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			maxStreak,
 			totalExp,
 			noMistakes,
-			challengesCompleted,
+			lessonsCompleted,
 			advancedOrMasterLanguages,
 		);
 
@@ -55,7 +55,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 			password: undefined,
 			country: '',
 			bio: '',
-			challengesCompleted,
+			lessonsCompleted,
 			maxStreak,
 			totalExp,
 			level,
@@ -73,7 +73,7 @@ export async function getUserProfile(req: Request, res: Response, next: NextFunc
 }
 
 /**
- * Adds a document to the results collection and the challenges (lessons) collection,
+ * Adds a document to the results collection and the lessons collection,
  * containing the results of the latest lesson
  * @param req
  * @param res
@@ -100,15 +100,14 @@ export async function postResult(req: Request, res: Response, next: NextFunction
 		});
 
 		const result = await resultDocument.save();
-		//TODO: change challenge to lesson in code and in database
-		const challengeDocument = new ChallengeModel({
+		const lessonDocument = new LessonModel({
 			numberOfQuestions,
 			mistakes,
 			user: user._id,
 			result: result._id,
 		});
 
-		await challengeDocument.save();
+		await lessonDocument.save();
 
 		res.status(200).json(result);
 	} catch (err) {
@@ -161,16 +160,16 @@ export async function calculateMaxStreak(userId: Schema.Types.ObjectId, streak: 
 	return user.maxStreak;
 }
 
-async function calculateChallengesCompleted(userId: Schema.Types.ObjectId) {
-	return ChallengeModel.countDocuments({ user: userId });
+async function calculateLessonsCompleted(userId: Schema.Types.ObjectId) {
+	return LessonModel.countDocuments({ user: userId });
 }
 
 async function fetchLatestResults(userId: Schema.Types.ObjectId) {
 	return ResultModel.find({ user: userId }).sort({ date: -1 }).limit(4).exec();
 }
 
-async function calculateNoMistakesChallenges(userId: Schema.Types.ObjectId) {
-	return ChallengeModel.countDocuments({ user: userId, mistakes: 0 });
+async function calculateNoMistakesLessons(userId: Schema.Types.ObjectId) {
+	return LessonModel.countDocuments({ user: userId, mistakes: 0 });
 }
 
 function calculateAdvancedOrMasterLanguages(languages: Language[]) {
@@ -198,14 +197,14 @@ async function getAchievements(
 	currentStreak: number,
 	totalExp: number,
 	noMistakes: number,
-	totalChallenges: number,
+	totalLessons: number,
 	totalLanguages: number,
 ): Promise<UserAchievement[]> {
-	const [streak, exp, mistakes, challenges, languages] = await Promise.all([
+	const [streak, exp, mistakes, lessons, languages] = await Promise.all([
 		AchievementModel.find({ type: 'streak' }).lean(),
 		AchievementModel.find({ type: 'exp' }).lean(),
 		AchievementModel.find({ type: 'mistakes' }).lean(),
-		AchievementModel.find({ type: 'challenges' }).lean(),
+		AchievementModel.find({ type: 'lessons' }).lean(),
 		AchievementModel.find({ type: 'languages' }).lean(),
 	]);
 
@@ -213,7 +212,7 @@ async function getAchievements(
 		{ ...streak[0], progress: currentStreak },
 		{ ...exp[0], progress: totalExp },
 		{ ...mistakes[0], progress: noMistakes },
-		{ ...challenges[0], progress: totalChallenges },
+		{ ...lessons[0], progress: totalLessons },
 		{ ...languages[0], progress: totalLanguages },
 	];
 
@@ -240,7 +239,7 @@ async function getAchievements(
 	updateAchievement(streak, currentStreak, 0);
 	updateAchievement(exp, totalExp, 1);
 	updateAchievement(mistakes, noMistakes, 2);
-	updateAchievement(challenges, totalChallenges, 3);
+	updateAchievement(lessons, totalLessons, 3);
 	updateAchievement(languages, totalLanguages, 4);
 
 	return achievements;

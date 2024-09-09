@@ -13,6 +13,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class ProfileStatisticsComponent {
   streak = input(0);
-  challenges = input(0);
+  lessons = input(0);
   exp = input(0);
 }

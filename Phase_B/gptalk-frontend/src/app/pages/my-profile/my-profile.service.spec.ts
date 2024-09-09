@@ -64,7 +64,7 @@ describe('MyProfileService', () => {
     const mockProfile: UserProfile = {
       achievements: [],
       bio: "",
-      challengesCompleted: 0,
+      lessonsCompleted: 0,
       country: "",
       createdAt: "",
       email: "",

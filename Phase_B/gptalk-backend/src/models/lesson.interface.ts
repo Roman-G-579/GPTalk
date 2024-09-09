@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-export interface Challenge {
+export interface Lesson {
   date: Date;
   numberOfQuestions: number;
   mistakes: number;
@@ -8,7 +8,7 @@ export interface Challenge {
   result: Schema.Types.ObjectId;
 }
 
-const challengeSchema = new Schema(
+const lessonSchema = new Schema(
   {
     date: {
       type: Date,
@@ -38,4 +38,4 @@ const challengeSchema = new Schema(
   },
 );
 
-export const ChallengeModel = model<Challenge>('Challenge', challengeSchema);
+export const LessonModel = model<Lesson>('Lesson', lessonSchema);

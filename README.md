@@ -7,7 +7,7 @@ GPTalk is an innovative web application designed to enhance the language learnin
 
 ## Repository Contents
 - `Capstone Project Phase A 24-1-D-11.docx`: Detailed documentation covering the entire project scope and specifications.
-- `Capstone Project Phase A 24-1-D-11.pptx`: Slides covering introduction, existing solutions, model architecture, proposed solution, and challanges.
+- `Capstone Project Phase A 24-1-D-11.pptx`: Slides covering introduction, existing solutions, model architecture, proposed solution, and lessons.
 - **Source code** will be added in `Phase B` of the final project.
 
 ## Contributors
