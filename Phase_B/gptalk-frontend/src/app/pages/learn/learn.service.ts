@@ -56,7 +56,8 @@ export class LearnService {
 	draggedWord = signal<string>('');
 
 	// ReorderWords-specific signal
-	chosenWords = signal<string[]>([]); // Contains an array of strings that are used to construct the answer sentence
+  // Contains an array of strings that are used to construct the answer sentence
+	chosenWords = signal<string[]>([]);
 
 	exerciseArr = signal<Exercise[]>([]);
 
@@ -199,7 +200,7 @@ export class LearnService {
 	addExp() {
     // Sets the exp reward based on the current exercise type
     const expAmount = (
-      this.exerciseData().type == ExerciseType.TranslateWord
+      this.exerciseData().type == ExerciseType.TranslateTheSentence
       ||
       this.exerciseData().type == ExerciseType.MatchTheCategory)
       ?
