@@ -36,7 +36,7 @@ export class DailyWordService {
           this.isLoading.set(false);
       },
       error: (err: unknown) => {
-        console.log('Error fetching daily word', err);
+        console.error('Error fetching daily word', err);
       }
     });
   }

@@ -92,7 +92,7 @@ export class LearnComponent implements OnInit {
    */
   callGenerator(language: Language) {
     this.lrn.lessonLanguage.set(language);
-    this.lgService.generateLesson(language, Difficulty.Advanced, this.EXERCISE_AMOUNT).subscribe({
+    this.lgService.generateLesson(language, this.lrn.lessonLanguageRank() as Difficulty, this.EXERCISE_AMOUNT).subscribe({
       next: (exercises: Exercise[]) => {
         this.lrn.setUpLesson(exercises);
         this.isLoading.set(false);

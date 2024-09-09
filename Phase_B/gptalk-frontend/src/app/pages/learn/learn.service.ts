@@ -1,7 +1,8 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Exercise } from '../../core/interfaces/exercise.interface';
 import { ExerciseType } from '../../core/enums/exercise-type.enum';
 import { Language } from '../../core/enums/language.enum';
+import { Language as ILanguage } from '../my-profile/components/profile-languages/language.interface';
 import { MiscUtils as util } from '../../core/utils/misc.utils';
 import { LearnInitializerUtils as init } from './utils/learn-initializer.utils';
 import { Subject } from 'rxjs';
@@ -9,6 +10,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { RewardVals } from '../../core/enums/exp-vals.enum';
+import { Difficulty } from 'src/app/core/enums/difficulty.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -30,16 +32,16 @@ export class LearnService {
 	mistakesCounter = signal<number>(0); // Counts the mistakes in the lesson's exercises
 	totalExercises = signal<number>(0); // Stores the total amount of exercises in the current lesson
 
-  // Stores user's exp values
+	// Stores user's exp values
 	totalExp = this.authService.totalExp;
 	lessonExp = signal<number>(0); // exp gained in current lesson
 
-  // Counts the number of penalties for the exercise
-  // Penalties are given for wrong matches in MatchTheWords and hints used by the user
-  penalties = signal<number>(0);
+	// Counts the number of penalties for the exercise
+	// Penalties are given for wrong matches in MatchTheWords and hints used by the user
+	penalties = signal<number>(0);
 
-  // Contains a string that gives a hint related to the solution of the current exercise
-  hintText = signal<string>('');
+	// Contains a string that gives a hint related to the solution of the current exercise
+	hintText = signal<string>('');
 
 	headingText = signal<string>(''); // Contains instructions or exercise feedback
 
@@ -56,7 +58,7 @@ export class LearnService {
 	draggedWord = signal<string>('');
 
 	// ReorderWords-specific signal
-  // Contains an array of strings that are used to construct the answer sentence
+	// Contains an array of strings that are used to construct the answer sentence
 	chosenWords = signal<string[]>([]);
 
 	exerciseArr = signal<Exercise[]>([]);
@@ -74,6 +76,20 @@ export class LearnService {
 	});
 
 	lessonLanguage = signal<Language>(Language.NOT_SELECTED);
+	lessonLanguageRank = computed(() => {
+		if (this.lessonLanguage() === Language.NOT_SELECTED) {
+			return 'Novice';
+		}
+
+		const selectedLanguage = this.authService
+			.languages()
+			.find((language: ILanguage) => language.language === this.lessonLanguage()) || {
+			language: this.lessonLanguage(),
+			rank: Difficulty.Novice,
+		};
+
+		return selectedLanguage?.rank;
+	});
 
 	/**
 	 * Sets up the data and parameters for the current lesson
@@ -116,7 +132,7 @@ export class LearnService {
 		this.headingText.set(`Lesson finished`);
 		this.isLessonOver.set(true);
 		this.isDone.set(true);
-    this.lessonLanguage.set(Language.NOT_SELECTED);
+		this.lessonLanguage.set(Language.NOT_SELECTED);
 	}
 
 	/**
@@ -126,7 +142,7 @@ export class LearnService {
 		// Resets the states of all exercise-data related signals
 		this.isDone.set(false);
 		this.isCorrectAnswer.set(false);
-    this.hintText.set('');
+		this.hintText.set('');
 		// Signals the child components to initialize their input fields
 		this.onExerciseSwitch.next(true);
 
@@ -172,43 +188,40 @@ export class LearnService {
 		}
 	}
 
-  /**
-   * Updates the hint text string using a word from the exercise's answer at the cost of some exp
-   */
-  displayHint() {
-    this.hintText.update((text) => {
-      const curHintWords = text.split(' '); // Create a Set of current words in the hint text
-      const answerWords = this.exerciseData().answer?.split(' '); // Split answer into individual words
+	/**
+	 * Updates the hint text string using a word from the exercise's answer at the cost of some exp
+	 */
+	displayHint() {
+		this.hintText.update((text) => {
+			const curHintWords = text.split(' '); // Create a Set of current words in the hint text
+			const answerWords = this.exerciseData().answer?.split(' '); // Split answer into individual words
 
-      // Find the first word in the answer that isn't already in the hint text
-      const nextWord = answerWords?.find((word) => !curHintWords.includes(word));
+			// Find the first word in the answer that isn't already in the hint text
+			const nextWord = answerWords?.find((word) => !curHintWords.includes(word));
 
-      // If a new word is found, add it to the text
-      if (nextWord) {
-        text += ' ' + nextWord;
-      }
-      return text;
-    });
+			// If a new word is found, add it to the text
+			if (nextWord) {
+				text += ' ' + nextWord;
+			}
+			return text;
+		});
 
-    this.penalties.update(value => value + 1);
-  }
+		this.penalties.update((value) => value + 1);
+	}
 	/**
 	 *  Adds a specific amount of xp (based on a const's value) is added to the totalExp counter.
 	 *  If the current the mistakes counter is not zero,
 	 *  the user gets a penalty to his exp reward based on the amount of mistakes.
 	 */
 	addExp() {
-    // Sets the exp reward based on the current exercise type
-    const expAmount = (
-      this.exerciseData().type == ExerciseType.TranslateTheSentence
-      ||
-      this.exerciseData().type == ExerciseType.MatchTheCategory)
-      ?
-      RewardVals.hardExercise
-      :
-      RewardVals.exercise;
+		// Sets the exp reward based on the current exercise type
+		const expAmount =
+			this.exerciseData().type == ExerciseType.TranslateTheSentence ||
+			this.exerciseData().type == ExerciseType.MatchTheCategory
+				? RewardVals.hardExercise
+				: RewardVals.exercise;
 
-    // Deducts exp from the final reward sum based on mistakes or hints used
+		// Deducts exp from the final reward sum based on mistakes or hints used
 		const expAfterPenalties = Math.max(0, expAmount - this.penalties() * 10);
 
 		this.lessonExp.set(this.lessonExp() + expAfterPenalties);
@@ -222,7 +235,7 @@ export class LearnService {
 		const email = this.authService.userData().email;
 		const { href } = new URL(`profile/postResult`, this.apiUrl);
 
- 		return this.http.post(href, {
+		return this.http.post(href, {
 			exp: this.lessonExp(),
 			email: email,
 			numberOfQuestions: this.totalExercises(),

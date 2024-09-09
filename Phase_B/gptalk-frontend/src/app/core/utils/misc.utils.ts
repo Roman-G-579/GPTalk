@@ -60,9 +60,7 @@ export class MiscUtils {
     const answerLength = answerWordArr.length;
 
     const wrongWordsCnt = this.getWrongWordsCnt(userWordArr, answerWordArr);
-    console.log(wrongWordsCnt);
 
-    console.log((answerLength - wrongWordsCnt) / answerLength);
     return (answerLength - wrongWordsCnt) / answerLength;
   }
 
