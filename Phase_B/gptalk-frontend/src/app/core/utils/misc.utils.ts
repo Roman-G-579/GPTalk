@@ -15,7 +15,7 @@ export class MiscUtils {
   static lowerCaseAndNormalizeAll(exercise: WritableSignal<Exercise>) {
     exercise.update( data => {
       data.question = data.question?.normalize().toLowerCase();
-      data.answer = data.answer?.normalize().toLowerCase();
+      data.answer = data.answer?.normalize().replace(/[,.!?:]/g,'').toLowerCase();
       data.choices = data.choices?.map(elem => elem.normalize().replace(/[,.!?:]/g,'').toLowerCase());
       data.correctPairs = data.correctPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
       data.randomizedPairs = data.randomizedPairs?.map(pair => [pair[0].normalize().toLowerCase(), pair[1].normalize().toLowerCase()]);
@@ -43,6 +43,57 @@ export class MiscUtils {
     }
 
     return closest(str, exercise().choices ?? []).toLowerCase();
+  }
+
+  /**
+   * Calculates the similarity percentage between 2 sentences
+   *
+   * Used by exercise types: TranslateSentence
+   * @param str the user-submitted sentence
+   * @param exercise the exercise object that contains the answer that str is compared against
+   */
+  static getSimilarityRatio(str: string, exercise: WritableSignal<Exercise>){
+    // Tokenize sentences into words
+    const userWordArr = str.replace(/[,.!?:]/g,'').trim().toLowerCase().split(/\s+/);
+    const answerWordArr = exercise().answer?.split(/\s+/) ?? [];
+
+    const answerLength = answerWordArr.length;
+
+    const wrongWordsCnt = this.getWrongWordsCnt(userWordArr, answerWordArr);
+    console.log(wrongWordsCnt);
+
+    console.log((answerLength - wrongWordsCnt) / answerLength);
+    return (answerLength - wrongWordsCnt) / answerLength;
+  }
+
+  private static getWrongWordsCnt(inputWords: string[], answerWords: string[]) {
+    // Iterate over the maximum length between the input and answer words
+    let mistakeCnt = 0;
+
+    inputWords.forEach((word, index) => {
+      // Check if the word matches at the current index
+      if (answerWords[index] !== undefined && word === answerWords[index]) {
+        return; // No mistake
+      }
+
+      if (answerWords[index] !== undefined && distance(word, answerWords[index]) < 2 ) {
+        return; // One wrong letter, within margin of error
+      }
+
+      // Check for nearby matches within a distance of 1 index
+      const isNearbyMatch =
+        // Previous word matches
+        (index > 0 && (answerWords[index - 1] === word || distance(word, answerWords[index - 1]) < 2))
+        ||
+        // Next word matches
+        (index < answerWords.length - 1 && (answerWords[index + 1] === word || distance(word, answerWords[index + 1]) < 2));
+
+      if (!isNearbyMatch) {
+        mistakeCnt++; // Increment mistake count if no nearby match is found
+      }
+    });
+
+    return mistakeCnt;
   }
 
   /**

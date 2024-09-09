@@ -6,8 +6,10 @@
   border-radius: 15px;
   border-width: 4px;
   background: var(--gray-200);
-  resize: none;
   max-width: 70vw;
+  height: 6em;
+  overflow-y: scroll;
+  scrollbar-width: none;
 }
 
 .buttons-group {

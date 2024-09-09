@@ -2,18 +2,18 @@
       <p style="text-transform: capitalize;">{{exerciseData().question}}</p>
     </div>
     <div class="flex justify-content-center mb-2">
-      <textarea
+      <div
+        #inputArea
+        [contentEditable]="!isDone()"
         [dir]="utilHtml.langDirection(lessonLanguage)"
         autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
-        [readOnly]="isDone()"
-        id="sentenceInputForm"
+        id="inputArea"
         title="Input Field"
-        [formControl]="inputForm"
-        rows="3"
-        cols="30"
-        >
-      </textarea>
+        (input)="onInput($event)"
+        [innerHTML]="highlightedContent"
+      >
+      </div>
     </div>
     <div class="buttons-group flex">
       @if (!isDone()) {
@@ -21,8 +21,8 @@
           id="submitTranslationBtn"
           label="Submit"
           severity="primary"
-          (onClick)="inputForm.value ?
-          lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"/>
+          (onClick)="inputText ?
+          submitAnswer() : null"/>
 
         <p-button
           id="hintBtn"
@@ -38,11 +38,8 @@
       <p>{{hintText() ? 'Hint: ' + hintText() : ''}}</p>
     </div>
     @if (isDone()) {
-      <div class="translation-wrapper flex justify-content-center flex-column text-center "
-           [dir]="utilHtml.langDirection(lessonLanguage)"
-      >
+      <div class="translation-wrapper flex justify-content-center flex-column text-center ">
           <p><b>Translation:</b></p>
-          <p>{{exerciseData().question}} means:</p>
           <p>{{exerciseData().answer}}</p>
       </div>
     }
