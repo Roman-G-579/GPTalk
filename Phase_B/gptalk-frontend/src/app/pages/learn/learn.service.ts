@@ -75,7 +75,11 @@ export class LearnService {
 		translation: '',
 	});
 
+  // The user's selected language for the current lesson
 	lessonLanguage = signal<Language>(Language.NOT_SELECTED);
+
+  // Sets the difficulty level based on the user's rank in the selected language
+  // (in lessonLanguage)
 	lessonLanguageRank = computed(() => {
 		if (this.lessonLanguage() === Language.NOT_SELECTED) {
 			return 'Novice';
