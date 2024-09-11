@@ -24,6 +24,8 @@ import { ResultsScreenComponent } from './results-screen/results-screen.componen
 import { ExpBarComponent } from './exp-bar/exp-bar.component';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 import {LanguageSelectComponent} from "../../core/common/language-select/language-select.component";
+import {SummarizeTheParagraphComponent} from "./summarize-the-paragraph/summarize-the-paragraph.component";
+import {ChooseTheTenseComponent} from "./choose-the-tense/choose-the-tense.component";
 
 @Component({
   selector: 'app-learn',
@@ -46,7 +48,7 @@ export class LearnComponent implements OnInit {
   private readonly primengConfig = inject(PrimeNGConfig);
   protected readonly Language = Language;
 
-  EXERCISE_AMOUNT = 5;
+  EXERCISE_AMOUNT = 3;
 
   isLoading = signal<boolean>(true);
   isDone = this.lrn.isDone;
@@ -75,7 +77,9 @@ export class LearnComponent implements OnInit {
     CompleteTheConversationComponent,
     MatchTheWordsComponent,
     ReorderSentenceComponent,
-    MatchTheCategoryComponent
+    MatchTheCategoryComponent,
+    SummarizeTheParagraphComponent,
+    ChooseTheTenseComponent
   ]
 
   // Returns a component based on the current exercise type
@@ -85,7 +89,6 @@ export class LearnComponent implements OnInit {
     }
     return ResultsScreenComponent;
   }
-//TODO: make lesson difficulty be based on language knowledge level
   /**
    * Calls the lesson generation function and calls setUpLesson using the generated result
    * @param language the generated lesson's language
@@ -94,6 +97,7 @@ export class LearnComponent implements OnInit {
     this.lrn.lessonLanguage.set(language);
     this.lgService.generateLesson(language, this.lrn.lessonLanguageRank() as Difficulty, this.EXERCISE_AMOUNT).subscribe({
       next: (exercises: Exercise[]) => {
+        console.log(exercises)
         this.lrn.setUpLesson(exercises);
         this.isLoading.set(false);
       }

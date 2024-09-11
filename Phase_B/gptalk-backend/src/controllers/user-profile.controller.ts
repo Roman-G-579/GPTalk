@@ -266,8 +266,10 @@ export async function calculateUserLanguages(userId: Schema.Types.ObjectId): Pro
 	const languagesWithRanks: Language[] = aggregatedResults.map((result) => ({
 		language: result.language,
 		rank: calculateRank(result.totalExp),
+		exp: result.totalExp,
+		expToNextRank: calculateExpToNextRank(result.totalExp)
 	}));
-
+	console.log(languagesWithRanks);
 	return languagesWithRanks;
 }
 
@@ -280,3 +282,21 @@ function calculateRank(totalExp: number): RankEnum {
 		return RankEnum.Master;
 	}
 }
+
+function calculateExpToNextRank(totalExp: number) {
+	// Next rank is Advanced
+	if (totalExp < 5000) {
+		return 5000 - totalExp;
+	}
+
+	// Next rank is Master
+	else if (totalExp < 10000) {
+		return 10000 - totalExp;
+	}
+
+	// Max rank
+	else {
+		return 0;
+	}
+}
+

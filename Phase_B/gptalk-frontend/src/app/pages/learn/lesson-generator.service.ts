@@ -9,7 +9,7 @@ import {LessonGeneratorUtils as genUtil} from './utils/lesson-generator.utils';
 import {forkJoin, map, Observable, of} from 'rxjs';
 import {ExerciseType} from '../../core/enums/exercise-type.enum';
 import {cloneDeep} from 'lodash';
-import {CONVERSATION_STARTERS, MISTAKE_TYPES} from "../../core/utils/completeTheConversationConsts";
+import {CONVERSATION_STARTERS, MISTAKE_TYPES, TENSE_TYPES} from "../../core/utils/exerciseSpecificConsts";
 
 @Injectable({
   providedIn: 'root'
@@ -64,14 +64,14 @@ export class LessonGeneratorService {
 
   mockExercise_CompleteTheConversation: Exercise = {
     type: ExerciseType.CompleteTheConversation,
-    question: "מתי אתה מתכנן לסיים את הפרויקט?",
+    prompt: "מתי אתה מתכנן לסיים את הפרויקט?",
     choices: ["אני מתכנן לסיים את הפרויקט בסוף השבוע.", "אני מתכננים לסיים את הפרויקט בסוף השבוע."],
     translation: "When do you plan to finish the project? / I plan to finish the project by the end of the week."
   }
 
   mockExercise_CompleteTheConversation_ENG: Exercise = {
     type: ExerciseType.CompleteTheConversation,
-    question: "How do I get to the train station?",
+    prompt: "How do I get to the train station?",
     choices: ["The quickest way to get there is either by bus or by taxi", "The bus or the taxi is faster to get it."],
     translation: "כיצד אני מגיע לתחנת הרכבת? / הדרך המהירה ביותר להגיע לשם היא בעזרת אוטובוס או מונית."
   }
@@ -124,6 +124,28 @@ export class LessonGeneratorService {
     "words_b": ["car", "bike","truck" ,"snowmobile"]
   }
 
+  mockExercise_SummarizeTheParagraph: Exercise = {
+    type: ExerciseType.SummarizeTheParagraph,
+    prompt: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ",
+    choices: ["correct answer","wrong answer"],
+    translation: "תשובה נכונה"
+  }
+
+  mockExercise_SummarizeTheParagraph_HE: Exercise = {
+    type: ExerciseType.SummarizeTheParagraph,
+    prompt: "בראשית ברא ה' את השמיים ואת הארץ. והארץ הייתה תוהו ובהו וחושך על-פני תהום. ורוח ה' מרחפת על פני המים. ויאמר ה' יהי אור: ויהי אור. וירא ה' את האור, כי טוב: ויבדל ה' בין האור ובין החושך. ויקרא ה' לאור יום, ולחושך קרא לילה, ויהי ערב ויהי בוקר יום אחד ",
+    choices: ["ברוך השם","חלאס להספים אותי"],
+    translation: "In the beginning....."
+
+  }
+
+  mockExercise_ChooseTheTense: Exercise = {
+    type: ExerciseType.ChooseTheTense,
+    question: "We will travel abroad",
+    answer: "future",
+    translation: "אנחנו נטייל מחוץ לארץ"
+
+  }
   /**
    * Generates the specified amount of random exercises by calling OpenAI's API
    *
@@ -143,7 +165,9 @@ export class LessonGeneratorService {
       this.generateCompleteTheConversation.bind(this),
       this.generateMatchTheWords.bind(this),
       this.generateReorderSentence.bind(this),
-      this.generateMatchTheCategory.bind(this)
+      this.generateMatchTheCategory.bind(this),
+      this.generateSummarizeTheParagraph.bind(this),
+      this.generateChooseTheTense.bind(this)
     ];
 
     // Stores the observables returned by the exercise generators
@@ -152,7 +176,7 @@ export class LessonGeneratorService {
     for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-      // const randomIndex: number = 2;
+      // const randomIndex: number = 8;
 
       // The Chosen function
       const generatorFunc = exerciseGenerators[randomIndex];
@@ -226,6 +250,7 @@ export class LessonGeneratorService {
 
     return `generate word array, difficulty: ${Difficulty[difficulty]}, language: ${wordLanguage}. number of words: ${numOfAnswers}. Focus on topics: ${keyWords[0]}. {"choices": [array_of_words] "translations": [array_of_${translationLanguage}_translations] }`;
   }
+
 
   /**
    * Creates a query for the API to generate a "write the sentence in the specified language" exercise, using the given parameters
@@ -334,6 +359,40 @@ export class LessonGeneratorService {
     return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topics: ${keyWords[0]} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
   }
 
+  generateSummarizeTheParagraph(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+
+    // If the lesson's language is English, the paragraph is in English.
+    // Otherwise, the paragraph is in the lesson's language
+    const paragraphLanguage = language;
+    const translationLanguage = paragraphLanguage == Language.English ? Language.Hebrew : Language.English;
+
+    // Sets  random mistake type for one of the replies
+    let randomIndex = Math.floor(Math.random() * MISTAKE_TYPES.length);
+    const mistakeType = MISTAKE_TYPES[randomIndex];
+
+    // Parameters for novice difficulty
+    // if (difficulty == Difficulty.Novice) { replyLengthLimit = 4; }
+    // Parameters for advanced difficulty
+    // else if (difficulty == Difficulty.Advanced) { replyLengthLimit = 8; }
+    // Parameters for master difficulty
+    // else { replyLengthLimit = 10; }
+
+    return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: ${keyWords[0]}. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_${translationLanguage} }`;
+  }
+
+  generateChooseTheTense(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+    // If the lesson's language is English, the sentence is in English.
+    // Otherwise, the sentence is in the lesson's language
+    const sentenceLanguage = language;
+    const translationLanguage = sentenceLanguage == Language.English ? Language.Hebrew : Language.English;
+
+    // Sets  random mistake type for one of the replies
+    let randomIndex = Math.floor(Math.random() * TENSE_TYPES.length);
+    const tenseType = TENSE_TYPES[randomIndex];
+
+    return `generate ${Difficulty[difficulty]}-level sentence in ${sentenceLanguage}. sentence must be in ${tenseType} tense. Sentence must not mention the tense Focus on topics: ${keyWords[0]}. 'answer' field must contain only the single word ${tenseType} in English. {"question": ${sentenceLanguage}_sentence, "answer": ${tenseType}, "translation": ${translationLanguage}_translation}`
+  }
+
   /**
    * Sends a request to the backend to call the API using the given prompt string
    * @param promptString the prompt string of the exercise to be generated
@@ -346,7 +405,7 @@ export class LessonGeneratorService {
     return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    // return of(cloneDeep(this.mockExercise_TranslateSentence));
+    // return of(cloneDeep(this.mockExercise_ChooseTheTense));
   }
 
 }

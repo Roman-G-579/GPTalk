@@ -16,6 +16,7 @@ import {Grade} from './interfaces/grade.interface';
 import {LanguageSelectComponent} from '../../core/common/language-select/language-select.component';
 import {Language} from '../../core/enums/language.enum';
 import {LearnHtmlUtils} from "../learn/utils/learn-html.utils";
+import {width} from "happy-dom/lib/PropertySymbol";
 
 @Component({
 	selector: 'app-chat-with-me',
@@ -54,6 +55,12 @@ export class ChatWithMeComponent {
 		path: '/assets/lottie/no-messages.json',
 	};
 
+  promptButtons: {value: string, prompt: string}[] = []
+
+  /**
+   * Sends the message within textContent along with the session language and the conversation history
+   * to the OpenAI API and retrieves a response based on the conversation up to this point
+   */
 	chat() {
 		this.loading.set(true);
 		this.conversation.update((values) => [...values, { role: 'user', content: this.textContent }])
@@ -71,6 +78,9 @@ export class ChatWithMeComponent {
         });
 	}
 
+  /**
+   * Finishes the session and grades the user's messages for the current session
+   */
 	grade() {
 		if (!this.conversation().length) {
 			return;
@@ -79,16 +89,22 @@ export class ChatWithMeComponent {
 		this.gradeLoading.set(true);
 		this.chatWithMeService.grade(this.language(), this.conversation()).subscribe({
 			next: (val: Grade) => {
+        console.log(val);
 				this.openDialog(val);
 			},
 			error: () => this.toastrService.error('Error occured!', 'Error!'),
 		});
 	}
 
+  /**
+   * Opens a dialog window displaying the grade given to the user for the current session
+   * @param grade the grade (1 to 100) given by the chatbot
+   */
 	openDialog(grade: Grade) {
 		this.confirmationService.confirm({
 			header: 'Session Grade',
-			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'}`,
+			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'}
+			 Feedback: ${grade.feedback}`,
 			accept: () => {
         this.setLanguage(Language.NOT_SELECTED);
 				this.conversation.set([]);
@@ -99,8 +115,48 @@ export class ChatWithMeComponent {
 		});
 	}
 
+  /**
+   * Sets the chat session's language
+   * @param lang the language of the session
+   */
 	setLanguage(lang: Language) {
 		this.language.set(lang);
+
+    // Initializes the prompt buttons once a language has been set
+    this.setPromptButtons();
 	}
 
+  /**
+   * Sets the initial values of the prompt buttons that appear at the start of the session
+   */
+  setPromptButtons() {
+    this.promptButtons.push(
+      {
+        value: 'Teach me vocabulary',
+        prompt: `Give me a lesson in vocabulary in ${this.language()}`
+      },
+      {
+        value: `Let's do conversation practice`,
+        prompt: `I want us to practice a dialogue in ${this.language()}. Start a conversation in that language.`
+      },
+      {
+        value: `I want something translated`,
+        prompt: `I want you to translate something from ${this.language()} to ${this.language() == Language.English ? Language.Hebrew : Language.English}.`
+      },
+      {
+        value: `Do you have some learning tips?`,
+        prompt: `Please give a tip for learning ${this.language()}.`
+      }
+    )
+  }
+
+  /**
+   * Sends a chat message to the chatbot using the chosen prompt as a message
+   * @param prompt the opening message for the session
+   */
+  sendInitialPrompt(prompt: string) {
+    this.textContent = prompt;
+    this.chat();
+  }
 }
+

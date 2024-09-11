@@ -3,6 +3,7 @@ import {Exercise} from '../../../core/interfaces/exercise.interface';
 import _ from 'lodash';
 import {ExerciseType} from '../../../core/enums/exercise-type.enum';
 import {TOPICS} from '../../../core/utils/topics';
+import { FUTURE_TENSE_ENG, PRESENT_TENSE_ENG, PAST_TENSE_ENG } from "../../../core/utils/exerciseSpecificConsts";
 
 // The heading strings of the available exercise types
 const HEADINGS_MAP: { [key in ExerciseType]: string } = {
@@ -13,17 +14,21 @@ const HEADINGS_MAP: { [key in ExerciseType]: string } = {
   4: 'Match the words',
   5: 'Arrange the words to form a correct sentence',
   6: 'Match the words to their correct category',
+  7: 'Summarize the paragraph',
+  8: 'Choose the tense'
 };
 
 // The instruction strings of the available exercise types
 const INSTRUCTIONS_MAP: { [key in ExerciseType]: string } = {
   0: 'Click on an answer or type it and hit the <i>enter</i> key to submit',
   1: 'Click on the correct translation of the given word',
-  2: `Write the given sentence in a given language`,
+  2: `Write the given sentence in the chosen language`,
   3: `Click on an answer or type it and hit the <i>enter</i> key to submit`,
   4: `Match the words in a given language to their English translations`,
   5: `Click the words sequentially to place them onto the board. Click submit when finished.`,
   6: 'Drag and drop the words to their category container. Click submit when finished.',
+  7: 'Click on the option that best summarizes the given paragraph',
+  8: 'Click on the correct grammatical tense for the given sentence'
 };
 
 /*
@@ -124,6 +129,10 @@ export class LessonGeneratorUtils {
         return this.setReorderSentence(exercise);
       case ExerciseType.MatchTheCategory:
         return this.setMatchTheCategory(exercise);
+      case ExerciseType.SummarizeTheParagraph:
+        return this.setSummarizeTheParagraph(exercise);
+      case ExerciseType.ChooseTheTense:
+        return this.setChooseTheTense(exercise);
       default: {
         return exercise;
       }
@@ -263,6 +272,52 @@ export class LessonGeneratorUtils {
   }
 
   /**
+   * Sets the parameters of a "SummarizeTheParagraph" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
+  private static setSummarizeTheParagraph(exercise: Exercise): Exercise {
+    let choices = exercise.choices ?? [];
+
+    // If more than 2 choices were generated, remove them
+    if (choices.length > 2) {
+      choices = choices.slice(0,2);
+    }
+
+    exercise.answer = choices[0];
+
+    choices = _.shuffle(choices);
+    exercise.choices = choices;
+
+    return exercise;
+  }
+
+  /**
+   * Sets the parameters of a "ChooseTheTense" exercise
+   * @param exercise the exercise object
+   * @returns the updated exercise
+   */
+  private static setChooseTheTense(exercise: Exercise): Exercise {
+    const tenses = ["past", "present", "future"];
+    const question = exercise.question ?? '';
+    const translation = exercise.translation ?? '';
+    let answer = exercise.answer ?? ''; // The answer contained in the object
+
+    exercise.choices = tenses;
+
+    // If the generated object's answer is not a valid tense, get the correct tense
+    // based on the exercise's generated sentence
+    if (!exercise.choices.includes(answer)) {
+      console.log('answer was ', answer);
+      answer = this.getSentenceTense(question, translation);
+      console.log('new answer ', answer);
+    }
+    exercise.answer = answer;
+
+    return exercise;
+  }
+
+  /**
    * Shuffles the locations of the left words and the locations of the right words in the array
    * @param wordPairs an array of string pairs. first element in pair - left word.
    *                  Second element in pair - right word
@@ -277,5 +332,35 @@ export class LessonGeneratorUtils {
 
     // Re-pair the shuffled words
     return shuffledLeftWords.map((leftWord, index) => [leftWord, shuffledRightWords[index]])
+  }
+
+  /**
+   * Takes two sentences and analyzes them to find their correct tense
+   * @returns "past" | "present" | "future"
+   * @param sentence1 the first sentence
+   * @param sentence2 the second sentence
+   */
+  private static getSentenceTense(sentence1: string, sentence2: string): string {
+    const lowerCaseSentence1 = sentence1.toLowerCase();
+    const lowerCaseSentence2 = sentence2.toLowerCase();
+
+    // Check for tense patterns
+    if (
+      PAST_TENSE_ENG.test(lowerCaseSentence1) ||
+      PAST_TENSE_ENG.test(lowerCaseSentence2)) {
+      return "past";
+    } else if (
+      PRESENT_TENSE_ENG.test(lowerCaseSentence1) ||
+      PRESENT_TENSE_ENG.test(lowerCaseSentence2)) {
+      return "present";
+    }
+    else if (
+      FUTURE_TENSE_ENG.test(lowerCaseSentence1) ||
+      FUTURE_TENSE_ENG.test(lowerCaseSentence2)) {
+      return "future";
+    }
+
+    // Default case if no tense is detected
+    return "present";
   }
 }

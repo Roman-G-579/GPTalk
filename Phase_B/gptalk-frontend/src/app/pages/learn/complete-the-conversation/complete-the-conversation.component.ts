@@ -4,6 +4,7 @@ import { LearnVerificationUtils } from '../utils/learn-verification.utils';
 import { LearnService } from '../learn.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Button } from 'primeng/button';
+import {AutoFocus} from "primeng/autofocus";
 
 @Component({
   selector: 'app-complete-the-conversation',
@@ -11,6 +12,7 @@ import { Button } from 'primeng/button';
   imports: [
     ReactiveFormsModule,
     Button,
+    AutoFocus,
   ],
   templateUrl: './complete-the-conversation.component.html',
   styleUrl: './complete-the-conversation.component.scss',

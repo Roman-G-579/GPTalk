@@ -1,0 +1,46 @@
+<div class="flex justify-content-center gap-3 mb-4"
+     [dir]="utilHtml.langDirection(lessonLanguage)"
+>
+  <p style="font-size: 24px">{{exerciseData().question}} </p>
+</div>
+
+<p-divider class="divider mt-4"/>
+<div class="buttons-group flex justify-content-center overflow-hidden gap-4">
+  @for (choice of choices; track choice) {
+    <div class="tense-btn-wrapper gap-4"
+         (click)="lrn.setExerciseResult(vrf.verifyAnswer(choice.value,exerciseData))"
+    >
+      <p-button
+        [styleClass]="
+            isDone() ? (
+              utilHtml.elemContainsAnswer(choice.value, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+        id="{{choice.value}}"
+        icon="{{choice.icon}}"
+        [rounded]="true"
+        [text]="true"
+        [raised]="true"
+      />
+      <p>{{choice.value}}</p>
+    </div>
+
+<!--      <p-button-->
+<!--        class="tense-btn"-->
+<!--        -->
+<!--        label="{{choice.value}}"-->
+<!--        [raised]="true"-->
+<!--        severity="secondary"-->
+<!--        <i [class]="choice.icon" style="font-size: 1.6rem; padding-right: 8px;"></i>-->
+<!--      </p-button>-->
+  }
+</div>
+
+@if (isDone()) {
+  <div class="translation-wrapper flex-row justify-content-center">
+    <p><b>Translation:</b></p>
+    <p>{{exerciseData().translation}}</p>
+  </div>
+}

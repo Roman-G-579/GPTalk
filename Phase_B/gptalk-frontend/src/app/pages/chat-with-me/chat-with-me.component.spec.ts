@@ -62,7 +62,6 @@ describe('ChatWithMeComponent', () => {
 
     expect(mockChatWithMeService.chat).toHaveBeenCalledWith('Hello', Language.English, [{ role: 'user', content: 'Hello' }]);
 
-    //TODO: address the extra space at the end of followUpQuestion in mockResponse
     const updatedConversation = chatComp.conversation().map((item) => ({
       ...item,
       content: item.content.trim(),

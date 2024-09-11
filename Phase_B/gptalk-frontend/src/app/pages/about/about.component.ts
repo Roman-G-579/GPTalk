@@ -34,8 +34,8 @@ export class AboutComponent {
       image: 'assets/software-logos/OpenAI.png',
     },
     {
-      name: 'Vercel',
-      image: 'assets/software-logos/Vercel.png',
+      name: 'Jest',
+      image: 'assets/software-logos/Jest.png',
     }
   ]
 

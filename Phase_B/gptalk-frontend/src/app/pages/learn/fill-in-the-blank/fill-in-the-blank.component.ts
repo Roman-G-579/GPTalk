@@ -5,6 +5,7 @@ import { Button } from 'primeng/button';
 import { PaginatorModule } from 'primeng/paginator';
 import { LearnService } from '../learn.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import {AutoFocus} from "primeng/autofocus";
 
 @Component({
   selector: 'app-fill-in-the-blank',
@@ -13,6 +14,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
     Button,
     PaginatorModule,
     ReactiveFormsModule,
+    AutoFocus,
   ],
   templateUrl: './fill-in-the-blank.component.html',
   styleUrl: './fill-in-the-blank.component.scss',

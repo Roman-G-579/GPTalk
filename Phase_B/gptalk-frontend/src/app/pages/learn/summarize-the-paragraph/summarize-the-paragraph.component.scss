@@ -1,0 +1,28 @@
+.paragraph-wrapper {
+  padding: 8px;
+  border-style: solid;
+  border-color: var(--surface-300);
+  border-radius: 10px;
+  border-width: 2px;
+  background: var(--surface-200);
+  cursor: default;
+}
+
+.latin-text {
+  font-family: "Gelasio", serif;
+  & p:first-letter {
+    font-size: 4.5rem;
+    float: left;
+    margin-top: .5rem;
+    margin-right: 0.4rem;
+    line-height: .7;
+  }
+}
+
+.hebrew-text p:first-letter{
+  font-size: 4.5rem;
+  float: right;
+  margin-top: .5rem;
+  margin-left: 0.4rem;
+  line-height: .7;
+}
