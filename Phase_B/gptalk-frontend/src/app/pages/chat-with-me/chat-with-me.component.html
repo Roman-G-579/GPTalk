@@ -15,10 +15,24 @@
       } @empty {
         <div class="no-messages">
           <ng-lottie [options]="noMessagesOptions"></ng-lottie>
-          <span>Let's start our chat!</span>
+          <span dir="ltr">Let's start our chat!</span>
         </div>
       }
     </div>
+    @if (!conversation().length){
+      <p class="text-center">Pick a topic to get started, or type manually:</p>
+      <div class="input w-full flex flex-row justify-content-center align-items-center gap-4 mt-2">
+      @for (promptBtn of promptButtons; track promptBtn) {
+        <p-button
+          styleClass="prompt-btn"
+          label="{{promptBtn.value}}"
+          [raised]="true"
+          severity="secondary"
+          (click)="sendInitialPrompt(promptBtn.prompt)"
+        />
+      }
+      </div>
+    }
 		<div
 			class="input p-3 md:p-4 w-full lg:p-6 flex flex-column sm:flex-row align-items-center border-top-1 surface-border gap-3"
 		>
