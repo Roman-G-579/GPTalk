@@ -2,10 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ResultModel } from "../models/result.interface";
 import {PipelineStage} from "mongoose";
 
-/**
- * Sorts the users in the database by their total exp in the given language
- * @param req header containing the language
- */
+//Sorts the users in the database by their total exp in the given language
 export async function getTopUsers(req: Request, res: Response, next: NextFunction) {
 
   try {

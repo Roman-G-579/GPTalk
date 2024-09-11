@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, inject} from "@angular/core";
-import {FormControl, ReactiveFormsModule} from "@angular/forms";
+import {ReactiveFormsModule} from "@angular/forms";
 import {Button} from "primeng/button";
 import {LearnHtmlUtils} from "../utils/learn-html.utils";
 import {LearnVerificationUtils} from "../utils/learn-verification.utils";
