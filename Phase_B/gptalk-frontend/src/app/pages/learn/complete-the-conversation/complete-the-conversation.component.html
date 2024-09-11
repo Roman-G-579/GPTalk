@@ -9,7 +9,8 @@
           <input
             [dir]="utilHtml.langDirection(lessonLanguage)"
             class="chat-input-field flex-grow-1 flex-wrap"
-            autofocus
+            pAutoFocus
+            [autofocus]="true"
             [readOnly]="isDone()"
             id="chatInputForm"
             title="Input Field"
