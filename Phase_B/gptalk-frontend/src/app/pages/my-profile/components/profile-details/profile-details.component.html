@@ -20,15 +20,15 @@
 					<p>{{ profile().createdAt | sinceDate }}</p>
 				</div>
 
-        <div class="globe info mt-4">
+				<div class="globe info mt-4">
 					<i class="pi pi-globe"></i>
-            <p>Top Language:</p>
+					<p>Top Language:</p>
 				</div>
-        <div class="flex-row">
-          <p class="text-xl">{{ profile().languages[0].language | titlecase }}</p>
-          <p>Rank: {{profile().languages[0].rank}}</p>
-            <p>Exp: {{profile().languages[0].exp}}</p>
-        </div>
+				<div class="flex-row">
+					<p class="text-xl">{{ getTopLanguage().language | titlecase }}</p>
+					<p>Rank: {{ getTopLanguage().rank }}</p>
+					<p>Exp: {{ getTopLanguage().exp }}</p>
+				</div>
 			</div>
 		</div>
 

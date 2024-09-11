@@ -15,4 +15,15 @@ import { UserProfile } from '../../interfaces/user-profile.interface';
 })
 export class ProfileDetailsComponent {
 	profile = input.required<UserProfile>();
+
+  getTopLanguage() {
+    const languages = this.profile().languages;
+    let topLanguage = languages[0];
+    for (const language of languages) {
+      if (language.exp > topLanguage.exp) {
+        topLanguage = language;
+      }
+    }
+    return topLanguage;
+  }
 }
