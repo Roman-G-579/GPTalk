@@ -247,7 +247,6 @@ describe('LearnService', () => {
 
       const req = httpMock.expectOne(expectedUrl);
       expect(req.request.method).toBe('POST');
-      //TODO: handle language related nonesense
       expect(req.request.body).toEqual({
         exp: lessonExp,
         email: email,

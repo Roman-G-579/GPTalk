@@ -1,6 +1,29 @@
 @if (!loading()) {
 	<main>
 		<h1>Leaderboard</h1>
+
+    <div class="lang-dropdown flex align-items-center">
+      <p class="mr-2" style="font-size: 20px;">Filter by language: </p>
+      <p-dropdown
+        styleClass="lang-dropdown"
+        [options]="languages"
+        [(ngModel)]="selectedLanguage"
+        optionLabel="name"
+        placeholder="Global"
+        scrollHeight="250px"
+        (onChange)="getLeaderboardByLanguage(selectedLanguage.name)"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div class="flex align-items-center gap-2" *ngIf="selectedLanguage">
+            <img
+              [src]="selectedLanguage.icon"
+              style="width: 18px"  alt=""/>
+            <div>{{ selectedLanguage.name }}</div>
+          </div>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
 		<div class="top-3">
 			@for (user of top3Users(); track user; let idx = $index) {
 				<div class="placement">
