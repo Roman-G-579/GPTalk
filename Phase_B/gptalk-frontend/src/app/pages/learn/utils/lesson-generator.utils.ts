@@ -308,9 +308,7 @@ export class LessonGeneratorUtils {
     // If the generated object's answer is not a valid tense, get the correct tense
     // based on the exercise's generated sentence
     if (!exercise.choices.includes(answer)) {
-      console.log('answer was ', answer);
       answer = this.getSentenceTense(question, translation);
-      console.log('new answer ', answer);
     }
     exercise.answer = answer;
 

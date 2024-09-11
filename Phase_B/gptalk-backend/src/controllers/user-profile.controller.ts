@@ -10,6 +10,7 @@ import { AchievementModel } from '../models/achievment.interface';
 import { Language } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
 import { RankEnum } from '../models/enums/rank.enum';
+import { exp, languages, lessons, mistakes, streak } from './achievements';
 
 export async function getUserProfile(req: Request, res: Response, next: NextFunction) {
 	try {
@@ -200,13 +201,6 @@ async function getAchievements(
 	totalLessons: number,
 	totalLanguages: number,
 ): Promise<UserAchievement[]> {
-	const [streak, exp, mistakes, lessons, languages] = await Promise.all([
-		AchievementModel.find({ type: 'streak' }).lean(),
-		AchievementModel.find({ type: 'exp' }).lean(),
-		AchievementModel.find({ type: 'mistakes' }).lean(),
-		AchievementModel.find({ type: 'lessons' }).lean(),
-		AchievementModel.find({ type: 'languages' }).lean(),
-	]);
 
 	const achievements: UserAchievement[] = [
 		{ ...streak[0], progress: currentStreak },
@@ -267,9 +261,8 @@ export async function calculateUserLanguages(userId: Schema.Types.ObjectId): Pro
 		language: result.language,
 		rank: calculateRank(result.totalExp),
 		exp: result.totalExp,
-		expToNextRank: calculateExpToNextRank(result.totalExp)
+		expToNextRank: calculateExpToNextRank(result.totalExp),
 	}));
-	console.log(languagesWithRanks);
 	return languagesWithRanks;
 }
 
@@ -299,4 +292,3 @@ function calculateExpToNextRank(totalExp: number) {
 		return 0;
 	}
 }
-
