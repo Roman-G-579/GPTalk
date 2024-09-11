@@ -6,6 +6,14 @@ main {
 	gap: 2.5rem;
 	padding: 1rem 3rem;
 
+
+  ::ng-deep.lang-dropdown {
+    background-color: transparent;
+    & div {
+      color: var(--primary-clr);
+    }
+  }
+
 	& .top-3 {
 		display: flex;
 		align-self: center;
