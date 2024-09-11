@@ -5,5 +5,7 @@ export enum ExerciseType {
   CompleteTheConversation,
   MatchTheWords,
   ReorderSentence,
-  MatchTheCategory
+  MatchTheCategory,
+  SummarizeTheParagraph,
+  ChooseTheTense
 }

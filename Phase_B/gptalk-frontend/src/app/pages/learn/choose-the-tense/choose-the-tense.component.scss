@@ -1,0 +1,20 @@
+::ng-deep.p-divider.p-divider-horizontal:before {
+  border-top: 1px solid #bcc9de !important;
+}
+
+.tense-btn-wrapper {
+  display: flex;
+  flex-direction: column; /* Ensures the flex container is a row */
+  justify-content: center; /* Centers the content along the x-axis */
+  align-items: center; /* Centers items along the y-axis if needed */
+
+  & p {
+    font-size: 1.8rem;
+  }
+
+  &:hover {
+    color: #616b83;
+    cursor: pointer;
+
+  }
+}

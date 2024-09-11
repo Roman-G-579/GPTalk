@@ -1,0 +1,34 @@
+<div class="paragraph-wrapper flex justify-content-center gap-3 mb-4"
+     [dir]="utilHtml.langDirection(lessonLanguage)"
+     [class.latin-text] = "lessonLanguage() != 'Hebrew'"
+     [class.hebrew-text] = "lessonLanguage() == 'Hebrew'"
+>
+  <p style="font-size: 24px">{{exerciseData().prompt}} </p>
+</div>
+
+<div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+  @for (choice of exerciseData().choices; track choice) {
+    <div class="col-12">
+      <p-button
+        [styleClass]="
+            isDone() ? (
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+        id="{{choice}}"
+        label="{{choice}}"
+        [raised]="true"
+        severity="secondary"
+        (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
+    </div>
+  }
+</div>
+
+@if (isDone()) {
+  <div class="translation-wrapper flex-row justify-content-center">
+    <p><b>Translation:</b></p>
+    <p>{{exerciseData().translation}}</p>
+  </div>
+}
