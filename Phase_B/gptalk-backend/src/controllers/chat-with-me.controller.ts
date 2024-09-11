@@ -18,7 +18,7 @@ export async function chatWithMeMiddleware(req: Request, res: Response, next: Ne
 			{ role: 'user', content },
 			{
 				role: 'system',
-				content: "Provide feedback on the user's response, then ask a follow-up question.",
+				content: `Provide feedback on the user's response, then teach him something in ${language}. Be proactive, don't ask the user too many questions.`,
 			},
 		];
 		const completion = await openai.chat.completions.create({
@@ -43,7 +43,7 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 			{
 				role: 'system',
 				content:
-					'Return a JSON in the following structure { grade: number } where 1 <= grade <= 100 for the latests conversation where 1 is the lowest grade and 100 is the highest.',
+					'Return a JSON in the following structure { grade: number feedback: grade_explanation } where 1 <= grade <= 100 for the latest conversation and grade_explanation is your reasoning for the grade',
 			},
 		];
 

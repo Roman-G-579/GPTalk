@@ -16,6 +16,7 @@ import {Grade} from './interfaces/grade.interface';
 import {LanguageSelectComponent} from '../../core/common/language-select/language-select.component';
 import {Language} from '../../core/enums/language.enum';
 import {LearnHtmlUtils} from "../learn/utils/learn-html.utils";
+import {width} from "happy-dom/lib/PropertySymbol";
 
 @Component({
 	selector: 'app-chat-with-me',
@@ -88,6 +89,7 @@ export class ChatWithMeComponent {
 		this.gradeLoading.set(true);
 		this.chatWithMeService.grade(this.language(), this.conversation()).subscribe({
 			next: (val: Grade) => {
+        console.log(val);
 				this.openDialog(val);
 			},
 			error: () => this.toastrService.error('Error occured!', 'Error!'),
@@ -101,7 +103,8 @@ export class ChatWithMeComponent {
 	openDialog(grade: Grade) {
 		this.confirmationService.confirm({
 			header: 'Session Grade',
-			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'}`,
+			message: `Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'}
+			 Feedback: ${grade.feedback}`,
 			accept: () => {
         this.setLanguage(Language.NOT_SELECTED);
 				this.conversation.set([]);
