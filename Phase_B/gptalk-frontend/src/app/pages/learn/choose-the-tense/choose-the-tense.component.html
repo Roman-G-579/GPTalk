@@ -8,7 +8,9 @@
 <div class="buttons-group flex justify-content-center overflow-hidden gap-4">
   @for (choice of choices; track choice) {
     <div class="tense-btn-wrapper gap-4"
+         tabindex="0"
          (click)="lrn.setExerciseResult(vrf.verifyAnswer(choice.value,exerciseData))"
+         (keydown.enter)="lrn.setExerciseResult(vrf.verifyAnswer(choice.value,exerciseData))"
     >
       <p-button
         [styleClass]="
