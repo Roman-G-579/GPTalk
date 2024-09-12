@@ -18,7 +18,7 @@ export async function chatWithMeMiddleware(req: Request, res: Response, next: Ne
 			{ role: 'user', content },
 			{
 				role: 'system',
-				content: `Provide feedback on the user's response, then teach him something in ${language}. Be proactive, don't ask the user too many questions.`,
+				content: `Engage in a conversation with the user in ${language}. Correct their mistakes and provide explanations or comments about their responses when needed, but do not ask a question in every response. Aim to have a balanced dialogue, alternating between questions and statements or feedback.`,
 			},
 		];
 		const completion = await openai.chat.completions.create({
@@ -37,13 +37,17 @@ export async function chatWithMeMiddleware(req: Request, res: Response, next: Ne
 export async function gradeChatMiddleware(req: Request, res: Response, next: NextFunction) {
 	try {
 		const { conversation, language } = req.body;
+
+		// The length of the entire conversation between the user and the chatbot
+		const conversationLength = conversation.length;
+
 		const prompt = [
 			{ role: 'system', content: `You are a language tutor for ${language}.` },
 			...conversation,
 			{
 				role: 'system',
 				content:
-					'Return a JSON in the following structure { grade: number feedback: grade_explanation } where 1 <= grade <= 100 for the latest conversation and grade_explanation is your reasoning for the grade',
+					`Return a JSON in the following structure { grade: number feedback: grade_explanation } where 1 <= grade <= 100 for the ${language} grammar of the user's messages. grade_explanation is your reasoning for the grade, only base it on user's messages. Write the feedback in English.`,
 			},
 		];
 
@@ -54,9 +58,13 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 			temperature: 0.3,
 		});
 
-		const gradeObj = JSON.parse(completion.choices[0].message.content);
+		let gradeObj = JSON.parse(completion.choices[0].message.content);
 
-		await saveToDb(gradeObj as unknown as { grade: number }, req.user, language);
+		// Calculates the final exp reward based on the given grade and conversation length
+		const expReward = calculateSessionExp(gradeObj.grade as number, conversationLength);
+		gradeObj.expReward = expReward;
+
+		await saveToDb(expReward, req.user, language);
 
 		return res.status(httpStatus.OK).send(gradeObj);
 	} catch (err) {
@@ -64,11 +72,30 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 	}
 }
 
-async function saveToDb(gradeObj: { grade: number }, user: User, language: LanguageEnum) {
+async function saveToDb(expReward: number, user: User, language: LanguageEnum) {
 	const obj = {
-		exp: gradeObj.grade,
+		exp: expReward,
 		user: user._id.toString(),
 		language,
 	};
 	return await ResultModel.create(obj);
+}
+
+/**
+ * Calculates the session exp based on the length of the conversation
+ * The longer the conversation, the larger the exp bonus
+ * @param grade the grade value given by the chatbot
+ * @param convLen the length of the conversation based on the number of exchanged messages
+ */
+function calculateSessionExp(grade: number, convLen: number): number {
+	if (convLen >= 30) {
+		return grade * 5;
+	}
+	else if (convLen >= 20 && convLen < 30) {
+		return Math.round(grade * 3.5);
+	}
+	else if (convLen >= 10 && convLen < 20) {
+		return grade * 2;
+	}
+	return Math.round(grade * 1.5);
 }

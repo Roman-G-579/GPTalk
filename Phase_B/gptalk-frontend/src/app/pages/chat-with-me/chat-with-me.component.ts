@@ -46,7 +46,6 @@ export class ChatWithMeComponent {
 	conversation = signal<Chat[]>([]);
 
 	loading = signal(false);
-	gradeLoading = signal(false);
 
 	textContent = '';
 
@@ -85,10 +84,8 @@ export class ChatWithMeComponent {
 			return;
 		}
 		this.loading.set(true);
-		this.gradeLoading.set(true);
 		this.chatWithMeService.grade(this.language(), this.conversation()).subscribe({
 			next: (val: Grade) => {
-				console.log(val);
 				this.openDialog(val);
 			},
 			error: () => this.toastrService.error('Error occured!', 'Error!'),
@@ -103,7 +100,7 @@ export class ChatWithMeComponent {
 		this.confirmationService.confirm({
 			header: 'Session Grade',
 			message: `
-        Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'} <br><br> Feedback: ${grade.feedback}`,
+        Your grade is: ${grade.grade}! ${grade.grade > 70 ? 'Good Job!' : 'Better luck next time!'} <br><br> Exp reward: ${grade.expReward} <br><br> Feedback: ${grade.feedback}`,
 			accept: () => {
 				this.setLanguage(Language.NOT_SELECTED);
 				this.conversation.set([]);
