@@ -32,9 +32,11 @@ export class LearnService {
 	mistakesCounter = signal<number>(0); // Counts the mistakes in the lesson's exercises
 	totalExercises = signal<number>(0); // Stores the total amount of exercises in the current lesson
 
-	// Stores user's exp values
+	// The user's total exp
 	totalExp = this.authService.totalExp;
-	lessonExp = signal<number>(0); // exp gained in current lesson
+
+  // exp gained in current lesson
+	lessonExp = signal<number>(0);
 
 	// Counts the number of penalties for the exercise
 	// Penalties are given for wrong matches in MatchTheWords and hints used by the user
@@ -137,6 +139,7 @@ export class LearnService {
 		this.isLessonOver.set(true);
 		this.isExerciseDone.set(true);
 		this.lessonLanguage.set(Language.NOT_SELECTED);
+    this.lessonExp.set(0);
 	}
 
 	/**

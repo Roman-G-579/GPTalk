@@ -1,21 +1,28 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from 'src/app/core/services/auth.service';
+import {ConfirmationService} from "primeng/api";
+import {ConfirmDialogModule} from "primeng/confirmdialog";
+import {LearnService} from "../../learn/learn.service";
+import {Language} from "../../../core/enums/language.enum";
 
 @Component({
 	selector: 'app-sidebar',
 	standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive],
-	templateUrl: './sidebar.component.html',
+  imports: [CommonModule, RouterLink, RouterLinkActive, ConfirmDialogModule],
+  providers: [ConfirmationService],
+  templateUrl: './sidebar.component.html',
 	styleUrl: './sidebar.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SidebarComponent {
 	private readonly authService = inject(AuthService);
 	private readonly router = inject(Router);
+  private readonly confirmationService = inject(ConfirmationService);
+  protected readonly lrn = inject(LearnService);
 
-	pages = [
+  pages = [
 		{
 			name: 'Home',
 			icon: 'pi pi-home',
@@ -53,8 +60,48 @@ export class SidebarComponent {
 		},
 	];
 
-	logout() {
-		this.authService.logout();
-		this.router.navigate(['/login']);
-	}
+  logout() {
+      this.authService.logout();
+      this.router.navigate(['/login']);
+  }
+
+  navigate(page: {name: string, icon: string, route: string}) {
+    if (
+      (this.router.url === '/pages/learn' && !page.route.includes('/learn'))
+      ||
+      (this.router.url === '/pages/chat-with-me' && !page.route.includes('chat-with-me')) ) {
+
+      this.showConfirmation(page);
+    }
+    else {
+      if (page.name !== 'Log Out') {
+        this.router.navigate([page.route]);
+      } else {
+        this.logout();
+      }
+    }
+  }
+
+  /**
+   * Opens a dialog window displaying the grade given to the user for the current session
+   * @param page the grade (1 to 100) given by the chatbot
+   */
+  showConfirmation(page: {name: string, icon: string, route: string}) {
+    this.confirmationService.confirm({
+      message: `You have an active session. Are you sure you want to leave this page? Your progress will be lost!`,
+      accept: () => {
+        if (this.router.url === '/pages/learn') {
+          // Undo gained exp before exit
+          this.lrn.totalExp.update(exp => {
+            exp -= this.lrn.lessonExp();
+            return exp;
+          })
+          this.lrn.endLesson();
+        }
+        this.router.navigateByUrl(page.route);
+      },
+      reject: () => {
+      },
+    });
+  }
 }
