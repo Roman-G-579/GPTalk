@@ -165,7 +165,7 @@ describe('LearnService', () => {
 
       learnService.setExerciseResult(true);
 
-      expect(learnService.isDone()).toBe(true);
+      expect(learnService.isExerciseDone()).toBe(true);
       expect(learnService.isCorrectAnswer()).toBe(true);
       expect(learnService.headingText()).toBe('Correct!');
 
@@ -177,7 +177,7 @@ describe('LearnService', () => {
 
       learnService.setExerciseResult(false);
 
-      expect(learnService.isDone()).toBe(true);
+      expect(learnService.isExerciseDone()).toBe(true);
       expect(learnService.isCorrectAnswer()).toBe(false);
       expect(learnService.headingText()).toBe('Incorrect.');
 

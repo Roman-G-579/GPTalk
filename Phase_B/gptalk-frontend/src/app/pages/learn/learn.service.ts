@@ -24,7 +24,7 @@ export class LearnService {
 	onExerciseSwitch: Subject<unknown> = new Subject();
 
 	// Booleans
-	isDone = signal<boolean>(false); // Changes to true once an exercise is over
+	isExerciseDone = signal<boolean>(false); // Changes to true once an exercise is over
 	isLessonOver = signal<boolean>(false); // Changes to true once the lesson is over
 	isCorrectAnswer = signal<boolean>(false); // Changes to true if user answers correctly
 
@@ -135,7 +135,7 @@ export class LearnService {
 	endLesson() {
 		this.headingText.set(`Lesson finished`);
 		this.isLessonOver.set(true);
-		this.isDone.set(true);
+		this.isExerciseDone.set(true);
 		this.lessonLanguage.set(Language.NOT_SELECTED);
 	}
 
@@ -144,7 +144,7 @@ export class LearnService {
 	 */
 	runInitializers() {
 		// Resets the states of all exercise-data related signals
-		this.isDone.set(false);
+		this.isExerciseDone.set(false);
 		this.isCorrectAnswer.set(false);
 		this.hintText.set('');
 		// Signals the child components to initialize their input fields
@@ -178,7 +178,7 @@ export class LearnService {
 	 * @param status exercise result - true means "correct", false means "incorrect"
 	 */
 	setExerciseResult(status: boolean) {
-		this.isDone.set(true);
+		this.isExerciseDone.set(true);
 		this.isCorrectAnswer.set(status);
 
 		if (status) {

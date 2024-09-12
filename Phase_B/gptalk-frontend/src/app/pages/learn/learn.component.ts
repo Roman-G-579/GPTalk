@@ -51,7 +51,7 @@ export class LearnComponent implements OnInit {
   EXERCISE_AMOUNT = 3;
 
   isLoading = signal<boolean>(true);
-  isDone = this.lrn.isDone;
+  isDone = this.lrn.isExerciseDone;
   isLessonOver = this.lrn.isLessonOver;
 
   headingText = this.lrn.headingText; // Contains instructions or feedback

@@ -25,6 +25,6 @@ export class SummarizeTheParagraphComponent {
 
   exerciseData = this.lrn.exerciseData;
   lessonLanguage = this.lrn.lessonLanguage;
-  isDone = this.lrn.isDone;
+  isDone = this.lrn.isExerciseDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 }

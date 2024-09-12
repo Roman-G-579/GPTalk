@@ -26,7 +26,7 @@ export class MatchTheWordsComponent {
   protected readonly lrn = inject(LearnService);
 
   exerciseData = this.lrn.exerciseData;
-  isDone = this.lrn.isDone;
+  isDone = this.lrn.isExerciseDone;
 
   matchResults = this.lrn.matchResults;
   chosenPair = this.lrn.chosenPair;

@@ -22,6 +22,6 @@ export class TranslateWordComponent {
   protected readonly lrn = inject(LearnService);
 
   exerciseData = this.lrn.exerciseData;
-  isDone = this.lrn.isDone;
+  isDone = this.lrn.isExerciseDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 }
