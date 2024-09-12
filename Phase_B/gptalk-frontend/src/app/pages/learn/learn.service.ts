@@ -139,7 +139,6 @@ export class LearnService {
 		this.isLessonOver.set(true);
 		this.isExerciseDone.set(true);
 		this.lessonLanguage.set(Language.NOT_SELECTED);
-    this.lessonExp.set(0);
 	}
 
 	/**
