@@ -4,7 +4,7 @@
     <div class="flex justify-content-center mb-2">
       <div
         #inputArea
-        [contentEditable]="!isDone()"
+        [contentEditable]="!isExerciseDone()"
         [dir]="utilHtml.langDirection(lessonLanguage)"
         autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="buttons-group flex">
-      @if (!isDone()) {
+      @if (!isExerciseDone()) {
         <p-button
           id="submitTranslationBtn"
           label="Submit"
@@ -37,7 +37,7 @@
     <div class="hint-wrapper flex justify-content-start mt-2" [dir]="utilHtml.langDirection(lessonLanguage)">
       <p>{{hintText() ? 'Hint: ' + hintText() : ''}}</p>
     </div>
-    @if (isDone()) {
+    @if (isExerciseDone()) {
       <div class="translation-wrapper flex justify-content-center flex-column text-center ">
           <p><b>Translation:</b></p>
           <p>{{exerciseData().answer}}</p>

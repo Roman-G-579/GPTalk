@@ -9,10 +9,10 @@
       type="text"
       id="inputForm"
       title="Input Field"
-      [readOnly]="isDone()"
-      [placeholder]="isDone() ? '' : '____'"
-      [value]="isDone() ? exerciseData().answer : ''"
-      (blur)="!isDone() ? utilHtml.forceFocus(inputFieldRef) : ''"
+      [readOnly]="isExerciseDone()"
+      [placeholder]="isExerciseDone() ? '' : '____'"
+      [value]="isExerciseDone() ? exerciseData().answer : ''"
+      (blur)="!isExerciseDone() ? utilHtml.forceFocus(inputFieldRef) : ''"
       (keyup.enter)="inputForm.value ?
                        lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData))
                        : ''"
@@ -25,7 +25,7 @@
       <div class="col-12">
         <p-button
           [styleClass]="
-            isDone() ? (
+            isExerciseDone() ? (
               utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
@@ -41,7 +41,7 @@
     }
   </div>
 
-  @if (isDone()) {
+  @if (isExerciseDone()) {
     <div class="translation-wrapper flex justify-content-center">
       <p><b>Translation:</b> {{exerciseData().translation}}</p>
     </div>

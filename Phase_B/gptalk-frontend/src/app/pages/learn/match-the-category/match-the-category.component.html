@@ -7,7 +7,7 @@
             *ngFor="let word of categoryMatches().cat1"
             class="p-2 border-round shadow-1"
             pDraggable
-            (onDragStart)="!isDone() ? dragStart(word) : null"
+            (onDragStart)="!isExerciseDone() ? dragStart(word) : null"
             (onDragEnd)="dragEnd()">
             {{word}}
           </li>
@@ -36,7 +36,7 @@
             *ngFor="let word of categoryMatches().cat2"
             class="p-2 border-round shadow-1"
             pDraggable
-            (onDragStart)="!isDone() ? dragStart(word) : null"
+            (onDragStart)="!isExerciseDone() ? dragStart(word) : null"
             (onDragEnd)="dragEnd()">
             {{word}}
           </li>
@@ -46,7 +46,7 @@
 
     <!--  Submit button  -->
     <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
-      @if (!isDone()) {
+      @if (!isExerciseDone()) {
         <p-button
           id="matchTheCategorySubmitBtn"
           label="Submit"
@@ -56,7 +56,7 @@
       }
     </div>
 
-    @if (isDone()) {
+    @if (isExerciseDone()) {
       <div class="answer-wrapper flex flex-column text-center justify-content-center">
         <p>Actual answer:</p>
         <p><b>{{exerciseData().cat_a}}:</b> {{exerciseData().words_a?.join(', ')}}</p>

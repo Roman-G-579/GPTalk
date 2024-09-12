@@ -5,7 +5,7 @@
     <p-button
       class=""
       [styleClass]="
-              isDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect') : '' "
+              isExerciseDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect') : '' "
       id="{{word}}"
       label="{{word}}"
       [raised]="true"
@@ -20,7 +20,7 @@
     <p-button
       class="flex-grow-1 flex flex-column justify-content-center"
       [styleClass]=
-        "isDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect')
+        "isExerciseDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect')
                :
                chosenWords().includes(choice) ? 'btn-selected' : '' "
       id="{{choice}}"
@@ -33,7 +33,7 @@
 
 <!--  Submit button  -->
 <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
-  @if (!isDone()) {
+  @if (!isExerciseDone()) {
     <p-button
       id="reorderSentenceSubmitBtn"
       label="Submit"
@@ -42,7 +42,7 @@
   }
 </div>
 
-@if (isDone()) {
+@if (isExerciseDone()) {
   <div class="translation-wrapper flex flex-column text-center justify-content-center">
     <p><b>Answer:</b> {{exerciseData().answer}}</p>
     <p><b>Translation:</b> {{exerciseData().translation}}</p>

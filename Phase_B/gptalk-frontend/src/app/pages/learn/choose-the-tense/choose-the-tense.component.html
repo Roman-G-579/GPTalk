@@ -12,7 +12,7 @@
     >
       <p-button
         [styleClass]="
-            isDone() ? (
+            isExerciseDone() ? (
               utilHtml.elemContainsAnswer(choice.value, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
@@ -38,7 +38,7 @@
   }
 </div>
 
-@if (isDone()) {
+@if (isExerciseDone()) {
   <div class="translation-wrapper flex-row justify-content-center">
     <p><b>Translation:</b></p>
     <p>{{exerciseData().translation}}</p>
