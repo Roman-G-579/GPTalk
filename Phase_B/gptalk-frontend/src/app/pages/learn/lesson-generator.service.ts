@@ -289,7 +289,7 @@ export class LessonGeneratorService {
     const mistakeType = MISTAKE_TYPES[randomIndex];
 
     // Parameters for novice difficulty
-    if (difficulty == Difficulty.Novice) { replyLengthLimit = 4; }
+    if (difficulty == Difficulty.Novice) { replyLengthLimit = 6; }
     // Parameters for advanced difficulty
     else if (difficulty == Difficulty.Advanced) { replyLengthLimit = 8; }
     // Parameters for master difficulty
@@ -360,6 +360,7 @@ export class LessonGeneratorService {
   }
 
   generateSummarizeTheParagraph(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+    let paragraphLengthLimit: number;
 
     // If the lesson's language is English, the paragraph is in English.
     // Otherwise, the paragraph is in the lesson's language
@@ -371,13 +372,13 @@ export class LessonGeneratorService {
     const mistakeType = MISTAKE_TYPES[randomIndex];
 
     // Parameters for novice difficulty
-    // if (difficulty == Difficulty.Novice) { replyLengthLimit = 4; }
+    if (difficulty == Difficulty.Novice) { paragraphLengthLimit = 100; }
     // Parameters for advanced difficulty
-    // else if (difficulty == Difficulty.Advanced) { replyLengthLimit = 8; }
+    else if (difficulty == Difficulty.Advanced) { paragraphLengthLimit = 200; }
     // Parameters for master difficulty
-    // else { replyLengthLimit = 10; }
+    else { paragraphLengthLimit = 250; }
 
-    return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: ${keyWords[0]}. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_${translationLanguage} }`;
+    return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. Paragraph will have up to ${paragraphLengthLimit} words. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: ${keyWords[0]}. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_${translationLanguage} }`;
   }
 
   generateChooseTheTense(language: Language, difficulty: Difficulty, keyWords: string[]): string {
