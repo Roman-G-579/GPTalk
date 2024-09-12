@@ -1,4 +1,3 @@
-import {Difficulty} from '../../../core/enums/difficulty.enum';
 import {Exercise} from '../../../core/interfaces/exercise.interface';
 import _ from 'lodash';
 import {ExerciseType} from '../../../core/enums/exercise-type.enum';

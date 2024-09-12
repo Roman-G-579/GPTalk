@@ -57,7 +57,6 @@ export const TOPICS = [
   "Space Travel",
   "Sports Science",
   "Technology Trends",
-
   "ancient world",
   "animals",
   "art",

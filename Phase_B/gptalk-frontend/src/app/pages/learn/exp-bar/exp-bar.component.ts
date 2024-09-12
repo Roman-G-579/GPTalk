@@ -38,11 +38,7 @@ export class ExpBarComponent {
     const totalExp = this.totalExp();
     const expForNextLevel = this.expForNextLevel();
     const expAtLevelStart = this.expAtLevelStart();
-    // const expForNextLevel = util.calculateExpForNextLevel(this.level());
-    // const expAtLevelStart = expForNextLevel / 2;
-    //const expAtLevelStart = this.expForNextLevel() / 2;
     return (totalExp - expAtLevelStart) / (expForNextLevel - expAtLevelStart) * 100;
-    // return (totalExp - expAtLevelStart) / (expForNextLevel - expAtLevelStart) * 100;
   });
 
 }
