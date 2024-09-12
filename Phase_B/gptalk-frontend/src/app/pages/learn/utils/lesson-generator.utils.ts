@@ -37,43 +37,12 @@ const INSTRUCTIONS_MAP: { [key in ExerciseType]: string } = {
 export class LessonGeneratorUtils {
 
   /**
-   * Inserts strings into the keyWords array based on the given difficulty
-   * @param difficulty the difficulty level
-   * @returns updated keyWords array
+   * Retrieves a random topic from the topics array
+   * @returns a random topic
    */
-  static insertKeyWords(difficulty: Difficulty) {
-    const keyWords: string[] = [];
-
+  static getRandomTopic() {
     const randomIndex: number = Math.floor(Math.random() * TOPICS.length);
-
-    keyWords.push(TOPICS[randomIndex]);
-
-    // Parameters for very easy and easy difficulties
-    if (difficulty == Difficulty.Novice) {
-      keyWords.push('simple', 'beginners');
-    }
-    // Parameters for medium and hard difficulties
-    else if (difficulty == Difficulty.Advanced) {
-      keyWords.push('some familiarity with the language');
-    }
-    // Parameters for very hard and advanced difficulties
-    else {
-      keyWords.push('high level learners', 'challenge');
-    }
-    return keyWords;
-  }
-
-  /**
-   * Updates the keywords array with a random topic taken from the topics array
-   * @param keywords the keywords array
-   * @returns the updated array
-   */
-  static changeTopicKeyWord(keywords: string[]) {
-    const randomIndex: number = Math.floor(Math.random() * TOPICS.length);
-
-    keywords[0] = TOPICS[randomIndex];
-
-    return keywords;
+    return TOPICS[randomIndex];
   }
 
   /**
