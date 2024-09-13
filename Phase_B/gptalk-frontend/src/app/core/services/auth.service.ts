@@ -3,7 +3,7 @@ import { Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserResponse } from '../interfaces/user-response.interface';
-import { Language } from '../../../app/pages/my-profile/components/profile-languages/language.interface';
+import { Language } from '../../pages/my-profile/components/profile-languages/language.interface';
 
 @Injectable({
   providedIn: 'root',

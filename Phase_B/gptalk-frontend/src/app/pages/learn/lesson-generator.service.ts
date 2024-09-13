@@ -177,7 +177,7 @@ export class LessonGeneratorService {
     for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-      // const randomIndex: number = 7;
+      // const randomIndex: number = 4;
 
       // The Chosen function
       const generatorFunc = exerciseGenerators[randomIndex];
@@ -413,7 +413,7 @@ export class LessonGeneratorService {
     return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    // return of(cloneDeep(this.mockExercise_ChooseTheTense));
+    // return of(cloneDeep(this.mockExercise_MatchTheWords));
   }
 
 }

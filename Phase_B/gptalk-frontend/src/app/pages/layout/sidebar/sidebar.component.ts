@@ -61,7 +61,7 @@ export class SidebarComponent {
 
   logout() {
       this.authService.logout();
-      this.router.navigate(['/login']);
+      this.router.navigate(['/login']).then();
   }
 
   navigate(page: {name: string, icon: string, route: string}) {
@@ -74,7 +74,7 @@ export class SidebarComponent {
     }
     else {
       if (page.name !== 'Log Out') {
-        this.router.navigate([page.route]);
+        this.router.navigate([page.route]).then();
       } else {
         this.logout();
       }
@@ -97,7 +97,7 @@ export class SidebarComponent {
           })
           this.lrn.endLesson();
         }
-        this.router.navigateByUrl(page.route);
+        this.router.navigateByUrl(page.route).then();
       },
       reject: () => {
       },

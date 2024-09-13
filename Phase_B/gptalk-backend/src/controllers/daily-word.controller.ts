@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { DailyWord, DailyWordModel } from '../models/daily-word.interface';
 import { LanguageEnum } from '../models/enums/language.enum';
-import {SYNTATIC_TERMS} from "../utils/syntaticTerms";
+import {SYNTACTIC_TERMS} from "../utils/syntaticTerms";
 import {TOPICS} from "../utils/topics";
 
 const openai = new OpenAI({ apiKey: Config.OPENAI_API_KEY});
@@ -71,8 +71,8 @@ async function generateDailyWord() {
 		const language = languagesArr[randomIndex];
 
 		// Picks a random syntactic  term of the word
-		randomIndex = Math.floor(Math.random() * SYNTATIC_TERMS.length);
-		const syntacticTerm = SYNTATIC_TERMS[randomIndex];
+		randomIndex = Math.floor(Math.random() * SYNTACTIC_TERMS.length);
+		const syntacticTerm = SYNTACTIC_TERMS[randomIndex];
 
 		// Picks a random topic for the daily word
 		randomIndex = Math.floor(Math.random() * TOPICS.length);

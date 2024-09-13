@@ -6,7 +6,6 @@ import { VisitLogModel } from '../models/visit-log.interface';
 import { Result, ResultModel } from '../models/result.interface';
 import { UserProfile } from '../models/user-profile.interface';
 import { LessonModel } from '../models/lesson.interface';
-import { AchievementModel } from '../models/achievment.interface';
 import { Language } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
 import { RankEnum } from '../models/enums/rank.enum';
@@ -155,7 +154,7 @@ async function calculateStreak(userId: Schema.Types.ObjectId): Promise<number> {
 export async function calculateMaxStreak(userId: Schema.Types.ObjectId, streak: number) {
 	const user = await UserModel.findOne({ _id: userId });
 	if (streak > user.maxStreak) {
-		UserModel.findOneAndUpdate({ _id: userId }, { maxStreak: streak }).exec();
+		await UserModel.findOneAndUpdate({_id: userId}, {maxStreak: streak}).exec();
 		return streak;
 	}
 	return user.maxStreak;

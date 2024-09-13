@@ -21,9 +21,9 @@
 
 This is an Angular template to create an Angular application with ease.
 
-The template is a standalone component based template.
+The template is a standalone component-based template.
 
-It include `Jest` and `Cypress` for testing.
+It includes `Jest` and `Cypress` for testing.
 
 `Vite` for builds and `Docker` and `Nginx` for deployment.
 

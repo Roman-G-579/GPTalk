@@ -4,7 +4,7 @@
 	padding: 1.5rem 2.5rem;
 }
 
-::ng-deep.prompt-btn {
+::ng-deep .prompt-btn {
   background: transparent;
   color: var(--primary-clr);
   border: var(--primary-clr);
@@ -12,7 +12,7 @@
   font-weight: normal;
 }
 
-::ng-deep.prompt-btn:hover {
+::ng-deep .prompt-btn:hover {
   background: #e3e3e3;
 }
 

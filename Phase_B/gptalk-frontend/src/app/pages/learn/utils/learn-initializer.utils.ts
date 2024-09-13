@@ -37,7 +37,6 @@ export class LearnInitializerUtils {
 
   /**
    * Initializes lesson related parameter values
-   * @param isLessonOver boolean determining whether the current lesson is over
    * @param mistakesCounter the amount of mistakes in the current lesson
    * @param lessonExp the amount of experience points that was accumulated in the current lesson
    */

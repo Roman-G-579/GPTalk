@@ -1,4 +1,4 @@
-export const SYNTATIC_TERMS = [
+export const SYNTACTIC_TERMS = [
     'adjective',
     'adverb',
     'noun',

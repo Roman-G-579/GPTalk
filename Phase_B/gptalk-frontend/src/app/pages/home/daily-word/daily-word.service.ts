@@ -25,7 +25,7 @@ export class DailyWordService {
   /**
    * Sends a request to the backend to fetch the daily word
    * If on does not exist for the current date, a new one will be generated
-   * @returns an observable of the API's response JSON
+   * @returns an observable of the response JSON
    */
   async getDailyWord() {
     const {href} = new URL('daily-word/fetch', this.apiUrl);

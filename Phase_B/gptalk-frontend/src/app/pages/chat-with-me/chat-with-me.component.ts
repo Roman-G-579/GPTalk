@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal, WritableSignal} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { AnimationOptions, LottieComponent } from 'ngx-lottie';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import {ConfirmationService, PrimeNGConfig} from 'primeng/api';
 import { ChatWithMeService } from './chat-with-me.service';
 import { Chat } from './interfaces/chat.interface';
 import { ChatResponse } from './interfaces/chat-response.interface';
@@ -16,6 +16,7 @@ import { Grade } from './interfaces/grade.interface';
 import { LanguageSelectComponent } from '../../core/common/language-select/language-select.component';
 import { Language } from '../../core/enums/language.enum';
 import { LearnHtmlUtils } from '../learn/utils/learn-html.utils';
+import {Ripple} from "primeng/ripple";
 
 @Component({
 	selector: 'app-chat-with-me',
@@ -23,7 +24,8 @@ import { LearnHtmlUtils } from '../learn/utils/learn-html.utils';
 	imports: [
 		CommonModule,
 		LottieComponent,
-		FormsModule,
+    Ripple,
+    FormsModule,
 		InputTextModule,
 		ButtonModule,
 		ConfirmDialogModule,
@@ -34,10 +36,11 @@ import { LearnHtmlUtils } from '../learn/utils/learn-html.utils';
 	styleUrl: './chat-with-me.component.scss',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChatWithMeComponent {
+export class ChatWithMeComponent implements OnInit {
 	protected readonly utilHtml = LearnHtmlUtils;
 	private readonly chatWithMeService = inject(ChatWithMeService);
-	private readonly toastrService = inject(ToastrService);
+  private readonly primengConfig = inject(PrimeNGConfig);
+  private readonly toastrService = inject(ToastrService);
 	private readonly confirmationService = inject(ConfirmationService);
 	private readonly router = inject(Router);
 	protected readonly Language = Language;
@@ -55,7 +58,11 @@ export class ChatWithMeComponent {
 
 	promptButtons: { value: string; prompt: string }[] = [];
 
-	/**
+  ngOnInit() {
+    this.primengConfig.ripple = true;
+  }
+
+  /**
 	 * Sends the message within textContent along with the session language and the conversation history
 	 * to the OpenAI API and retrieves a response based on the conversation up to this point
 	 */
@@ -72,7 +79,7 @@ export class ChatWithMeComponent {
 					this.conversation.update((values) => [...values, { role: 'system', content }]);
 					this.textContent = '';
 				},
-				error: () => this.toastrService.error('Chat error occured!', 'Error!'),
+				error: () => this.toastrService.error('Chat error occurred!', 'Error!'),
 			});
 	}
 
@@ -88,7 +95,7 @@ export class ChatWithMeComponent {
 			next: (val: Grade) => {
 				this.openDialog(val);
 			},
-			error: () => this.toastrService.error('Error occured!', 'Error!'),
+			error: () => this.toastrService.error('Error occurred!', 'Error!'),
 		});
 	}
 
@@ -106,7 +113,7 @@ export class ChatWithMeComponent {
 				this.conversation.set([]);
 			},
 			reject: () => {
-				this.router.navigateByUrl('pages/home');
+				this.router.navigateByUrl('pages/home').then();
 			},
 		});
 	}

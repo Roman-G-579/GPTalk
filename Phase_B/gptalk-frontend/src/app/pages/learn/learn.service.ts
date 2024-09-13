@@ -222,7 +222,7 @@ export class LearnService {
 	addExp() {
 		// Sets the exp reward based on the current exercise type
 		let expAmount: number;
-    let currentExercise: ExerciseType = this.exerciseData().type;
+    const currentExercise: ExerciseType = this.exerciseData().type;
 
       switch (currentExercise) {
         case ExerciseType.ChooseTheTense:
