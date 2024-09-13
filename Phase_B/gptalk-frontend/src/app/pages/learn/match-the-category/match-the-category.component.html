@@ -7,7 +7,7 @@
             *ngFor="let word of categoryMatches().cat1"
             class="p-2 border-round shadow-1"
             pDraggable
-            (onDragStart)="!isExerciseDone() ? dragStart(word) : null"
+            (onDragStart)="!isExerciseDone() && dragStart(word)"
             (onDragEnd)="dragEnd()">
             {{word}}
           </li>
@@ -36,7 +36,7 @@
             *ngFor="let word of categoryMatches().cat2"
             class="p-2 border-round shadow-1"
             pDraggable
-            (onDragStart)="!isExerciseDone() ? dragStart(word) : null"
+            (onDragStart)="!isExerciseDone() && dragStart(word)"
             (onDragEnd)="dragEnd()">
             {{word}}
           </li>

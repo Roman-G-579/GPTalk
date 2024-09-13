@@ -44,22 +44,22 @@
 				[placeholder]="'Type a message in ' + language()"
 				class="flex-1 w-full sm:w-auto border-round"
 				[(ngModel)]="textContent"
-				(keydown.enter)="chat()"
+				(keydown.enter)="textContent && chat()"
 			/>
 			<div class="flex w-full sm:w-auto gap-3">
 				<button
 					pButton
-					pRipple
+          pRipple
 					label="Send"
 					icon="pi pi-send"
 					class="w-full sm:w-auto"
 					severity="contrast"
 					[disabled]="loading()"
-					(click)="chat()"
+					(click)="textContent && chat()"
 				></button>
 				<button
 					pButton
-					pRipple
+          pRipple
 					label="Grade Me!"
 					icon="pi pi-graduation-cap"
 					class="w-full sm:w-auto"

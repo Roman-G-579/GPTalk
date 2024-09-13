@@ -10,7 +10,7 @@
             label="{{pair[0]}}"
             [raised]="true"
             severity="secondary"
-            (onClick)="!isExerciseDone() ? chooseMatch(pair[0], 0) : null"/>
+            (onClick)="!isExerciseDone() && chooseMatch(pair[0], 0)"/>
         </div>
         <div class="col-5 col-offset-2 btn-matching-pairs">
           <p-button
@@ -22,7 +22,7 @@
             label="{{pair[1]}}"
             [raised]="true"
             severity="secondary"
-            (onClick)="!isExerciseDone() ? chooseMatch(pair[1], 1) : null"/>
+            (onClick)="!isExerciseDone() && chooseMatch(pair[1], 1)"/>
         </div>
       }
     </div>
