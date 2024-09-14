@@ -58,9 +58,12 @@ export class MiscUtils {
     const answerWordArr = exercise().answer?.split(/\s+/) ?? [];
 
     const answerLength = answerWordArr.length;
-
     const wrongWordsCnt = this.getWrongWordsCnt(userWordArr, answerWordArr);
 
+    // If every word is wrong, return 0
+    if (wrongWordsCnt === userWordArr.length) {
+      return 0;
+    }
     return (answerLength - wrongWordsCnt) / answerLength;
   }
 
@@ -69,6 +72,11 @@ export class MiscUtils {
     let mistakeCnt = 0;
 
     inputWords.forEach((word, index) => {
+      // If answerWords array is shorter than inputWords, count remaining input words as mistakes
+      if (index >= answerWords.length) {
+        mistakeCnt++;
+        return;
+      }
       // Check if the word matches at the current index
       if (answerWords[index] !== undefined && word === answerWords[index]) {
         return; // No mistake
@@ -90,6 +98,11 @@ export class MiscUtils {
         mistakeCnt++; // Increment mistake count if no nearby match is found
       }
     });
+
+    // If the difference in sentence length is too large, add that difference to the mistakes counter
+    if (Math.abs(inputWords.length - answerWords.length) > 2) {
+      mistakeCnt += Math.abs(inputWords.length - answerWords.length);
+    }
 
     return mistakeCnt;
   }

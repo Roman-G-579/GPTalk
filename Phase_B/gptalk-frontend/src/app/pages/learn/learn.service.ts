@@ -10,7 +10,7 @@ import {AuthService} from '../../core/services/auth.service';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../../environments/environment';
 import {RewardVals} from '../../core/enums/exp-vals.enum';
-import {Difficulty} from 'src/app/core/enums/difficulty.enum';
+import {Difficulty} from "../../core/enums/difficulty.enum";
 
 @Injectable({
 	providedIn: 'root',

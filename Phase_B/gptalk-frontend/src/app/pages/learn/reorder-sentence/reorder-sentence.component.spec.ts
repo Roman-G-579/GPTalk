@@ -7,7 +7,7 @@ import {Language} from "../../../core/enums/language.enum";
 import {LearnService} from "../learn.service";
 
 class MockLearnService {
-  isDone = signal<boolean>(false);
+  isExerciseDone = signal<boolean>(false);
   isCorrectAnswer = signal<boolean>(false);
 
   exerciseData = signal<Exercise>({
@@ -49,7 +49,7 @@ describe('ReorderSentenceComponent', () => {
   it('should initialize with data from LearnService', () => {
     expect(rsComp.exerciseData()).toEqual(mockLearnService.exerciseData());
     expect(rsComp.lessonLanguage()).toBe(Language.English);
-    expect(rsComp.isDone()).toBe(false);
+    expect(rsComp.isExerciseDone()).toBe(false);
     expect(rsComp.isCorrectAnswer()).toBe(false);
   });
 

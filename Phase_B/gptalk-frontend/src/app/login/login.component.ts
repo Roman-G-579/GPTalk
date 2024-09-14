@@ -58,8 +58,11 @@ export class LoginComponent {
 				next: (res) => {
           this.loading.set(false);
 					localStorage.setItem('token', res.token);
-					this.router.navigate(['/pages']).then();
-          this.toastr.success('Logged in successfully', 'Success 🎉')
+					this.router.navigate(['/pages']).then( () => {
+              this.toastr.success('Logged in successfully', 'Success 🎉')
+            }
+          );
+
 				},
 				error: (err) => {
           this.loading.set(false);

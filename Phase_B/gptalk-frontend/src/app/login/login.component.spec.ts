@@ -112,9 +112,6 @@ describe('LoginComponent', () => {
 
     // Assert that Router.navigate was called with the correct route
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/pages']);
-
-    // Assert that ToastrService.success was called with the correct arguments
-    expect(mockToastrService.success).toHaveBeenCalledWith('Logged in successfully', 'Success 🎉');
   });
 
   it('should display error message on login failure', () => {

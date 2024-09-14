@@ -3,6 +3,7 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { LeaderboardService } from './leaderboard.service';
 import { environment } from '../../../environments/environment';
 import {LeadboardRow} from "./leaderboard.interface";
+import {Language} from "../../core/enums/language.enum";
 
 describe('LeaderboardService', () => {
   let service: LeaderboardService;
@@ -77,7 +78,7 @@ describe('LeaderboardService', () => {
   it('should call the correct URL to get leaderboard data', () => {
     // Simulates a call to the getLeaderboard method
     // and checks that a value is returned
-    service.getLeaderboard().subscribe(response => {
+    service.getLeaderboard(Language.English).subscribe(response => {
       expect(response).toEqual(mockResponse);
     });
 
@@ -88,7 +89,7 @@ describe('LeaderboardService', () => {
   });
 
   it('should return the top 3 users and top 4 to 10 users in the leaderboard', () => {
-    service.getLeaderboard().subscribe(response => {
+    service.getLeaderboard(Language.English).subscribe(response => {
       expect(response.top3Users.length).toBe(3);
       expect(response.top3Users).toEqual(mockResponse.top3Users);
 

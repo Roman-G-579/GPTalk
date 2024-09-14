@@ -51,7 +51,7 @@ describe('ChatWithMeService', () => {
 
   describe('grade', () => {
     it('should send a POST request to grade API endpoint', () => {
-      const mockGradeResponse: Grade = { grade: 80 };
+      const mockGradeResponse = { grade: 80, expReward: 160, feedback: "mock feedback" };
 
       chatWithMeService.grade(language, conversation).subscribe((response) => {
         expect(response).toEqual(mockGradeResponse);

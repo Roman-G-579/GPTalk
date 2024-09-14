@@ -15,7 +15,7 @@ import {Language} from "../../core/enums/language.enum";
 
 class MockAuthService {
   totalExp = signal<number>(0);
-  userData = signal<Omit<UserResponse, 'totalExp'>>({
+  userData = signal<Omit<UserResponse, 'totalExp' | 'languages'>>({
     __v: 0,
     _id: '',
     createdAt: new Date(),

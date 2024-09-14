@@ -17,7 +17,7 @@ class MockToastrService {
 }
 
 class MockRouter {
-  navigateByUrl = jest.fn();  // Mock the navigate method
+  navigateByUrl = jest.fn().mockResolvedValue(true);  // Mock the navigate method
 }
 
 describe('ChatWithMeComponent', () => {
@@ -86,11 +86,11 @@ describe('ChatWithMeComponent', () => {
     expect(mockChatWithMeService.chat).toHaveBeenCalledWith('Hello', Language.English, [{ role: 'user', content: 'Hello' }]);
 
     // Check that the ToastrService displays the correct error message
-    expect(mockToastrService.error).toHaveBeenCalledWith('Chat error occured!', 'Error!');
+    expect(mockToastrService.error).toHaveBeenCalledWith('Chat error occurred!', 'Error!');
   });
 
   it('should handle grading and open dialog', () => {
-    const mockGrade = { grade: 80 };
+    const mockGrade = { grade: 80, expReward: 160, feedback: "mock feedback" };
 
     chatComp.language.set(Language.English);
     chatComp.conversation.set([{ role: 'user', content: 'Hello' }]);
@@ -115,7 +115,7 @@ describe('ChatWithMeComponent', () => {
     // The confirmation dialog needs to be created after calling the openDialog function in chatWithMeService.grade
     expect(confirmDialogMock).toHaveBeenCalledWith({
       header: 'Session Grade',
-      message: 'Your grade is: 80! Good Job!',
+      message:  expect.stringContaining(`Your grade is: 80! Good Job! <br><br> Exp reward: 160 <br><br> Feedback: mock feedback`),
       accept: expect.any(Function),
       reject: expect.any(Function)
     });
@@ -130,11 +130,11 @@ describe('ChatWithMeComponent', () => {
     chatComp.grade();
 
     expect(mockChatWithMeService.grade).toHaveBeenCalledWith(Language.English, [{ role: 'user', content: 'Hello' }]);
-    expect(mockToastrService.error).toHaveBeenCalledWith('Error occured!', 'Error!');
+    expect(mockToastrService.error).toHaveBeenCalledWith('Error occurred!', 'Error!');
   });
 
   it('should open dialog with correct grade and navigate home on reject', () => {
-    const mockGrade = { grade: 60 };
+    const mockGrade = { grade: 60, expReward: 120, feedback: "mock feedback" };
 
     // Mocks the rejection of a confirm dialog
     const confirmDialogMock = jest.spyOn(
@@ -152,7 +152,7 @@ describe('ChatWithMeComponent', () => {
     // The confirmation dialog needs to match the mockGrade value
     expect(confirmDialogMock).toHaveBeenCalledWith({
       header: 'Session Grade',
-      message: 'Your grade is: 60! Better luck next time!',
+      message: expect.stringContaining(`Your grade is: 60! Better luck next time! <br><br> Exp reward: 120 <br><br> Feedback: mock feedback`),
       accept: expect.any(Function),
       reject: expect.any(Function)
     });
@@ -167,7 +167,7 @@ describe('ChatWithMeComponent', () => {
   });
 
   it('should set empty language and clear conversation on accept in dialog', () => {
-    const mockGrade = { grade: 80 };
+    const mockGrade = { grade: 80, expReward: 160, feedback: "mock feedback" };
 
     // Mocks the acceptance of a confirm dialog
     jest.spyOn(

@@ -172,7 +172,7 @@ export class LessonGeneratorUtils {
    * @returns the updated exercise
    */
   private static setCompleteTheConversation(exercise: Exercise) {
-    let choices = exercise.choices ?? [];
+    let choices = exercise.choices ?? ["",""];
     choices = choices.map(str => str.replace(/[,.!?:]/g,''));
 
     // If the generated choices are identical, remove a random letter from the wrong choice
@@ -252,7 +252,7 @@ export class LessonGeneratorUtils {
       choices = choices.slice(0,2);
     }
 
-    exercise.answer = choices[0];
+    exercise.answer = choices[0] ?? '';
 
     choices = _.shuffle(choices);
     exercise.choices = choices;

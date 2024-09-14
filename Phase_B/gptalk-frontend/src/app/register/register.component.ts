@@ -137,7 +137,7 @@ export class RegisterComponent implements OnInit{
       this.registerUser();
     }
   }
-
+    //TODO: add error for 'user already exists'
   // Calls the register function using the register service using the given details
   registerUser() {
     this.loading = true;
