@@ -4,10 +4,10 @@ import { NextFunction, Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { DailyWord, DailyWordModel } from '../models/daily-word.interface';
 import { LanguageEnum } from '../models/enums/language.enum';
-import {SYNTACTIC_TERMS} from "../utils/syntaticTerms";
-import {TOPICS} from "../utils/topics";
+import { SYNTACTIC_TERMS } from '../utils/syntaticTerms';
+import { TOPICS } from '../utils/topics';
 
-const openai = new OpenAI({ apiKey: Config.OPENAI_API_KEY});
+const openai = new OpenAI({ apiKey: Config.OPENAI_API_KEY });
 
 /**
  * Fetches the daily word from the database, based on the given date
@@ -17,7 +17,7 @@ const openai = new OpenAI({ apiKey: Config.OPENAI_API_KEY});
  */
 export async function fetchDailyWord(req: Request, res: Response, next: NextFunction) {
 	try {
-		const {date} = req.body;
+		const { date } = req.body;
 		let dayStart = new Date(date); // The start date of the search filter
 
 		// Validates that the received parameter is a valid Date
@@ -31,7 +31,7 @@ export async function fetchDailyWord(req: Request, res: Response, next: NextFunc
 		dayEnd.setDate(dayStart.getDate() + 1);
 
 		let result = await DailyWordModel.findOne({
-			createdAt:{$gte:dayStart,$lt:dayEnd}
+			createdAt: { $gte: dayStart, $lt: dayEnd },
 		});
 
 		// If a word does not exist for the requested date and language,
@@ -42,7 +42,9 @@ export async function fetchDailyWord(req: Request, res: Response, next: NextFunc
 			const postResult = await postDailyWord(generatedResult);
 
 			if (!postResult) {
-				return res.status(httpStatus.NOT_FOUND).json({ message: 'Daily word could not be generated' });
+				return res
+					.status(httpStatus.NOT_FOUND)
+					.json({ message: 'Daily word could not be generated' });
 			}
 
 			// Creates a formatted DailyWord object that will be returned to the frontend
@@ -82,10 +84,10 @@ async function generateDailyWord() {
 		const completion = await openai.chat.completions.create({
 			messages: [
 				{ role: 'system', content: `You are a word-of-the-day generator.` },
-				{ role: 'user', content }
+				{ role: 'user', content },
 			],
-			model: "gpt-4o-mini",
-			response_format: {"type": "json_object"},
+			model: 'gpt-4o-mini',
+			response_format: { type: 'json_object' },
 			temperature: 0.3,
 		});
 

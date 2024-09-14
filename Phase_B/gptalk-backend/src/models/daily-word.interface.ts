@@ -37,13 +37,13 @@ const dailyWordSchema = new Schema(
 			type: String,
 			enum: LanguageEnum,
 			required: true,
-		}
+		},
 	},
 	{
 		timestamps: true,
 		toJSON: { virtuals: true },
 		toObject: { virtuals: true },
-	}
+	},
 );
 
 export const DailyWordModel = model<DailyWord>('DailyWord', dailyWordSchema);

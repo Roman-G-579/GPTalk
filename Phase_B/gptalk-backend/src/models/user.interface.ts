@@ -13,9 +13,9 @@ export interface User {
 	totalExp: number;
 	achievements: UserAchievement[];
 	languages: {
-    language: LanguageEnum;
-    rank: string;
-  }[];
+		language: LanguageEnum;
+		rank: string;
+	}[];
 }
 
 const userSchema = new Schema(
@@ -50,18 +50,18 @@ const userSchema = new Schema(
 		},
 		achievements: [userAchievementSchema],
 		languages: [
-      {
-        language: {
-          type: String,
+			{
+				language: {
+					type: String,
 					enum: Object.values(LanguageEnum),
-          required: true,
-        },
-        rank: {
-          type: String,
-          required: true,
-        },
-      },
-    ],
+					required: true,
+				},
+				rank: {
+					type: String,
+					required: true,
+				},
+			},
+		],
 	},
 	{
 		timestamps: true,

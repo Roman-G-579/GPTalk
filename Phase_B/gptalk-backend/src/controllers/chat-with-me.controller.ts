@@ -46,8 +46,7 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 			...conversation,
 			{
 				role: 'system',
-				content:
-					`Return a JSON in the following structure { grade: number feedback: grade_explanation } where 1 <= grade <= 100 for the ${language} grammar of the user's messages. grade_explanation is your reasoning for the grade, only base it on user's messages. Write the feedback in English.`,
+				content: `Return a JSON in the following structure { grade: number feedback: grade_explanation } where 1 <= grade <= 100 for the ${language} grammar of the user's messages. grade_explanation is your reasoning for the grade, only base it on user's messages. Write the feedback in English.`,
 			},
 		];
 
@@ -90,11 +89,9 @@ async function saveToDb(expReward: number, user: User, language: LanguageEnum) {
 function calculateSessionExp(grade: number, convLen: number): number {
 	if (convLen >= 30) {
 		return grade * 5;
-	}
-	else if (convLen >= 20 && convLen < 30) {
+	} else if (convLen >= 20 && convLen < 30) {
 		return Math.round(grade * 3.5);
-	}
-	else if (convLen >= 10 && convLen < 20) {
+	} else if (convLen >= 10 && convLen < 20) {
 		return grade * 2;
 	}
 	return Math.round(grade * 1.5);

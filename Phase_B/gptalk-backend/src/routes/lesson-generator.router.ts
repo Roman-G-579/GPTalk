@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {generateLessonMiddleware} from "../controllers/lesson-generator.controller";
+import { generateLessonMiddleware } from '../controllers/lesson-generator.controller';
 
 const router = Router();
 
