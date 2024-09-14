@@ -4,6 +4,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {RegisterService} from "./register.service";
 import {ToastrService} from "ngx-toastr";
 import {of, throwError} from "rxjs";
+import {ActivatedRoute} from "@angular/router";
 
 class MockRegisterService {
   registerUser = jest.fn();
@@ -13,6 +14,15 @@ class MockToastrService {
   success = jest.fn();
   error = jest.fn();
 }
+
+const mockActivatedRoute = {
+  snapshot: {
+    paramMap: {
+      get: (key: string) => 'mock-value', // Replace with the mock value needed for your test
+    },
+  },
+}
+
 
 describe('RegisterComponent', () => {
   let regComp: RegisterComponent;
@@ -30,6 +40,7 @@ describe('RegisterComponent', () => {
       providers: [
         {provide: RegisterService, useValue: mockRegisterService},
         {provide: ToastrService, useValue: mockToastrService},
+        { provide: ActivatedRoute, useValue: mockActivatedRoute }
       ]
     }).compileComponents();
 

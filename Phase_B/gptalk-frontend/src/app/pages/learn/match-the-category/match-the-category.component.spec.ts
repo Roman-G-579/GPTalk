@@ -6,7 +6,7 @@ import {ComponentFixture, TestBed} from "@angular/core/testing";
 import {LearnService} from "../learn.service";
 
 class MockLearnService {
-  isDone = signal<boolean>(false);
+  isExerciseDone = signal<boolean>(false);
 
   exerciseData = signal<Exercise>({
     type: ExerciseType.FillInTheBlank,
@@ -51,7 +51,7 @@ describe('MatchTheCategoryComponent', () => {
 
   it('should initialize with data from LearnService', () => {
     expect(mtgComp.exerciseData()).toEqual(mockLearnService.exerciseData());
-    expect(mtgComp.isDone()).toBe(false);
+    expect(mtgComp.isExerciseDone()).toBe(false);
   });
 
   it('should set draggedWord on dragStart', () => {

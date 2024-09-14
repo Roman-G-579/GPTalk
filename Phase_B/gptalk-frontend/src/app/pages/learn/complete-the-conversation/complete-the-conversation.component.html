@@ -11,10 +11,10 @@
             class="chat-input-field flex-grow-1 flex-wrap"
             pAutoFocus
             [autofocus]="true"
-            [readOnly]="isDone()"
+            [readOnly]="isExerciseDone()"
             id="chatInputForm"
             title="Input Field"
-            [value]="isDone() ? exerciseData().answer : ''"
+            [value]="isExerciseDone() ? exerciseData().answer : ''"
             [formControl]="inputForm"
             (keyup.enter)="inputForm.value ?
             lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"
@@ -29,7 +29,7 @@
           <p-button
             [dir]="utilHtml.langDirection(lessonLanguage)"
             [styleClass]="
-            isDone() ? (
+            isExerciseDone() ? (
               utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
@@ -44,7 +44,7 @@
       }
     </div>
 
-    @if (isDone()) {
+    @if (isExerciseDone()) {
       <div class="translation-wrapper flex-row justify-content-center">
         <p><b>Translation:</b></p>
         <p>{{exerciseData().translation?.replace('&', '-')}}</p>

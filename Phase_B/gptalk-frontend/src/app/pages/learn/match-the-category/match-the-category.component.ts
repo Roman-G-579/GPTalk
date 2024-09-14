@@ -26,7 +26,7 @@ export class MatchTheCategoryComponent {
   protected readonly lrn = inject(LearnService);
 
   exerciseData = this.lrn.exerciseData;
-  isDone = this.lrn.isDone;
+  isExerciseDone = this.lrn.isExerciseDone;
 
   categoryMatches = this.lrn.categoryMatches;
   draggedWord = this.lrn.draggedWord;

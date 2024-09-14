@@ -62,7 +62,7 @@ export class LearnHtmlUtils {
       }
 
       // Highlight the word if no nearby match is found
-      return `<strong>${word}</strong>`;
+      return word && `<strong>${word}</strong>`;
     });
 
     return highlightedWords.join(' ');

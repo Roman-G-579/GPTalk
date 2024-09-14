@@ -137,7 +137,6 @@ export class RegisterComponent implements OnInit{
       this.registerUser();
     }
   }
-
   // Calls the register function using the register service using the given details
   registerUser() {
     this.loading = true;
@@ -152,10 +151,15 @@ export class RegisterComponent implements OnInit{
             this.cdr.detectChanges();
             this.toastr.success('Registration successful!', 'Success 🎉')
           },
-          error: () => {
+          error: (err) => {
             this.loading = false;
             this.cdr.detectChanges();
-            this.toastr.error("Registration failed", "Error!");
+            if (err.error.message === 'Account with this Email already exists') {
+              this.toastr.error(err.error.message, 'Error!');
+            }
+            else {
+              this.toastr.error("Registration failed", "Error!");
+            }
           }
         })
   }

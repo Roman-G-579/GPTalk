@@ -1,7 +1,7 @@
 <div class="paragraph-wrapper flex justify-content-center gap-3 mb-4"
      [dir]="utilHtml.langDirection(lessonLanguage)"
-     [class.latin-text] = "lessonLanguage() != 'Hebrew'"
-     [class.hebrew-text] = "lessonLanguage() == 'Hebrew'"
+     [class.latin-text] = "lessonLanguage() !== 'Hebrew'"
+     [class.hebrew-text] = "lessonLanguage() === 'Hebrew'"
 >
   <p style="font-size: 24px">{{exerciseData().prompt}} </p>
 </div>
@@ -11,7 +11,7 @@
     <div class="col-12">
       <p-button
         [styleClass]="
-            isDone() ? (
+            isExerciseDone() ? (
               utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
@@ -26,7 +26,7 @@
   }
 </div>
 
-@if (isDone()) {
+@if (isExerciseDone()) {
   <div class="translation-wrapper flex-row justify-content-center">
     <p><b>Translation:</b></p>
     <p>{{exerciseData().translation}}</p>

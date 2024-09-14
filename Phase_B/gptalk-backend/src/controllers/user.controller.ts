@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { Config } from '../config/config';
 import { UserModel } from '../models/user.interface';
 
 export async function getUserMiddleware(req: Request, res: Response, next: NextFunction) {

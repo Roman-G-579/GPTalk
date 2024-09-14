@@ -2,54 +2,20 @@ import {LessonGeneratorUtils} from './lesson-generator.utils';
 import {Exercise} from "../../../core/interfaces/exercise.interface";
 import {ExerciseType} from "../../../core/enums/exercise-type.enum";
 import _ from "lodash";
-import {Difficulty} from "../../../core/enums/difficulty.enum";
+import {LearnInitializerUtils} from "./learn-initializer.utils";
 
 describe('LessonGeneratorUtils', () => {
   afterEach(() => {
     jest.spyOn(global.Math, 'random').mockRestore();
   });
 
-  describe('insertKeyWords', () => {
-    it('should insert keywords for novice difficulty', () => {
-      const difficulty = Difficulty.Novice;
-      const keyWords = LessonGeneratorUtils.insertKeyWords(difficulty);
 
-      expect(keyWords).toHaveLength(3);
-      expect(keyWords).toContain('simple');
-      expect(keyWords).toContain('beginners');
-    });
+  describe('getRandomTopic', () => {
+    it('should get a random topic and replace the existing one', () => {
+      let topic = 'oldTopic'
+      topic = LessonGeneratorUtils.getRandomTopic();
 
-    it('should insert keywords for advanced difficulty', () => {
-      const difficulty = Difficulty.Advanced;
-      const keyWords = LessonGeneratorUtils.insertKeyWords(difficulty);
-
-      expect(keyWords).toHaveLength(2);
-      expect(keyWords).toContain('some familiarity with the language');
-    });
-
-    it('should insert keywords for master difficulty', () => {
-      const difficulty = Difficulty.Master;
-      const keyWords = LessonGeneratorUtils.insertKeyWords(difficulty);
-
-      expect(keyWords).toHaveLength(3);
-      expect(keyWords).toContain('high level learners');
-      expect(keyWords).toContain('challenge');
-    });
-  });
-
-  describe('changeTopicKeyWord', () => {
-    it('should update the first keyword with a random topic', () => {
-      const keywords = ['oldTopic', 'otherKeyword'];
-      const updatedKeywords = LessonGeneratorUtils.changeTopicKeyWord(keywords);
-
-      expect(updatedKeywords).toHaveLength(2);
-    });
-
-    it('should return the updated array with the new topic', () => {
-      const keywords = ['placeholder', 'example'];
-      const updatedKeywords = LessonGeneratorUtils.changeTopicKeyWord(keywords);
-
-      expect(updatedKeywords).toHaveLength(2);
+      expect(topic).not.toEqual('oldTopic');
     });
   });
 
@@ -159,11 +125,11 @@ describe('LessonGeneratorUtils', () => {
     });
 
     it('should properly handle empty choices', () => {
-      exercise.choices = [];
+      exercise.choices = ["",""];
       const updatedExercise = LessonGeneratorUtils['setCompleteTheConversation'](exercise);
 
-      expect(updatedExercise.choices).toEqual([]);
-      expect(updatedExercise.answer).toBeUndefined();
+      expect(updatedExercise.choices).toEqual(["",""]);
+      expect(updatedExercise.answer).toBe("");
     });
   });
 
@@ -269,6 +235,86 @@ describe('LessonGeneratorUtils', () => {
     });
   });
 
+  describe('summarizeTheParagraph', () => {
+    let exercise: Exercise;
+
+    beforeEach(() => {
+      exercise = {
+        type: ExerciseType.SummarizeTheParagraph,
+        choices: ["correct summary", "wrong summary"],
+        translation: "translation",
+        prompt: 'long paragraph',
+        answer: ''
+      };
+    });
+
+    it('should trim choices to a maximum of 2', () => {
+      const updatedExercise = LessonGeneratorUtils['setSummarizeTheParagraph'](exercise);
+
+      expect(updatedExercise.choices?.length).toBe(2);
+      expect(updatedExercise.choices).toEqual(expect.arrayContaining(['correct summary', 'wrong summary']));
+    });
+
+    it('should set the answer to the first choice', () => {
+      const updatedExercise = LessonGeneratorUtils['setSummarizeTheParagraph'](exercise);
+
+      expect(updatedExercise.answer).toBe('correct summary');
+    });
+
+    it('should handle empty choices gracefully', () => {
+      exercise.choices = [];
+
+      const updatedExercise = LessonGeneratorUtils['setSummarizeTheParagraph'](exercise);
+
+      expect(updatedExercise.choices).toEqual([]);
+      expect(updatedExercise.answer).toEqual('');
+    });
+  });
+
+  describe('chooseTheTense', () => {
+    let exercise: Exercise;
+
+    beforeEach(() => {
+      exercise = {
+        type: ExerciseType.SummarizeTheParagraph,
+        choices: ["correct summary", "wrong summary"],
+        translation: "הטסט יעבור",
+        question: 'The test will pass',
+        answer: 'future'
+      };
+    });
+    it('should use the answer if it is a valid tense', () => {
+    const result = LessonGeneratorUtils['setChooseTheTense'](exercise);
+
+    expect(result.answer).toBe('future');
+    });
+
+    it('should call getSentenceTense if the answer is not a valid tense', () => {
+      exercise.answer = 'random text';
+
+      const result = LessonGeneratorUtils['setChooseTheTense'](exercise);
+
+      expect(result.answer).toBe('future');
+    });
+
+    it('should handle empty answers', () => {
+      exercise.answer = '';
+
+      const result = LessonGeneratorUtils['setChooseTheTense'](exercise);
+
+      expect(result.answer).toBe('future');
+    });
+
+    it('should handle missing question and translation', () => {
+      exercise.question = '';
+      exercise.translation = '';
+
+      const result = LessonGeneratorUtils['setChooseTheTense'](exercise);
+
+      expect(result.answer).toBe('future');
+    });
+  });
+
   describe('shuffleWordPairs', () => {
     it('should return an empty array when given an empty input', () => {
       const result = LessonGeneratorUtils['shuffleWordPairs']([]);
@@ -315,6 +361,46 @@ describe('LessonGeneratorUtils', () => {
       const result = LessonGeneratorUtils['shuffleWordPairs'](wordPairs);
 
       expect(result.length).toBe(wordPairs.length);
+    });
+  });
+
+  describe('getSentenceTense', () => {
+    let sentence1: string;
+    let sentence2: string;
+
+    beforeEach(() => {
+      sentence1 = "the day was long"
+      sentence2 = "היום היה ארוך"
+    });
+
+    it('should return "past" when sentence contains past tense', () => {
+      const result = LessonGeneratorUtils['getSentenceTense'](sentence1, sentence2);
+
+      expect(result).toBe("past");
+    });
+
+    it('should return "present" when sentence contains present tense', () => {
+      sentence1 = "the day is long";
+
+      const result = LessonGeneratorUtils['getSentenceTense'](sentence1, sentence2);
+
+      expect(result).toBe("present");
+    });
+
+    it('should return "future" when sentence contains future tense', () => {
+      sentence1 = "the day will be long";
+
+      const result = LessonGeneratorUtils['getSentenceTense'](sentence1, sentence2);
+
+      expect(result).toBe("future");
+    });
+
+    it('should default to "present" if no tense is detected', () => {
+      sentence1 = "blablabla";
+
+      const result = LessonGeneratorUtils['getSentenceTense'](sentence1, sentence2);
+
+      expect(result).toBe("present");
     });
   });
 

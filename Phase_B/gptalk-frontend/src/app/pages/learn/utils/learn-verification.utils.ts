@@ -24,14 +24,6 @@ export class LearnVerificationUtils {
     // Exact answer
     if (answer === actualAnswer) return true;
 
-    // Close match (Similarity percentage between sentences is at least 75%)
-    // (Exclusive to TranslateTheSentence exercise)
-    if(exercise().type == ExerciseType.TranslateTheSentence
-        &&
-      util.getSimilarityRatio(answer, exercise) >= 0.75) {
-      return true;
-    }
-
     // Approximate the answer if it was submitted by manually typing it
     // and compare it to the actual answer
     else return util.findClosestString(answer, exercise) === actualAnswer;

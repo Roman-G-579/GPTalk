@@ -8,11 +8,13 @@
 <div class="buttons-group flex justify-content-center overflow-hidden gap-4">
   @for (choice of choices; track choice) {
     <div class="tense-btn-wrapper gap-4"
+         tabindex="0"
          (click)="lrn.setExerciseResult(vrf.verifyAnswer(choice.value,exerciseData))"
+         (keydown.enter)="lrn.setExerciseResult(vrf.verifyAnswer(choice.value,exerciseData))"
     >
       <p-button
         [styleClass]="
-            isDone() ? (
+            isExerciseDone() ? (
               utilHtml.elemContainsAnswer(choice.value, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
@@ -38,7 +40,7 @@
   }
 </div>
 
-@if (isDone()) {
+@if (isExerciseDone()) {
   <div class="translation-wrapper flex-row justify-content-center">
     <p><b>Translation:</b></p>
     <p>{{exerciseData().translation}}</p>

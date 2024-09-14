@@ -32,7 +32,7 @@ export class FillInTheBlankComponent {
 
   exerciseData = this.lrn.exerciseData;
   lessonLanguage = this.lrn.lessonLanguage;
-  isDone = this.lrn.isDone;
+  isExerciseDone = this.lrn.isExerciseDone;
   isCorrectAnswer = this.lrn.isCorrectAnswer;
 
 }

@@ -155,7 +155,8 @@ export class LessonGeneratorService {
    * @returns the exercises observable
    */
   generateLesson(language: Language, difficulty: Difficulty, amount: number): Observable<Exercise[]> {
-    let keyWords = genUtil.insertKeyWords(difficulty); // Insert special keywords for the api based on the difficulty
+    // Get a random topic to use in the exercise generation prompts
+    let topic = genUtil.getRandomTopic();
 
     // All functions that can be called to generate an exercise
     const exerciseGenerators = [
@@ -176,13 +177,13 @@ export class LessonGeneratorService {
     for (let i = 0; i < amount; i++) {
       // Choose a random exercise index
       const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-      // const randomIndex: number = 8;
+      // const randomIndex: number = 4;
 
       // The Chosen function
       const generatorFunc = exerciseGenerators[randomIndex];
 
       // Generate an exercise prompt based on the randomized exercise index
-      const exercisePrompt = generatorFunc(language,difficulty,keyWords);
+      const exercisePrompt = generatorFunc(language,difficulty,topic);
 
       // Get JSON object from API and convert it to an Exercise object
       const exerciseObservable = this.getExerciseFromApi(exercisePrompt).pipe(
@@ -196,7 +197,7 @@ export class LessonGeneratorService {
       // Add the exercise to the observables array
       exerciseObservables.push(exerciseObservable);
 
-      keyWords = genUtil.changeTopicKeyWord(keyWords); // Randomizes a topic for the next exercise
+      topic = genUtil.getRandomTopic(); // Randomizes a different topic for the next exercise
     }
 
     return forkJoin(exerciseObservables);
@@ -206,10 +207,9 @@ export class LessonGeneratorService {
    * Creates a query for the API to generate a "fill in the blanks" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @param topic a topic that is included in the prompt to improve result diversity
    */
-  generateFillInTheBlank(language: Language, difficulty: Difficulty, keyWords: string[]): string {
-    // Exercise-specific parameters
+  generateFillInTheBlank(language: Language, difficulty: Difficulty, topic: string): string {
     let numOfAnswers: number;
 
     // If the lesson's language is English, the sentence to complete will be in English.
@@ -223,17 +223,16 @@ export class LessonGeneratorService {
     // Parameters for master difficulty
     else { numOfAnswers = 5; }
 
-    return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its ${translationLanguage} translation, 'choices' is ${numOfAnswers} random words, not found in "answer". Focus on topics: ${keyWords[0]}. {"answer": "", "choices:" [], "translation": ""}`;
+    return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its ${translationLanguage} translation, 'choices' is ${numOfAnswers} random words, not found in "answer". Focus on topic: ${topic}. {"answer": "", "choices:" [], "translation": ""}`;
   }
 
   /**
    * Creates a query for the API to generate a "translate words" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @param topic a topic that is included in the prompt to improve result diversity
    */
-  generateTranslateWord(language: Language, difficulty: Difficulty, keyWords: string[]): string {
-    // Exercise-specific parameters
+  generateTranslateWord(language: Language, difficulty: Difficulty, topic: string): string {
     let numOfAnswers: number;
 
     // If the lesson's language is English, the word is to be translated from Hebrew to English.
@@ -248,7 +247,7 @@ export class LessonGeneratorService {
     // Parameters for master difficulty
     else { numOfAnswers = 5; }
 
-    return `generate word array, difficulty: ${Difficulty[difficulty]}, language: ${wordLanguage}. number of words: ${numOfAnswers}. Focus on topics: ${keyWords[0]}. {"choices": [array_of_words] "translations": [array_of_${translationLanguage}_translations] }`;
+    return `generate word array, difficulty: ${Difficulty[difficulty]}, language: ${wordLanguage}. number of words: ${numOfAnswers}. Focus on topic: ${topic}. {"choices": [array_of_words] "translations": [array_of_${translationLanguage}_translations] }`;
   }
 
 
@@ -256,24 +255,24 @@ export class LessonGeneratorService {
    * Creates a query for the API to generate a "write the sentence in the specified language" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @param topic a topic that is included in the prompt to improve result diversity
    */
-  generateTranslateTheSentence(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+  generateTranslateTheSentence(language: Language, difficulty: Difficulty, topic: string): string {
     // If the lesson's language is English, the sentence is to be translated from Hebrew to English.
     // Otherwise, the sentence is to be translated from English to the lesson's language
     const sentenceLanguage = language == Language.English ? Language.Hebrew : Language.English;
     const translationLanguage = sentenceLanguage == Language.Hebrew ? Language.English : language;
 
-    return `generate a "translate the sentence" exercise, difficulty: ${Difficulty[difficulty]}. Focus on topics: ${keyWords[0]}. {"question": "${sentenceLanguage} sentence", "answer": "${translationLanguage}_translation"}`;
+    return `generate a "translate the sentence" exercise, difficulty: ${Difficulty[difficulty]}. Focus on topic: ${topic}. {"question": "${sentenceLanguage} sentence", "answer": "${translationLanguage}_translation"}`;
   }
 
   /**
    * Creates a query for the API to generate a "complete the conversation" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @param topic a topic that is included in the prompt to improve result diversity
    */
-  generateCompleteTheConversation(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+  generateCompleteTheConversation(language: Language, difficulty: Difficulty, topic: string): string {
     let replyLengthLimit: number; // Limits the length of the reply options based on difficulty
 
     // If the lesson's language is English, the conversation is in English.
@@ -289,22 +288,22 @@ export class LessonGeneratorService {
     const mistakeType = MISTAKE_TYPES[randomIndex];
 
     // Parameters for novice difficulty
-    if (difficulty == Difficulty.Novice) { replyLengthLimit = 4; }
+    if (difficulty == Difficulty.Novice) { replyLengthLimit = 6; }
     // Parameters for advanced difficulty
     else if (difficulty == Difficulty.Advanced) { replyLengthLimit = 8; }
     // Parameters for master difficulty
     else { replyLengthLimit = 10; }
 
-    return `generate object of strings in ${conversationLanguage}. All sentences of ${Difficulty[difficulty]} difficulty. reply1 is a grammatically and logically correct reply, reply2 contains ${mistakeType} error (replies have ${replyLengthLimit} words or less). Focus on topics: ${keyWords[0]}. { "prompt": ${conversationStarter}, "choices": [reply1,reply2] "translation": prompt_&_correct_reply_in_${translationLanguage} }`;
+    return `generate object of strings in ${conversationLanguage}. All sentences of ${Difficulty[difficulty]} difficulty. reply1 is a grammatically and logically correct reply, reply2 contains ${mistakeType} error (replies have ${replyLengthLimit} words or less). Focus on topic: ${topic}. { "prompt": ${conversationStarter}, "choices": [reply1,reply2] "translation": prompt_&_correct_reply_in_${translationLanguage} }`;
   }
 
   /**
    * Creates a query for the API to generate a "match the words to their translations" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @param topic a topic that is included in the prompt to improve result diversity
    */
-  generateMatchTheWords(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+  generateMatchTheWords(language: Language, difficulty: Difficulty, topic: string): string {
     // Exercise-specific parameters
     let numOfPairs: number;
 
@@ -319,16 +318,16 @@ export class LessonGeneratorService {
     // Parameters for master difficulty
     else { numOfPairs = 6; }
 
-    return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Focus on topics: ${keyWords[0]}. Follow this json structure: "correctPairs": { ["word","${secondWordLanguage}_translation"] }`;
+    return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Focus on topic: ${topic}. Follow this json structure: "correctPairs": { ["word","${secondWordLanguage}_translation"] }`;
   }
 
   /**
    * Creates a query for the API to generate a "reorder the words into a proper sentence" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @param topic a topic that is included in the prompt to improve result diversity
    */
-  generateReorderSentence(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+  generateReorderSentence(language: Language, difficulty: Difficulty, topic: string): string {
     let sentenceLength: number;
 
     // If the lesson's language is English, the translation is to Hebrew.
@@ -342,55 +341,64 @@ export class LessonGeneratorService {
     // Parameters for master difficulty
     else { sentenceLength = 6; }
 
-    return `generate a ${sentenceLength} words long sentence (no repeating words), in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topics: ${keyWords[0]} { "answer": "", "translation": "${translationLanguage}_translation" }`;
+    return `generate a ${sentenceLength} words long sentence (no repeating words), in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topic: ${topic} { "answer": "", "translation": "${translationLanguage}_translation" }`;
   }
 
   /**
    * Creates a query for the API to generate a "match the words to their categories" exercise, using the given parameters
    * @param language the language of the generated exercise
    * @param difficulty the exercise's difficulty level
-   * @param keyWords a string array of keywords that are sent to the API to narrow the generated results
+   * @param topic a topic that is included in the prompt to improve result diversity
    */
-  generateMatchTheCategory(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+  generateMatchTheCategory(language: Language, difficulty: Difficulty, topic: string): string {
     // If the lesson's language is English, the translation is to Hebrew.
     // Otherwise, the translation is to  English
     // const translationLanguage = language == Language.English ? Language.Hebrew : Language.English;
 
-    return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topics: ${keyWords[0]} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
+    return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topic: ${topic} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
   }
 
-  generateSummarizeTheParagraph(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+  /**
+   * Creates a query for the API to generate a "summarize the paragraph" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param topic a topic that is included in the prompt to improve result diversity
+   */
+  generateSummarizeTheParagraph(language: Language, difficulty: Difficulty, topic: string): string {
+    let paragraphLengthLimit: number;
 
     // If the lesson's language is English, the paragraph is in English.
     // Otherwise, the paragraph is in the lesson's language
     const paragraphLanguage = language;
     const translationLanguage = paragraphLanguage == Language.English ? Language.Hebrew : Language.English;
 
-    // Sets  random mistake type for one of the replies
-    let randomIndex = Math.floor(Math.random() * MISTAKE_TYPES.length);
-    const mistakeType = MISTAKE_TYPES[randomIndex];
-
     // Parameters for novice difficulty
-    // if (difficulty == Difficulty.Novice) { replyLengthLimit = 4; }
+    if (difficulty == Difficulty.Novice) { paragraphLengthLimit = 100; }
     // Parameters for advanced difficulty
-    // else if (difficulty == Difficulty.Advanced) { replyLengthLimit = 8; }
+    else if (difficulty == Difficulty.Advanced) { paragraphLengthLimit = 200; }
     // Parameters for master difficulty
-    // else { replyLengthLimit = 10; }
+    else { paragraphLengthLimit = 250; }
 
-    return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: ${keyWords[0]}. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_${translationLanguage} }`;
+    return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. Paragraph will have up to ${paragraphLengthLimit} words. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: ${topic}. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_${translationLanguage} }`;
   }
 
-  generateChooseTheTense(language: Language, difficulty: Difficulty, keyWords: string[]): string {
+  /**
+   * Creates a query for the API to generate a "choose the grammatical tense" exercise, using the given parameters
+   * @param language the language of the generated exercise
+   * @param difficulty the exercise's difficulty level
+   * @param topic a topic that is included in the prompt to improve result diversity
+   */
+  generateChooseTheTense(language: Language, difficulty: Difficulty, topic: string): string {
     // If the lesson's language is English, the sentence is in English.
     // Otherwise, the sentence is in the lesson's language
     const sentenceLanguage = language;
     const translationLanguage = sentenceLanguage == Language.English ? Language.Hebrew : Language.English;
 
     // Sets  random mistake type for one of the replies
-    let randomIndex = Math.floor(Math.random() * TENSE_TYPES.length);
+    const randomIndex = Math.floor(Math.random() * TENSE_TYPES.length);
     const tenseType = TENSE_TYPES[randomIndex];
 
-    return `generate ${Difficulty[difficulty]}-level sentence in ${sentenceLanguage}. sentence must be in ${tenseType} tense. Sentence must not mention the tense Focus on topics: ${keyWords[0]}. 'answer' field must contain only the single word ${tenseType} in English. {"question": ${sentenceLanguage}_sentence, "answer": ${tenseType}, "translation": ${translationLanguage}_translation}`
+    return `generate ${Difficulty[difficulty]}-level sentence in ${sentenceLanguage}. sentence must be in ${tenseType} tense. Sentence must not mention the tense Focus on topic: ${topic}. 'answer' field must contain only the single word ${tenseType} in English. {"question": ${sentenceLanguage}_sentence, "answer": ${tenseType}, "translation": ${translationLanguage}_translation}`
   }
 
   /**
@@ -405,7 +413,7 @@ export class LessonGeneratorService {
     return this.http.post(href,{userPrompt: promptString});
 
     // MOCK DATA
-    // return of(cloneDeep(this.mockExercise_ChooseTheTense));
+    // return of(cloneDeep(this.mockExercise_MatchTheWords));
   }
 
 }

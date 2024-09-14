@@ -17,7 +17,7 @@ describe('LessonGeneratorService', () => {
 
   let language: Language;
   let difficulty: Difficulty;
-  let keyWords: string[];
+  let topic: string = 'technology';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -31,7 +31,8 @@ describe('LessonGeneratorService', () => {
     // Initialize variables for all tests
     language = Language.English;
     difficulty = Difficulty.Novice;
-    keyWords = ['technology'];
+
+    jest.spyOn(LessonGeneratorUtils, 'getRandomTopic').mockReturnValue('technology');
   });
 
   afterEach(() => {
@@ -57,7 +58,7 @@ describe('LessonGeneratorService', () => {
         translations: ["car", "book", "table", "apple"]
       }
 
-      jest.spyOn(LessonGeneratorUtils, 'insertKeyWords').mockReturnValue(['technology', 'simple', 'beginners']);
+      //jest.spyOn(LessonGeneratorUtils, 'getRandomTopic').mockReturnValue('technology');
 
       getPromptMocks();
 
@@ -78,7 +79,7 @@ describe('LessonGeneratorService', () => {
         translations: ["car", "book", "table", "apple"]
       }
 
-      jest.spyOn(LessonGeneratorUtils, 'insertKeyWords').mockReturnValue(['simple', 'beginners']);
+      //jest.spyOn(LessonGeneratorUtils, 'getRandomTopic').mockReturnValue('technology');
 
       getPromptMocks();
 
@@ -94,58 +95,78 @@ describe('LessonGeneratorService', () => {
 
   describe('generateFillInTheBlank', () => {
     it('should generate a correct prompt format for valid input', () => {
-      const result = lessonGeneratorService.generateFillInTheBlank(language, difficulty, keyWords);
+      const result = lessonGeneratorService.generateFillInTheBlank(language, difficulty, topic);
 
       // Check the output format
-      expect(result).toMatch(`generate an object in English, Novice difficulty. 'answer' is the sentence, 'translation' is its english translation, 'choices' is 3 random words, not found in "answer". Focus on topics: technology. {"answer": "", "choices:" [], "translation": ""}`);
+      expect(result).toMatch(`generate an object in English, Novice difficulty. 'answer' is the sentence, 'translation' is its Hebrew translation, 'choices' is 3 random words, not found in "answer". Focus on topic: technology. {"answer": "", "choices:" [], "translation": ""}`);
     });
   });
 
   describe('generateTranslateWord', () => {
     it('should generate a correct prompt format for valid input', () => {
-      const result = lessonGeneratorService.generateTranslateWord(language,difficulty,keyWords);
+      const result = lessonGeneratorService.generateTranslateWord(language,difficulty,topic);
 
-      expect(result).toMatch(`generate word array, difficulty: Novice, language: English. number of words: 3. Focus on topics: technology. {"choices": [array_of_words] "translations": [array_of_translations] }`);
+      expect(result).toMatch(`generate word array, difficulty: Novice, language: Hebrew. number of words: 3. Focus on topic: technology. {"choices": [array_of_words] "translations": [array_of_English_translations] }`);
     });
   });
 
   describe('generateTranslateTheSentence', () => {
     it('should generate a correct prompt format for valid input', () => {
-      const result = lessonGeneratorService.generateTranslateTheSentence(language,difficulty,keyWords);
+      const result = lessonGeneratorService.generateTranslateTheSentence(language,difficulty,topic);
 
-      expect(result).toMatch(`generate a "translate the sentence" exercise, difficulty: Novice. Focus on topics: technology. {"question": "english_sentence", "answer": "English_translation"}`);
+      expect(result).toMatch(`generate a "translate the sentence" exercise, difficulty: Novice. Focus on topic: technology. {"question": "Hebrew sentence", "answer": "English_translation"}`);
     });
   });
 
   describe('generateCompleteTheConversation', () => {
     it('should generate a correct prompt format for valid input', () => {
-      const result = lessonGeneratorService.generateCompleteTheConversation(language,difficulty,keyWords);
+      const result = lessonGeneratorService.generateCompleteTheConversation(language,difficulty,topic);
 
-      expect(result).toMatch(`generate a "complete the conversation" exercise, difficulty: Novice, language: English. First choice is grammatically correct and makes sense, second choice doesn't. Focus on topics: technology. { "question": "question/statement", "choices": ["reply1","reply2"] "translation": "english_translation_of_question_&_correct_reply" }`);
+      expect(result).toContain('generate object of strings in English. All sentences of Novice difficulty. reply1 is a grammatically and logically correct reply, reply2 contains');
     });
   });
 
   describe('generateMatchTheWords', () => {
     it('should generate a correct prompt format for valid input', () => {
-      const result = lessonGeneratorService.generateMatchTheWords(language,difficulty,keyWords);
+      const result = lessonGeneratorService.generateMatchTheWords(language,difficulty,topic);
 
-      expect(result).toMatch(`Generate an array of word pairs in English, Novice difficulty. 4 pairs. Focus on topics: technology. Follow this json structure: "correctPairs": { ["word","translation"] }`);
+      expect(result).toMatch(`Generate an array of word pairs in English, Novice difficulty. 4 pairs. Focus on topic: technology. Follow this json structure: "correctPairs": { ["word","Hebrew_translation"] }`);
     });
   });
 
   describe('generateReorderSentence', () => {
     it('should generate a correct prompt format for valid input', () => {
-      const result = lessonGeneratorService.generateReorderSentence(language,difficulty,keyWords);
+      const result = lessonGeneratorService.generateReorderSentence(language,difficulty,topic);
 
-      expect(result).toMatch(`generate a 4 words long sentence, in English, Novice difficulty. Focus on topics: technology { "answer": "", "translation": "" }`);
+      expect(result).toMatch(`generate a 4 words long sentence (no repeating words), in English, Novice difficulty. Focus on topic: technology { "answer": "", "translation": "Hebrew_translation" }`);
     });
   });
 
   describe('generateMatchTheCategory', () => {
     it('should generate a correct prompt format for valid input', () => {
-      const result = lessonGeneratorService.generateMatchTheCategory(language,difficulty,keyWords);
+      const result = lessonGeneratorService.generateMatchTheCategory(language,difficulty,topic);
 
-      expect(result).toMatch(`Generate 2 distinct categories and 4 words for each, in English, Novice difficulty. Focus on topics: technology Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`);
+      expect(result).toMatch(`Generate 2 distinct categories and 4 words for each, in English, Novice difficulty. Focus on topic: technology Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`);
+    });
+  });
+
+  describe('generateSummarizeTheParagraph', () => {
+    it('should generate a correct prompt format for valid input', () => {
+      const result = lessonGeneratorService.generateSummarizeTheParagraph(language,difficulty,topic);
+
+      expect(result).toMatch(`generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: technology. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_Hebrew }`);
+    });
+  });
+
+  describe('generateChooseTheTense', () => {
+    it('should generate a correct prompt format for valid input', () => {
+      const result = lessonGeneratorService.generateChooseTheTense(language,difficulty,topic);
+
+      expect(result).toContain(`generate Novice-level sentence in English`);
+      expect(result).toContain('Focus on topic: technology');
+      expect(result).toContain('"question": English_sentence');
+      expect(result).toContain('Hebrew_translation}');
+      //. sentence must be in ${tenseType} tense. Sentence must not mention the tense Focus on topic: ${topic}. 'answer' field must contain only the single word ${tenseType} in English. {"question": ${sentenceLanguage}_sentence, "answer": ${tenseType}, "translation": ${translationLanguage}_translation}`);
     });
   });
 

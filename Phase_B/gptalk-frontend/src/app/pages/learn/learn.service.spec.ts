@@ -15,7 +15,7 @@ import {Language} from "../../core/enums/language.enum";
 
 class MockAuthService {
   totalExp = signal<number>(0);
-  userData = signal<Omit<UserResponse, 'totalExp'>>({
+  userData = signal<Omit<UserResponse, 'totalExp' | 'languages'>>({
     __v: 0,
     _id: '',
     createdAt: new Date(),
@@ -165,7 +165,7 @@ describe('LearnService', () => {
 
       learnService.setExerciseResult(true);
 
-      expect(learnService.isDone()).toBe(true);
+      expect(learnService.isExerciseDone()).toBe(true);
       expect(learnService.isCorrectAnswer()).toBe(true);
       expect(learnService.headingText()).toBe('Correct!');
 
@@ -177,7 +177,7 @@ describe('LearnService', () => {
 
       learnService.setExerciseResult(false);
 
-      expect(learnService.isDone()).toBe(true);
+      expect(learnService.isExerciseDone()).toBe(true);
       expect(learnService.isCorrectAnswer()).toBe(false);
       expect(learnService.headingText()).toBe('Incorrect.');
 

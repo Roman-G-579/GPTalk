@@ -4,17 +4,38 @@
 	<img src="assets/GPTalk_Logo_Wide.svg" alt="" />
 	<nav>
 		@for (page of pages; track page) {
-      @if (page.name === 'Log Out') {
-        <a routerLinkActive="active" (click)="logout()" style="cursor: pointer;">
-          <i [class]="page.icon"></i>
-          <span>{{ page.name }}</span>
-        </a>
-      } @else {
-        <a [routerLink]="page.route" routerLinkActive="active">
-          <i [class]="page.icon"></i>
-          <span>{{ page.name }}</span>
-        </a>
-      }
+      <a
+        routerLinkActive="active"
+        (click)="navigate(page)"
+        style="cursor: pointer;"
+      >
+        <i [class]="page.icon"></i>
+        <span>{{ page.name }}</span>
+      </a>
 		}
 	</nav>
 </div>
+
+<p-confirmDialog #cd>
+  <ng-template pTemplate="headless" let-message>
+    <div class="flex flex-column align-items-center p-5 surface-overlay border-round max-w-30rem text-center text-xl">
+      <p class="mb-0" [innerHTML]="message.message"></p>
+      <div class="flex align-items-center gap-2 mt-4">
+        <button
+          pButton
+          label="Leave"
+          severity="contrast"
+          (click)="cd.accept()"
+          class="w-8rem">
+        </button>
+        <button
+          pButton
+          label="Cancel"
+          severity="contrast"
+          (click)="cd.reject()"
+          class="p-button-outlined w-8rem ">
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-confirmDialog>

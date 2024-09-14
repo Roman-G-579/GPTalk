@@ -1,16 +1,16 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { Exercise } from '../../core/interfaces/exercise.interface';
-import { ExerciseType } from '../../core/enums/exercise-type.enum';
-import { Language } from '../../core/enums/language.enum';
-import { Language as ILanguage } from '../my-profile/components/profile-languages/language.interface';
-import { MiscUtils as util } from '../../core/utils/misc.utils';
-import { LearnInitializerUtils as init } from './utils/learn-initializer.utils';
-import { Subject } from 'rxjs';
-import { AuthService } from '../../core/services/auth.service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { RewardVals } from '../../core/enums/exp-vals.enum';
-import { Difficulty } from 'src/app/core/enums/difficulty.enum';
+import {computed, inject, Injectable, signal} from '@angular/core';
+import {Exercise} from '../../core/interfaces/exercise.interface';
+import {ExerciseType} from '../../core/enums/exercise-type.enum';
+import {Language} from '../../core/enums/language.enum';
+import {Language as ILanguage} from '../my-profile/components/profile-languages/language.interface';
+import {MiscUtils as util} from '../../core/utils/misc.utils';
+import {LearnInitializerUtils as init} from './utils/learn-initializer.utils';
+import {Subject} from 'rxjs';
+import {AuthService} from '../../core/services/auth.service';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../../../environments/environment';
+import {RewardVals} from '../../core/enums/exp-vals.enum';
+import {Difficulty} from "../../core/enums/difficulty.enum";
 
 @Injectable({
 	providedIn: 'root',
@@ -24,7 +24,7 @@ export class LearnService {
 	onExerciseSwitch: Subject<unknown> = new Subject();
 
 	// Booleans
-	isDone = signal<boolean>(false); // Changes to true once an exercise is over
+	isExerciseDone = signal<boolean>(false); // Changes to true once an exercise is over
 	isLessonOver = signal<boolean>(false); // Changes to true once the lesson is over
 	isCorrectAnswer = signal<boolean>(false); // Changes to true if user answers correctly
 
@@ -32,9 +32,11 @@ export class LearnService {
 	mistakesCounter = signal<number>(0); // Counts the mistakes in the lesson's exercises
 	totalExercises = signal<number>(0); // Stores the total amount of exercises in the current lesson
 
-	// Stores user's exp values
+	// The user's total exp
 	totalExp = this.authService.totalExp;
-	lessonExp = signal<number>(0); // exp gained in current lesson
+
+  // exp gained in current lesson
+	lessonExp = signal<number>(0);
 
 	// Counts the number of penalties for the exercise
 	// Penalties are given for wrong matches in MatchTheWords and hints used by the user
@@ -135,7 +137,7 @@ export class LearnService {
 	endLesson() {
 		this.headingText.set(`Lesson finished`);
 		this.isLessonOver.set(true);
-		this.isDone.set(true);
+		this.isExerciseDone.set(true);
 		this.lessonLanguage.set(Language.NOT_SELECTED);
 	}
 
@@ -144,7 +146,7 @@ export class LearnService {
 	 */
 	runInitializers() {
 		// Resets the states of all exercise-data related signals
-		this.isDone.set(false);
+		this.isExerciseDone.set(false);
 		this.isCorrectAnswer.set(false);
 		this.hintText.set('');
 		// Signals the child components to initialize their input fields
@@ -178,7 +180,7 @@ export class LearnService {
 	 * @param status exercise result - true means "correct", false means "incorrect"
 	 */
 	setExerciseResult(status: boolean) {
-		this.isDone.set(true);
+		this.isExerciseDone.set(true);
 		this.isCorrectAnswer.set(status);
 
 		if (status) {
@@ -219,11 +221,20 @@ export class LearnService {
 	 */
 	addExp() {
 		// Sets the exp reward based on the current exercise type
-		const expAmount =
-			this.exerciseData().type == ExerciseType.TranslateTheSentence ||
-			this.exerciseData().type == ExerciseType.MatchTheCategory
-				? RewardVals.hardExercise
-				: RewardVals.exercise;
+		let expAmount: number;
+    const currentExercise: ExerciseType = this.exerciseData().type;
+
+      switch (currentExercise) {
+        case ExerciseType.ChooseTheTense:
+          expAmount = RewardVals.easyExercise;
+          break;
+        case ExerciseType.TranslateTheSentence:
+        case ExerciseType.MatchTheCategory:
+          expAmount = RewardVals.hardExercise;
+          break;
+        default:
+          expAmount = RewardVals.exercise;
+      }
 
 		// Deducts exp from the final reward sum based on mistakes or hints used
 		const expAfterPenalties = Math.max(0, expAmount - this.penalties() * 10);

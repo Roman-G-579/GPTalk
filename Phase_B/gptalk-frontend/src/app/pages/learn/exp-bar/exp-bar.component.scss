@@ -15,6 +15,10 @@
   }
 }
 
+::ng-deep.p-tooltip {
+  max-width: 400px !important;
+}
+
 .lvl-display-wrapper {
   position: absolute;
   right: 1.5%;

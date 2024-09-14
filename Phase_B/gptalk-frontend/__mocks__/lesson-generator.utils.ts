@@ -1,4 +1,3 @@
-import {Difficulty} from "../src/app/core/enums/difficulty.enum";
 import {Exercise} from "../src/app/core/interfaces/exercise.interface";
 import {ExerciseType} from "../src/app/core/enums/exercise-type.enum";
 
@@ -11,6 +10,8 @@ const HEADINGS_MAP: { [key in ExerciseType]: string } = {
   4: 'Match the words',
   5: 'Arrange the words to form a correct sentence',
   6: 'Match the words to their correct category',
+  7: 'Summarize the paragraph',
+  8: 'Choose the tense'
 };
 
 // The instruction strings of the available exercise types
@@ -22,17 +23,14 @@ const INSTRUCTIONS_MAP: { [key in ExerciseType]: string } = {
   4: `Match the words in a given language to their English translations`,
   5: `Click the words sequentially to place them onto the board. Click submit when finished.`,
   6: 'Drag and drop the words to their category container. Click submit when finished.',
+  7: 'Click on the option that best summarizes the given paragraph',
+  8: 'Click on the correct grammatical tense for the given sentence'
 };
 
 export class MockLessonGeneratorUtils {
-  static insertKeyWords = jest.fn((difficulty: Difficulty) => {
-    if (difficulty === 1) return ['topic1', 'simple', 'beginners'];
-    if (difficulty === 2) return ['topic2', 'some familiarity with the language'];
-    return ['topic3', 'high level learners', 'challenge'];
-  });
 
-  static changeTopicKeyWord = jest.fn((keywords: string[]) => {
-    return ['newTopic', ...keywords.slice(1)];
+  static getRandomTopic = jest.fn(() => {
+    return 'newTopic';
   });
 
   static convertToExerciseObject = jest.fn((exerciseJson: Exercise, exerciseType: ExerciseType) => {

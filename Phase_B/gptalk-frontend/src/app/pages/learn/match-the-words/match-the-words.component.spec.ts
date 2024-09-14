@@ -6,7 +6,7 @@ import {LearnService} from "../learn.service";
 import {MatchTheWordsComponent} from "./match-the-words.component";
 
 class MockLearnService {
-  isDone = signal<boolean>(false);
+  isExerciseDone = signal<boolean>(false);
 
   exerciseData = signal<Exercise>({
     type: ExerciseType.FillInTheBlank,
@@ -49,7 +49,7 @@ describe('MatchTheWordsComponent', () => {
 
   it('should initialize with data from LearnService', () => {
     expect(mtwComp.exerciseData()).toEqual(mockLearnService.exerciseData());
-    expect(mtwComp.isDone()).toBe(false);
+    expect(mtwComp.isExerciseDone()).toBe(false);
   });
 
   it('should choose a match correctly', () => {

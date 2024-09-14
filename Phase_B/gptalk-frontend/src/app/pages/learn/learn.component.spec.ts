@@ -8,15 +8,16 @@ import {Language} from "../../core/enums/language.enum";
 import {Difficulty} from "../../core/enums/difficulty.enum";
 import {ResultsScreenComponent} from "./results-screen/results-screen.component";
 import {ExerciseType} from "../../core/enums/exercise-type.enum";
-import {signal, WritableSignal} from "@angular/core";
+import {computed, signal, WritableSignal} from "@angular/core";
 import {TranslateWordComponent} from "./translate-word/translate-word.component";
+import {Language as ILanguage} from "../my-profile/components/profile-languages/language.interface";
 
 class MockLessonGeneratorService {
   generateLesson = jest.fn();
 }
 
 class MockLearnService {
-  isDone: WritableSignal<boolean> = signal<boolean>(false);
+  isExerciseDone: WritableSignal<boolean> = signal<boolean>(false);
   isLessonOver: WritableSignal<boolean> = signal<boolean>(false);
   exerciseData = signal<Exercise>({
     type: ExerciseType.TranslateWord,
@@ -29,7 +30,8 @@ class MockLearnService {
     answer: '',
     translation: ''
   });
-  lessonLanguage = { set: jest.fn() };
+  lessonLanguage: WritableSignal<Language> = signal<Language>(Language.English);
+  lessonLanguageRank = jest.fn();
   setUpLesson = jest.fn();
 }
 
@@ -75,6 +77,7 @@ describe('LearnComponent', () => {
       }
     ];
 
+    jest.spyOn(mockLearnService,'lessonLanguageRank').mockReturnValue("Advanced");
     // Mock the generateLesson method to return an observable
     mockLgService.generateLesson.mockReturnValue(of(mockExercises));
 

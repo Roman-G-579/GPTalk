@@ -26,7 +26,7 @@ export class ErrorComponent {
 				// filter only navigation and events
 				filter((event): event is NavigationEnd => event instanceof NavigationEnd),
 
-				// filter if true, means refresh occured
+				// filter if true, means refresh occurred
 				filter((event) => event.id === 1 && event.url === event.urlAfterRedirects),
 
 				untilDestroyed(this),

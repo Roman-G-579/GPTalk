@@ -39,7 +39,7 @@ export class TranslateTheSentenceComponent implements AfterViewInit {
   exerciseData = this.lrn.exerciseData;
   penalties = this.lrn.penalties;
   lessonLanguage = this.lrn.lessonLanguage;
-  isDone = this.lrn.isDone;
+  isExerciseDone = this.lrn.isExerciseDone;
   hintText = this.lrn.hintText;
 
   ngAfterViewInit() {

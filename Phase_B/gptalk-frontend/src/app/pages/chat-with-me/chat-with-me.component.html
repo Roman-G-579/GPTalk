@@ -44,22 +44,22 @@
 				[placeholder]="'Type a message in ' + language()"
 				class="flex-1 w-full sm:w-auto border-round"
 				[(ngModel)]="textContent"
-				(keydown.enter)="chat()"
+				(keydown.enter)="textContent && chat()"
 			/>
 			<div class="flex w-full sm:w-auto gap-3">
 				<button
 					pButton
-					pRipple
+          pRipple
 					label="Send"
 					icon="pi pi-send"
 					class="w-full sm:w-auto"
 					severity="contrast"
 					[disabled]="loading()"
-					(click)="chat()"
+					(click)="textContent && chat()"
 				></button>
 				<button
 					pButton
-					pRipple
+          pRipple
 					label="Grade Me!"
 					icon="pi pi-graduation-cap"
 					class="w-full sm:w-auto"
@@ -76,7 +76,7 @@
             <div class="border-circle bg-contrast inline-flex justify-content-center align-items-center h-6rem w-6rem">
                 <i class="pi pi-graduation-cap text-5xl"></i>
             </div>
-            <span class="font-bold text-2xl block mb-2 mt-4">
+            <span class="font-bold text-2xl block mb-2 mt-2">
                 {{ message.header }}
             </span>
             <p class="mb-0" [innerHTML]="message.message"></p>

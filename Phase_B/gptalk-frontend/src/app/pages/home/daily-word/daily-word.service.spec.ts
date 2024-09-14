@@ -46,7 +46,7 @@ describe('DailyWordService', () => {
   });
 
   it('should handle error when fetching the daily word', async () => {
-    const consoleSpy = jest.spyOn(console, 'log');
+    const consoleSpy = jest.spyOn(console, 'error');
     await dailyWordService.getDailyWord();
 
     const req = httpMock.expectOne(`${environment.apiUrl}daily-word/fetch`);

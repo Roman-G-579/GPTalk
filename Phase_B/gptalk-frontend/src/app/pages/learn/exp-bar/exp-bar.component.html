@@ -1,4 +1,9 @@
-<div class="exp-bar-wrapper">
+<div
+  class="exp-bar-wrapper"
+  pTooltip="Exp: {{totalExp()}} <br/> {{expForNextLevel() - totalExp()}} more for next level"
+  tooltipPosition="left"
+  [escape]="false"
+>
 
   <p-progressBar [value]="progressVal()" [ngClass]="'progress-bar-custom'" [style]="{'border-radius': '4px'}">
     <ng-template pTemplate="content">

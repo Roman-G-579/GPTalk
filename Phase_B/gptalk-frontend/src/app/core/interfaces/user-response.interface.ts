@@ -1,4 +1,4 @@
-import { Language } from '../../../app/pages/my-profile/components/profile-languages/language.interface';
+import { Language } from '../../pages/my-profile/components/profile-languages/language.interface';
 
 export interface UserResponse {
 	__v: number;
