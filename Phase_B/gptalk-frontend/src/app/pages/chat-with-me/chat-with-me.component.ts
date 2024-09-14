@@ -67,6 +67,9 @@ export class ChatWithMeComponent implements OnInit {
 	 * to the OpenAI API and retrieves a response based on the conversation up to this point
 	 */
 	chat() {
+    if (this.loading()){
+      return;
+    }
 		this.loading.set(true);
 		this.conversation.update((values) => [...values, { role: 'user', content: this.textContent }]);
 		this.chatWithMeService
