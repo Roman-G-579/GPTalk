@@ -4,5 +4,5 @@ export interface Achievement {
 	goal: number;
 	icon: string;
 	type: 'streak' | 'exp' | 'mistakes' | 'lessons' | 'languages';
-  progress: number;
+	progress: number;
 }

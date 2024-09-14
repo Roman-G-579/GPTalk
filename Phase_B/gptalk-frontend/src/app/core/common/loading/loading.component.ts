@@ -11,9 +11,9 @@ import { LottieComponent, AnimationOptions } from 'ngx-lottie';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingComponent {
-  loadingOptions: AnimationOptions = {
-    path: '/assets/lottie/loading.json'
-  };
+	loadingOptions: AnimationOptions = {
+		path: '/assets/lottie/loading.json',
+	};
 
-  text = input('Loading...');
+	text = input('Loading...');
 }

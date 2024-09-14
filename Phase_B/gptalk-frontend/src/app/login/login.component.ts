@@ -28,19 +28,19 @@ import { LoadingComponent } from '../core/common/loading/loading.component';
 		FloatLabelModule,
 		DividerModule,
 		ImageModule,
-    DialogModule,
-    LoadingComponent,
+		DialogModule,
+		LoadingComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
 	errorMessage: string = '';
-  loading = signal(false);
+	loading = signal(false);
 
 	private readonly fb = inject(FormBuilder);
 	private readonly authService = inject(AuthService);
 	private readonly router = inject(Router);
-  private readonly toastr = inject(ToastrService)
+	private readonly toastr = inject(ToastrService);
 
 	loginForm = this.fb.group({
 		email: ['', [Validators.required, Validators.email]],
@@ -48,7 +48,7 @@ export class LoginComponent {
 	});
 
 	login() {
-    this.loading.set(true);
+		this.loading.set(true);
 		if (this.loginForm.valid) {
 			const { email, password } = this.loginForm.value;
 			if (!email || !password) {
@@ -56,19 +56,17 @@ export class LoginComponent {
 			}
 			this.authService.login(email, password).subscribe({
 				next: (res) => {
-          this.loading.set(false);
+					this.loading.set(false);
 					localStorage.setItem('token', res.token);
-					this.router.navigate(['/pages']).then( () => {
-              this.toastr.success('Logged in successfully', 'Success 🎉')
-            }
-          );
-
+					this.router.navigate(['/pages']).then(() => {
+						this.toastr.success('Logged in successfully', 'Success 🎉');
+					});
 				},
 				error: (err) => {
-          this.loading.set(false);
+					this.loading.set(false);
 					this.errorMessage = 'Invalid email or password';
-          console.error('Could not login:', err);
-          this.toastr.error('Could not login', 'Error!');
+					console.error('Could not login:', err);
+					this.toastr.error('Could not login', 'Error!');
 				},
 			});
 		}

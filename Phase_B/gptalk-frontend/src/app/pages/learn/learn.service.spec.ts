@@ -1,30 +1,30 @@
-import {TestBed} from '@angular/core/testing';
-import {LearnService} from './learn.service';
-import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
-import {Exercise} from "../../core/interfaces/exercise.interface";
-import {ExerciseType} from "../../core/enums/exercise-type.enum";
-import {AuthService} from "../../core/services/auth.service";
-import {LearnInitializerUtils} from "./utils/learn-initializer.utils";
-import {MiscUtils} from "../../core/utils/misc.utils";
-import {RewardVals} from "../../core/enums/exp-vals.enum";
-import {signal} from "@angular/core";
-import {UserResponse} from "../../core/interfaces/user-response.interface";
-import {environment} from "../../../environments/environment";
-import {of} from "rxjs";
-import {Language} from "../../core/enums/language.enum";
+import { TestBed } from '@angular/core/testing';
+import { LearnService } from './learn.service';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { Exercise } from '../../core/interfaces/exercise.interface';
+import { ExerciseType } from '../../core/enums/exercise-type.enum';
+import { AuthService } from '../../core/services/auth.service';
+import { LearnInitializerUtils } from './utils/learn-initializer.utils';
+import { MiscUtils } from '../../core/utils/misc.utils';
+import { RewardVals } from '../../core/enums/exp-vals.enum';
+import { signal } from '@angular/core';
+import { UserResponse } from '../../core/interfaces/user-response.interface';
+import { environment } from '../../../environments/environment';
+import { of } from 'rxjs';
+import { Language } from '../../core/enums/language.enum';
 
 class MockAuthService {
-  totalExp = signal<number>(0);
-  userData = signal<Omit<UserResponse, 'totalExp' | 'languages'>>({
-    __v: 0,
-    _id: '',
-    createdAt: new Date(),
-    email: 'test@example.com',
-    firstName: '',
-    lastName: '',
-    username: '',
-    userAvatar: '',
-  });
+	totalExp = signal<number>(0);
+	userData = signal<Omit<UserResponse, 'totalExp' | 'languages'>>({
+		__v: 0,
+		_id: '',
+		createdAt: new Date(),
+		email: 'test@example.com',
+		firstName: '',
+		lastName: '',
+		username: '',
+		userAvatar: '',
+	});
 }
 
 jest.mock('./utils/learn-initializer.utils');
@@ -32,231 +32,244 @@ jest.mock('../../core/utils/misc.utils');
 
 // Mock setup for exercises
 const mockExercises: Exercise[] = [
-  {
-    type: ExerciseType.FillInTheBlank,
-  },
-  {
-    type: ExerciseType.TranslateTheSentence,
-  },
-  {
-    type: ExerciseType.CompleteTheConversation,
-  }
+	{
+		type: ExerciseType.FillInTheBlank,
+	},
+	{
+		type: ExerciseType.TranslateTheSentence,
+	},
+	{
+		type: ExerciseType.CompleteTheConversation,
+	},
 ];
 
 describe('LearnService', () => {
-  let learnService: LearnService;
-  let mockAuthService: MockAuthService;
-  let httpMock: HttpTestingController;
+	let learnService: LearnService;
+	let mockAuthService: MockAuthService;
+	let httpMock: HttpTestingController;
 
-  beforeEach(() => {
-    mockAuthService = new MockAuthService();
+	beforeEach(() => {
+		mockAuthService = new MockAuthService();
 
-    TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
-        LearnService,
-        { provide: AuthService, useValue: mockAuthService },
-      ]
-    });
+		TestBed.configureTestingModule({
+			imports: [HttpClientTestingModule],
+			providers: [LearnService, { provide: AuthService, useValue: mockAuthService }],
+		});
 
-    learnService = TestBed.inject(LearnService);
-    httpMock = TestBed.inject(HttpTestingController);
+		learnService = TestBed.inject(LearnService);
+		httpMock = TestBed.inject(HttpTestingController);
+	});
 
-  });
+	afterEach(() => {
+		jest.clearAllMocks();
 
-  afterEach(() => {
-    jest.clearAllMocks();
+		httpMock.verify(); // Verifies that no unmatched requests are outstanding
+	});
 
-    httpMock.verify(); // Verifies that no unmatched requests are outstanding
+	it('should create the service', () => {
+		expect(learnService).toBeTruthy();
+	});
 
-  });
+	describe('setUpLesson', () => {
+		it('should set up the lesson correctly when setUpLesson is called', () => {
+			const initializeLessonParamsSpy = jest.spyOn(LearnInitializerUtils, 'initializeLessonParams');
 
-  it('should create the service', () => {
-    expect(learnService).toBeTruthy();
-  });
+			jest.spyOn(learnService, 'setUpNextExercise').mockImplementation(() => {
+				return;
+			});
 
-  describe('setUpLesson', () => {
-    it('should set up the lesson correctly when setUpLesson is called', () => {
-      const initializeLessonParamsSpy = jest.spyOn(LearnInitializerUtils, 'initializeLessonParams');
+			learnService.setUpLesson(mockExercises);
 
-      jest.spyOn(learnService, 'setUpNextExercise').mockImplementation(() => {
-        return;
-      });
+			expect(learnService.exerciseArr()).toEqual(mockExercises);
+			expect(learnService.totalExercises()).toBe(mockExercises.length);
 
-      learnService.setUpLesson(mockExercises);
+			expect(initializeLessonParamsSpy).toHaveBeenCalledWith(
+				learnService.mistakesCounter,
+				learnService.lessonExp,
+			);
+		});
+	});
 
-      expect(learnService.exerciseArr()).toEqual(mockExercises);
-      expect(learnService.totalExercises()).toBe(mockExercises.length);
+	describe('runInitializers', () => {
+		it('should run initializers correctly when runInitializers is called', () => {
+			// Mock exercise data and exercise type
+			jest
+				.spyOn(learnService, 'exerciseData')
+				.mockReturnValue({ type: ExerciseType.MatchTheWords, heading: 'Test Heading' });
 
-      expect(initializeLessonParamsSpy).toHaveBeenCalledWith(
-        learnService.mistakesCounter,
-        learnService.lessonExp
-      );
-    });
-  });
+			// Spy on initialization functions and utility functions
+			const initializeMatchTheWordsSpy = jest.spyOn(
+				LearnInitializerUtils,
+				'initializeMatchTheWords',
+			);
+			const initializeMatchTheCategorySpy = jest.spyOn(
+				LearnInitializerUtils,
+				'initializeMatchTheCategory',
+			);
+			const lowerCaseAndNormalizeAllSpy = jest.spyOn(MiscUtils, 'lowerCaseAndNormalizeAll');
 
-  describe('runInitializers', () => {
-    it('should run initializers correctly when runInitializers is called', () => {
-      // Mock exercise data and exercise type
-      jest.spyOn(learnService, 'exerciseData').mockReturnValue({ type: ExerciseType.MatchTheWords, heading: 'Test Heading' });
+			learnService.runInitializers();
 
-      // Spy on initialization functions and utility functions
-      const initializeMatchTheWordsSpy = jest.spyOn(LearnInitializerUtils, 'initializeMatchTheWords');
-      const initializeMatchTheCategorySpy = jest.spyOn(LearnInitializerUtils, 'initializeMatchTheCategory');
-      const lowerCaseAndNormalizeAllSpy = jest.spyOn(MiscUtils, 'lowerCaseAndNormalizeAll');
+			expect(initializeMatchTheWordsSpy).toHaveBeenCalledWith(
+				learnService.matchResults,
+				learnService.penalties,
+				learnService.exerciseData,
+			);
+			expect(initializeMatchTheCategorySpy).not.toHaveBeenCalled();
 
-      learnService.runInitializers();
+			// Verify the utility function is called to normalize strings
+			expect(lowerCaseAndNormalizeAllSpy).toHaveBeenCalledWith(learnService.exerciseData);
+		});
 
-      expect(initializeMatchTheWordsSpy).toHaveBeenCalledWith(
-        learnService.matchResults,
-        learnService.penalties,
-        learnService.exerciseData
-      );
-      expect(initializeMatchTheCategorySpy).not.toHaveBeenCalled();
+		it('should call initializeMatchTheCategory when exercise type is MatchTheCategory', () => {
+			// Mock exercise data to have type MatchTheCategory
+			jest
+				.spyOn(learnService, 'exerciseData')
+				.mockReturnValue({ type: ExerciseType.MatchTheCategory });
 
-      // Verify the utility function is called to normalize strings
-      expect(lowerCaseAndNormalizeAllSpy).toHaveBeenCalledWith(learnService.exerciseData);
-    });
+			const initializeMatchTheCategorySpy = jest.spyOn(
+				LearnInitializerUtils,
+				'initializeMatchTheCategory',
+			);
 
-    it('should call initializeMatchTheCategory when exercise type is MatchTheCategory', () => {
-      // Mock exercise data to have type MatchTheCategory
-      jest.spyOn(learnService, 'exerciseData').mockReturnValue({ type: ExerciseType.MatchTheCategory });
+			learnService.runInitializers();
 
-      const initializeMatchTheCategorySpy = jest.spyOn(LearnInitializerUtils, 'initializeMatchTheCategory');
+			// Verify that initializeMatchTheCategory was called
+			expect(initializeMatchTheCategorySpy).toHaveBeenCalledWith(
+				learnService.categoryMatches,
+				learnService.exerciseData,
+			);
+		});
+	});
 
-      learnService.runInitializers();
+	describe('setUpNextExercise', () => {
+		it('should set the next exercise and call runInitializers when exercises are available', () => {
+			const firstExerciseInArray = mockExercises[0]; // Sample exercise data
+			jest.spyOn(learnService, 'exerciseArr').mockReturnValue(mockExercises);
+			const exerciseArrShiftSpy = jest
+				.spyOn(MiscUtils, 'exerciseArrShift')
+				.mockReturnValue(firstExerciseInArray); // Mock the utility function
+			const runInitializersSpy = jest.spyOn(learnService, 'runInitializers');
 
-      // Verify that initializeMatchTheCategory was called
-      expect(initializeMatchTheCategorySpy).toHaveBeenCalledWith(learnService.categoryMatches, learnService.exerciseData);
-    });
-  });
+			learnService.setUpNextExercise();
 
-  describe('setUpNextExercise', () => {
-    it('should set the next exercise and call runInitializers when exercises are available', () => {
-      const firstExerciseInArray =   mockExercises[0]; // Sample exercise data
-      jest.spyOn(learnService, 'exerciseArr').mockReturnValue(mockExercises);
-      const exerciseArrShiftSpy = jest.spyOn(MiscUtils, 'exerciseArrShift').mockReturnValue(firstExerciseInArray); // Mock the utility function
-      const runInitializersSpy = jest.spyOn(learnService, 'runInitializers');
+			expect(exerciseArrShiftSpy).toHaveBeenCalledWith(learnService.exerciseArr);
+			expect(learnService.exerciseData()).toEqual(firstExerciseInArray);
+			expect(runInitializersSpy).toHaveBeenCalled();
+		});
 
-      learnService.setUpNextExercise();
+		it('should call postResult and displayResultsScreen when no exercises are available', () => {
+			jest.spyOn(learnService, 'exerciseArr').mockReturnValue([]); // Mock empty exercise array
 
-      expect(exerciseArrShiftSpy).toHaveBeenCalledWith(learnService.exerciseArr);
-      expect(learnService.exerciseData()).toEqual(firstExerciseInArray);
-      expect(runInitializersSpy).toHaveBeenCalled();
-    });
+			// Mock postResult returning an observable
+			const postResultSpy = jest.spyOn(learnService, 'postResult').mockReturnValue(of({}));
+			const displayResultsScreenSpy = jest.spyOn(learnService, 'endLesson');
 
-    it('should call postResult and displayResultsScreen when no exercises are available', () => {
-      jest.spyOn(learnService, 'exerciseArr').mockReturnValue([]); // Mock empty exercise array
+			learnService.setUpNextExercise();
 
-      // Mock postResult returning an observable
-      const postResultSpy = jest.spyOn(learnService, 'postResult').mockReturnValue(of({}));
-      const displayResultsScreenSpy = jest.spyOn(learnService, 'endLesson');
+			expect(postResultSpy).toHaveBeenCalled();
+			expect(displayResultsScreenSpy).toHaveBeenCalled();
+		});
+	});
 
-      learnService.setUpNextExercise();
+	describe('setExerciseResult', () => {
+		it('should mark the exercise as done and correct when status is true', () => {
+			jest.spyOn(learnService, 'addExp');
 
-      expect(postResultSpy).toHaveBeenCalled();
-      expect(displayResultsScreenSpy).toHaveBeenCalled();
-    });
-  });
+			learnService.setExerciseResult(true);
 
-  describe('setExerciseResult', () => {
-    it('should mark the exercise as done and correct when status is true', () => {
-      jest.spyOn(learnService, 'addExp');
+			expect(learnService.isExerciseDone()).toBe(true);
+			expect(learnService.isCorrectAnswer()).toBe(true);
+			expect(learnService.headingText()).toBe('Correct!');
 
-      learnService.setExerciseResult(true);
+			expect(learnService.addExp).toHaveBeenCalled();
+		});
 
-      expect(learnService.isExerciseDone()).toBe(true);
-      expect(learnService.isCorrectAnswer()).toBe(true);
-      expect(learnService.headingText()).toBe('Correct!');
+		it('should mark the exercise as done and incorrect when status is false', () => {
+			const initialMistakes = learnService.mistakesCounter();
 
-      expect(learnService.addExp).toHaveBeenCalled();
-    });
+			learnService.setExerciseResult(false);
 
-    it('should mark the exercise as done and incorrect when status is false', () => {
-      const initialMistakes = learnService.mistakesCounter();
+			expect(learnService.isExerciseDone()).toBe(true);
+			expect(learnService.isCorrectAnswer()).toBe(false);
+			expect(learnService.headingText()).toBe('Incorrect.');
 
-      learnService.setExerciseResult(false);
+			expect(learnService.mistakesCounter()).toBe(initialMistakes + 1);
+		});
+	});
 
-      expect(learnService.isExerciseDone()).toBe(true);
-      expect(learnService.isCorrectAnswer()).toBe(false);
-      expect(learnService.headingText()).toBe('Incorrect.');
+	describe('addExp', () => {
+		it('should correctly calculate and add experience points when there are no mistakes', () => {
+			// Initialize the lessonExp and totalExp to be zero
+			learnService.lessonExp.set(0);
+			learnService.totalExp.set(0);
+			learnService.penalties.set(0);
 
-      expect(learnService.mistakesCounter()).toBe(initialMistakes + 1);
-    });
-  });
+			learnService.addExp();
 
-  describe('addExp', () => {
-    it('should correctly calculate and add experience points when there are no mistakes', () => {
-      // Initialize the lessonExp and totalExp to be zero
-      learnService.lessonExp.set(0);
-      learnService.totalExp.set(0);
-      learnService.penalties.set(0);
+			// Check if values of lessonExp and totalExp are equal to the amount of added exp
+			expect(learnService.lessonExp()).toBe(RewardVals.exercise);
+			expect(learnService.totalExp()).toBe(RewardVals.exercise);
+		});
 
-      learnService.addExp();
+		it('should correctly calculate and add experience points with mistakes', () => {
+			learnService.lessonExp.set(0);
+			learnService.totalExp.set(0);
+			learnService.penalties.set(2);
 
-      // Check if values of lessonExp and totalExp are equal to the amount of added exp
-      expect(learnService.lessonExp()).toBe(RewardVals.exercise);
-      expect(learnService.totalExp()).toBe(RewardVals.exercise);
-    });
+			const expectedExp = Math.max(0, RewardVals.exercise - 2 * 10);
 
-    it('should correctly calculate and add experience points with mistakes', () => {
-      learnService.lessonExp.set(0);
-      learnService.totalExp.set(0);
-      learnService.penalties.set(2);
+			learnService.addExp();
 
-      const expectedExp = Math.max(0, RewardVals.exercise - 2 * 10);
+			// Check if experience points are added correctly with a penalty
+			expect(learnService.lessonExp()).toBe(expectedExp);
+			expect(learnService.totalExp()).toBe(expectedExp);
+		});
 
-      learnService.addExp();
+		it('should not add negative experience points', () => {
+			learnService.lessonExp.set(0);
+			learnService.totalExp.set(0);
+			learnService.penalties.set(20); // Assume many mistakes leading to negative exp
 
-      // Check if experience points are added correctly with a penalty
-      expect(learnService.lessonExp()).toBe(expectedExp);
-      expect(learnService.totalExp()).toBe(expectedExp);
-    });
+			learnService.addExp();
 
-    it('should not add negative experience points', () => {
-      learnService.lessonExp.set(0);
-      learnService.totalExp.set(0);
-      learnService.penalties.set(20); // Assume many mistakes leading to negative exp
+			// Check if experience points are not negative
+			expect(learnService.lessonExp()).toBe(0);
+			expect(learnService.totalExp()).toBe(0);
+		});
+	});
 
-      learnService.addExp();
+	describe('postResult', () => {
+		it('should post lesson result to the database', () => {
+			const email = 'test@example.com'; // Mock email
 
-      // Check if experience points are not negative
-      expect(learnService.lessonExp()).toBe(0);
-      expect(learnService.totalExp()).toBe(0);
-    });
-  });
+			// Mock lesson results
+			const lessonExp = 50;
+			const totalExercises = 10;
+			const mistakesCounter = 2;
+			const language = Language.English;
 
-  describe('postResult', () => {
-    it('should post lesson result to the database', () => {
-      const email = 'test@example.com'; // Mock email
+			const expectedUrl = `${environment.apiUrl}profile/postResult`;
 
-      // Mock lesson results
-      const lessonExp = 50;
-      const totalExercises = 10;
-      const mistakesCounter = 2;
-      const language = Language.English;
+			learnService.lessonExp.set(lessonExp);
+			learnService.totalExercises.set(totalExercises);
+			learnService.mistakesCounter.set(mistakesCounter);
+			learnService.lessonLanguage.set(language);
 
-      const expectedUrl = `${environment.apiUrl}profile/postResult`;
+			learnService.postResult().subscribe();
 
-      learnService.lessonExp.set(lessonExp);
-      learnService.totalExercises.set(totalExercises);
-      learnService.mistakesCounter.set(mistakesCounter);
-      learnService.lessonLanguage.set(language);
+			const req = httpMock.expectOne(expectedUrl);
+			expect(req.request.method).toBe('POST');
+			expect(req.request.body).toEqual({
+				exp: lessonExp,
+				email: email,
+				numberOfQuestions: totalExercises,
+				mistakes: mistakesCounter,
+				language: language,
+			});
 
-      learnService.postResult().subscribe();
-
-      const req = httpMock.expectOne(expectedUrl);
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({
-        exp: lessonExp,
-        email: email,
-        numberOfQuestions: totalExercises,
-        mistakes: mistakesCounter,
-        language: language
-      });
-
-      // Flush the mock HTTP response to ensure the request completes
-      req.flush({});
-    });
-  });
+			// Flush the mock HTTP response to ensure the request completes
+			req.flush({});
+		});
+	});
 });

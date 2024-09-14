@@ -9,14 +9,14 @@ export default [
 	},
 	{
 		path: 'pages',
-    canActivate: [AuthGuard],
+		canActivate: [AuthGuard],
 		loadChildren: () => import('./pages/pages.routes'),
 		loadComponent: () => import('./pages/pages.component').then((c) => c.PagesComponent),
 	},
-  {
-    path: 'register',
-    loadComponent: () => import('./register/register.component').then((c) => c.RegisterComponent),
-  },
+	{
+		path: 'register',
+		loadComponent: () => import('./register/register.component').then((c) => c.RegisterComponent),
+	},
 	{
 		path: 'login',
 		loadComponent: () => import('./login/login.component').then((c) => c.LoginComponent),
