@@ -14,7 +14,7 @@ import { UserAchievement } from '../../interfaces/user-achievements.interface';
 export class ProfileAchievementsComponent {
 	achievements = input<UserAchievement[]>([]);
 
-  formatToTwoDecimalPlaces(value: number): number {
-    return parseFloat(value.toFixed(2));
-}
+	formatToTwoDecimalPlaces(value: number): number {
+		return parseFloat(value.toFixed(2));
+	}
 }

@@ -18,7 +18,7 @@ import { LoadingComponent } from 'src/app/core/common/loading/loading.component'
 		ProfileAchievementsComponent,
 		ProfileLanguagesComponent,
 		ProfileLatestResultsComponent,
-    LoadingComponent,
+		LoadingComponent,
 	],
 	templateUrl: './my-profile.component.html',
 	styleUrl: './my-profile.component.scss',

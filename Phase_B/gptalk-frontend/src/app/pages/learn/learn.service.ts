@@ -1,16 +1,16 @@
-import {computed, inject, Injectable, signal} from '@angular/core';
-import {Exercise} from '../../core/interfaces/exercise.interface';
-import {ExerciseType} from '../../core/enums/exercise-type.enum';
-import {Language} from '../../core/enums/language.enum';
-import {Language as ILanguage} from '../my-profile/components/profile-languages/language.interface';
-import {MiscUtils as util} from '../../core/utils/misc.utils';
-import {LearnInitializerUtils as init} from './utils/learn-initializer.utils';
-import {Subject} from 'rxjs';
-import {AuthService} from '../../core/services/auth.service';
-import {HttpClient} from '@angular/common/http';
-import {environment} from '../../../environments/environment';
-import {RewardVals} from '../../core/enums/exp-vals.enum';
-import {Difficulty} from "../../core/enums/difficulty.enum";
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { Exercise } from '../../core/interfaces/exercise.interface';
+import { ExerciseType } from '../../core/enums/exercise-type.enum';
+import { Language } from '../../core/enums/language.enum';
+import { Language as ILanguage } from '../my-profile/components/profile-languages/language.interface';
+import { MiscUtils as util } from '../../core/utils/misc.utils';
+import { LearnInitializerUtils as init } from './utils/learn-initializer.utils';
+import { Subject } from 'rxjs';
+import { AuthService } from '../../core/services/auth.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { RewardVals } from '../../core/enums/exp-vals.enum';
+import { Difficulty } from '../../core/enums/difficulty.enum';
 
 @Injectable({
 	providedIn: 'root',
@@ -35,7 +35,7 @@ export class LearnService {
 	// The user's total exp
 	totalExp = this.authService.totalExp;
 
-  // exp gained in current lesson
+	// exp gained in current lesson
 	lessonExp = signal<number>(0);
 
 	// Counts the number of penalties for the exercise
@@ -77,11 +77,11 @@ export class LearnService {
 		translation: '',
 	});
 
-  // The user's selected language for the current lesson
+	// The user's selected language for the current lesson
 	lessonLanguage = signal<Language>(Language.NOT_SELECTED);
 
-  // Sets the difficulty level based on the user's rank in the selected language
-  // (in lessonLanguage)
+	// Sets the difficulty level based on the user's rank in the selected language
+	// (in lessonLanguage)
 	lessonLanguageRank = computed(() => {
 		if (this.lessonLanguage() === Language.NOT_SELECTED) {
 			return 'Novice';
@@ -222,19 +222,19 @@ export class LearnService {
 	addExp() {
 		// Sets the exp reward based on the current exercise type
 		let expAmount: number;
-    const currentExercise: ExerciseType = this.exerciseData().type;
+		const currentExercise: ExerciseType = this.exerciseData().type;
 
-      switch (currentExercise) {
-        case ExerciseType.ChooseTheTense:
-          expAmount = RewardVals.easyExercise;
-          break;
-        case ExerciseType.TranslateTheSentence:
-        case ExerciseType.MatchTheCategory:
-          expAmount = RewardVals.hardExercise;
-          break;
-        default:
-          expAmount = RewardVals.exercise;
-      }
+		switch (currentExercise) {
+			case ExerciseType.ChooseTheTense:
+				expAmount = RewardVals.easyExercise;
+				break;
+			case ExerciseType.TranslateTheSentence:
+			case ExerciseType.MatchTheCategory:
+				expAmount = RewardVals.hardExercise;
+				break;
+			default:
+				expAmount = RewardVals.exercise;
+		}
 
 		// Deducts exp from the final reward sum based on mistakes or hints used
 		const expAfterPenalties = Math.max(0, expAmount - this.penalties() * 10);

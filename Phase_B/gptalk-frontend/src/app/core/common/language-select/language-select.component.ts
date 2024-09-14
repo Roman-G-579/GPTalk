@@ -11,7 +11,7 @@ import { Language } from '../../enums/language.enum';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LanguageSelectComponent {
-  @Output() languageSelectionEvent = new EventEmitter<Language>();
+	@Output() languageSelectionEvent = new EventEmitter<Language>();
 
 	languages: { language: Language; img: string }[] = [
 		{
@@ -33,6 +33,6 @@ export class LanguageSelectComponent {
 	];
 
 	setLanguage(language: Language) {
-    this.languageSelectionEvent.emit(language);
-  }
+		this.languageSelectionEvent.emit(language);
+	}
 }

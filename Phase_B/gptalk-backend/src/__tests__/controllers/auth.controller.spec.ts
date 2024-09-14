@@ -18,7 +18,7 @@ describe('loginMiddleware', () => {
 
 	beforeEach(() => {
 		req = {
-			body: {}
+			body: {},
 		};
 		res = {
 			status: jest.fn().mockReturnThis(),

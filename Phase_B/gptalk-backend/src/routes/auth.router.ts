@@ -14,6 +14,6 @@ router.post('/login', loginMiddleware);
  * @description get user info
  * @access jwt
  */
-router.get('/user', authMiddleware, getUserByTokenMiddleware)
+router.get('/user', authMiddleware, getUserByTokenMiddleware);
 
 export default router;

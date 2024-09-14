@@ -12,4 +12,7 @@ export const userAchievementSchema = new Schema<UserAchievement>({
 	},
 });
 
-export const UserAchievementModel = model<UserAchievement>('UserAchievement', userAchievementSchema);
+export const UserAchievementModel = model<UserAchievement>(
+	'UserAchievement',
+	userAchievementSchema,
+);

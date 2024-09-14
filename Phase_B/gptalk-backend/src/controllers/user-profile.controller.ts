@@ -154,7 +154,7 @@ async function calculateStreak(userId: Schema.Types.ObjectId): Promise<number> {
 export async function calculateMaxStreak(userId: Schema.Types.ObjectId, streak: number) {
 	const user = await UserModel.findOne({ _id: userId });
 	if (streak > user.maxStreak) {
-		await UserModel.findOneAndUpdate({_id: userId}, {maxStreak: streak}).exec();
+		await UserModel.findOneAndUpdate({ _id: userId }, { maxStreak: streak }).exec();
 		return streak;
 	}
 	return user.maxStreak;
@@ -200,7 +200,6 @@ async function getAchievements(
 	totalLessons: number,
 	totalLanguages: number,
 ): Promise<UserAchievement[]> {
-
 	const achievements: UserAchievement[] = [
 		{ ...streak[0], progress: currentStreak },
 		{ ...exp[0], progress: totalExp },
