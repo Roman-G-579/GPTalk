@@ -6,4 +6,5 @@ export interface DailyWord {
 	example: string;
 	translation: string;
 	language: Language;
+  translationLanguage: Language;
 }

@@ -38,6 +38,11 @@ const dailyWordSchema = new Schema(
 			enum: LanguageEnum,
 			required: true,
 		},
+		translationLanguage: {
+			type: String,
+			enum: LanguageEnum,
+			required: true,
+		}
 	},
 	{
 		timestamps: true,

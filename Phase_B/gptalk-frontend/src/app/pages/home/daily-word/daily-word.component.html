@@ -10,10 +10,10 @@
     } @else if (!isLoading()) {
     <p-panel class="daily-word col-9 w-30rem ">
       <ng-template pTemplate="header">
-        <div class="flex align-items-center gap-2">
+        <div class="flex align-items-center gap-2" [dir]="utilHtml.langDirection(language)">
           @if(dailyWord().word !== "") {
             <p-avatar
-              [image]="languageIconRecord[dailyWord().language]"
+              [image]="languageIconRecord[language()]"
               size="normal"
               shape="square" />
             <span class="font-bold">
@@ -23,13 +23,13 @@
         </div>
       </ng-template>
       @if(dailyWord().word !== "") {
-        <p class="mb-2">
+        <p class="mb-2" [dir]="utilHtml.langDirection(translationLanguage)">
         {{dailyWord().definition}}
         </p>
         <p class="font-italic">
           {{dailyWord().example}}
         </p>
-        <p>
+        <p [dir]="utilHtml.langDirection(translationLanguage)">
           ({{dailyWord().translation}})
         </p>
       }

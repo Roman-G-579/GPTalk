@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, Component, computed, inject, OnInit, WritableSignal} from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { PanelModule } from 'primeng/panel';
 import { PrimeTemplate } from 'primeng/api';
 import { Language } from '../../../core/enums/language.enum';
 import { DailyWordService } from './daily-word.service';
 import { AnimationOptions, LottieComponent } from 'ngx-lottie';
+import {LearnHtmlUtils} from "../../learn/utils/learn-html.utils";
 
 @Component({
 	selector: 'app-daily-word',
@@ -28,6 +29,10 @@ export class DailyWordComponent implements OnInit {
 	dailyWord = this.wtd.dailyWord;
 	isLoading = this.wtd.isLoading;
 
+  language = this.wtd.language
+
+  translationLanguage = this.wtd.translationLanguage;
+
 	// The lottie file path of the loading animation
 	loadingOptions: AnimationOptions = {
 		path: '/assets/lottie/loading.json',
@@ -36,4 +41,6 @@ export class DailyWordComponent implements OnInit {
 	ngOnInit() {
 		this.wtd.getDailyWord().then();
 	}
+
+  protected readonly utilHtml = LearnHtmlUtils;
 }
