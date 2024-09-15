@@ -27,6 +27,7 @@ describe('DailyWordService', () => {
 		const mockDailyWord: DailyWord = {
 			word: 'example',
 			language: Language.Spanish,
+			translationLanguage: Language.English,
 			definition: 'A sample definition',
 			example: 'This is an example sentence.',
 			translation: 'ejemplo',
