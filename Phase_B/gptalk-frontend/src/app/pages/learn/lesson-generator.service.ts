@@ -242,7 +242,7 @@ export class LessonGeneratorService {
 			numOfAnswers = 5;
 		}
 
-		return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its ${translationLanguage} translation, 'choices' is ${numOfAnswers} random words, not found in "answer". Focus on topic: ${topic}. {"answer": "", "choices:" [], "translation": ""}`;
+		return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its ${translationLanguage} translation, 'choices' is ${numOfAnswers} random words. Every word in 'choices' must not fit the sentence in 'answer'. Focus on topic: ${topic}. {"answer": "", "choices:" [], "translation": ""}`;
 	}
 
 	/**
@@ -359,7 +359,7 @@ export class LessonGeneratorService {
 			numOfPairs = 6;
 		}
 
-		return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Focus on topic: ${topic}. Follow this json structure: "correctPairs": { ["word","${secondWordLanguage}_translation"] }`;
+		return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Make sure there are no repeat words. Focus on topic: ${topic}. Follow this json structure: "correctPairs": { ["word","${secondWordLanguage}_translation"] }`;
 	}
 
 	/**
@@ -398,11 +398,8 @@ export class LessonGeneratorService {
 	 * @param topic a topic that is included in the prompt to improve result diversity
 	 */
 	generateMatchTheCategory(language: Language, difficulty: Difficulty, topic: string): string {
-		// If the lesson's language is English, the translation is to Hebrew.
-		// Otherwise, the translation is to  English
-		// const translationLanguage = language == Language.English ? Language.Hebrew : Language.English;
 
-		return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topic: ${topic} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
+		return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topic: ${topic}. The 2 categories must be different from each other in sch a way that each word only belongs to one of them. Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
 	}
 
 	/**
