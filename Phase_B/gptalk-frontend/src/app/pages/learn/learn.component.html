@@ -25,18 +25,26 @@
     <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
       <div class="next-btn-wrapper flex justify-content-end">
         @if (isExerciseDone() && !isLessonOver()) {
-          <p-button id="next-btn" label="Next" severity="primary" autofocus (onClick)="lrn.setUpNextExercise()"/>
+          <p-button
+            id="next-btn"
+            label="Next"
+            severity="primary"
+            autofocus (onClick)="lrn.setUpNextExercise()"
+          />
         }
       </div>
     </div>
 
     <!--  Exercise-specific instructions -->
-    @if (!isExerciseDone()) {
+<!--    @if (!isExerciseDone()) {-->
       <div class="instructions-wrapper flex justify-content-center">
         <!-- bypassSecurity pipe is used to utilize the string's HTML tags if they exist in the string     -->
-        <p [innerHTML]="exerciseData().instructions ? exerciseData().instructions : '' | bypassSecurity "></p>
+        <p
+          [innerHTML]="exerciseData().instructions ? exerciseData().instructions : '' | bypassSecurity "
+          [style.visibility]="!isExerciseDone() && !isLessonOver() ? 'visible' : 'hidden'"
+        ></p>
       </div>
-    }
+<!--    }-->
   }
 </div>
 }

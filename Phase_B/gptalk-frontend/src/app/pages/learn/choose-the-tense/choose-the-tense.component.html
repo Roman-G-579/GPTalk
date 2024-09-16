@@ -28,21 +28,14 @@
       />
       <p>{{choice.value}}</p>
     </div>
-
-<!--      <p-button-->
-<!--        class="tense-btn"-->
-<!--        -->
-<!--        label="{{choice.value}}"-->
-<!--        [raised]="true"-->
-<!--        severity="secondary"-->
-<!--        <i [class]="choice.icon" style="font-size: 1.6rem; padding-right: 8px;"></i>-->
-<!--      </p-button>-->
   }
 </div>
 
-@if (isExerciseDone()) {
-  <div class="translation-wrapper flex-row justify-content-center">
+  <div
+    class="translation-wrapper flex-row justify-content-center"
+    [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
+  >
     <p><b>Translation:</b></p>
     <p>{{exerciseData().translation}}</p>
   </div>
-}
+

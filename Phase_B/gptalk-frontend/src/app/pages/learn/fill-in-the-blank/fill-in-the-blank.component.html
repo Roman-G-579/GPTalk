@@ -41,8 +41,9 @@
     }
   </div>
 
-  @if (isExerciseDone()) {
-    <div class="translation-wrapper flex justify-content-center">
+    <div
+      class="translation-wrapper flex justify-content-center"
+      [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
+    >
       <p><b>Translation:</b> {{exerciseData().translation}}</p>
     </div>
-  }

@@ -52,14 +52,17 @@
           label="Submit"
           severity="primary"
           [disabled]="(categoryMatches().wordBank.length !== 0)"
-          (onClick)="lrn.setExerciseResult(vrf.verifyCategories(categoryMatches, exerciseData))"/>
+          (onClick)="lrn.setExerciseResult(vrf.verifyCategories(categoryMatches, exerciseData))"
+          [style.visibility]="!isExerciseDone() ? 'visible' : 'hidden'"
+        />
       }
     </div>
 
-    @if (isExerciseDone()) {
-      <div class="answer-wrapper flex flex-column text-center justify-content-center">
+      <div
+        class="answer-wrapper flex flex-column text-center justify-content-center"
+        [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
+      >
         <p>Actual answer:</p>
         <p><b>{{exerciseData().cat_a}}:</b> {{exerciseData().words_a?.join(', ')}}</p>
         <p><b>{{exerciseData().cat_b}}:</b> {{exerciseData().words_b?.join(', ')}}</p>
       </div>
-    }

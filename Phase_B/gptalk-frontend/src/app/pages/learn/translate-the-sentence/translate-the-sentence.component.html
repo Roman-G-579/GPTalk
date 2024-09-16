@@ -1,7 +1,7 @@
-    <div class="sentence-wrapper flex justify-content-center">
+    <div class="sentence-wrapper flex justify-content-center mb-4">
       <p style="text-transform: capitalize;">{{exerciseData().question}}</p>
     </div>
-    <div class="flex justify-content-center mb-2">
+    <div class="flex justify-content-center">
       <div
         #inputArea
         [contentEditable]="!isExerciseDone()"
@@ -15,7 +15,7 @@
       >
       </div>
     </div>
-    <div class="buttons-group flex">
+    <div class="buttons-group flex mt-2">
       @if (!isExerciseDone()) {
         <p-button
           id="submitTranslationBtn"
@@ -37,9 +37,9 @@
     <div class="hint-wrapper flex justify-content-start mt-2" [dir]="utilHtml.langDirection(lessonLanguage)">
       <p>{{hintText() ? 'Hint: ' + hintText() : ''}}</p>
     </div>
-    @if (isExerciseDone()) {
-      <div class="translation-wrapper flex justify-content-center flex-column text-center ">
+      <div class="translation-wrapper flex justify-content-center flex-column text-center "
+           [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
+      >
           <p><b>Translation:</b></p>
           <p>{{exerciseData().answer}}</p>
       </div>
-    }
