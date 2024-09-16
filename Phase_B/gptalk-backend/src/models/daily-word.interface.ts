@@ -42,7 +42,7 @@ const dailyWordSchema = new Schema(
 			type: String,
 			enum: LanguageEnum,
 			required: true,
-		}
+		},
 	},
 	{
 		timestamps: true,

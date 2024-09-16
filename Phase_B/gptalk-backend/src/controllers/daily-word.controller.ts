@@ -74,7 +74,8 @@ async function generateDailyWord() {
 		const language = languagesArr[randomIndex];
 
 		// If the word is in english, translation language is Hebrew. Otherwise, it's English.
-		const translationLanguage = language == LanguageEnum.English ? LanguageEnum.Hebrew : LanguageEnum.English;
+		const translationLanguage =
+			language == LanguageEnum.English ? LanguageEnum.Hebrew : LanguageEnum.English;
 
 		// Picks a random syntactic  term of the word
 		randomIndex = Math.floor(Math.random() * SYNTACTIC_TERMS.length);
