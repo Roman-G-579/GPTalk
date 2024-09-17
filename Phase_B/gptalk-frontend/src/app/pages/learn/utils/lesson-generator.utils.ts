@@ -3,12 +3,12 @@ import _ from 'lodash';
 import { ExerciseType } from '../../../core/enums/exercise-type.enum';
 import { TOPICS } from '../../../core/utils/topics';
 import {
-  FUTURE_TENSE_ENG,
-  PRESENT_TENSE_ENG,
-  PAST_TENSE_ENG,
-  HEADINGS_MAP, INSTRUCTIONS_MAP,
+	FUTURE_TENSE_ENG,
+	PRESENT_TENSE_ENG,
+	PAST_TENSE_ENG,
+	HEADINGS_MAP,
+	INSTRUCTIONS_MAP,
 } from '../../../core/utils/exerciseSpecificConsts';
-
 
 /*
   Contains functions related to lesson generation

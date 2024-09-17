@@ -10,9 +10,10 @@ import { forkJoin, map, Observable, of } from 'rxjs';
 import { ExerciseType } from '../../core/enums/exercise-type.enum';
 import { cloneDeep } from 'lodash';
 import {
-  CONVERSATION_STARTERS,
-  REPLY_MISTAKE_TYPES, SUMMARY_MISTAKE_TYPES,
-  TENSE_TYPES,
+	CONVERSATION_STARTERS,
+	REPLY_MISTAKE_TYPES,
+	SUMMARY_MISTAKE_TYPES,
+	TENSE_TYPES,
 } from '../../core/utils/exerciseSpecificConsts';
 
 @Injectable({
@@ -398,7 +399,6 @@ export class LessonGeneratorService {
 	 * @param topic a topic that is included in the prompt to improve result diversity
 	 */
 	generateMatchTheCategory(language: Language, difficulty: Difficulty, topic: string): string {
-
 		return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topic: ${topic}. The 2 categories must be different from each other in sch a way that each word only belongs to one of them. Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
 	}
 
@@ -417,9 +417,9 @@ export class LessonGeneratorService {
 		const translationLanguage =
 			paragraphLanguage == Language.English ? Language.Hebrew : Language.English;
 
-    // Sets mistake type for the wrong paragraph summary
-    let randomIndex = Math.floor(Math.random() * SUMMARY_MISTAKE_TYPES.length);
-    const mistakeType = SUMMARY_MISTAKE_TYPES[randomIndex];
+		// Sets mistake type for the wrong paragraph summary
+		let randomIndex = Math.floor(Math.random() * SUMMARY_MISTAKE_TYPES.length);
+		const mistakeType = SUMMARY_MISTAKE_TYPES[randomIndex];
 
 		// Parameters for novice difficulty
 		if (difficulty == Difficulty.Novice) {
