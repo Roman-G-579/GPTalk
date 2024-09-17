@@ -10,9 +10,9 @@ import { forkJoin, map, Observable, of } from 'rxjs';
 import { ExerciseType } from '../../core/enums/exercise-type.enum';
 import { cloneDeep } from 'lodash';
 import {
-	CONVERSATION_STARTERS,
-	MISTAKE_TYPES,
-	TENSE_TYPES,
+  CONVERSATION_STARTERS,
+  REPLY_MISTAKE_TYPES, SUMMARY_MISTAKE_TYPES,
+  TENSE_TYPES,
 } from '../../core/utils/exerciseSpecificConsts';
 
 @Injectable({
@@ -33,7 +33,7 @@ export class LessonGeneratorService {
 		type: ExerciseType.FillInTheBlank,
 		answer: 'Planes are faster than cars',
 		choices: ['cat', 'table', 'cloud'],
-		translation: 'מטוסים מהירים יותר ממכוניות',
+		translation: 'מטוסים מהירים יותר ממכוניות.',
 	};
 
 	mockExercise_TranslateWord: Exercise = {
@@ -51,7 +51,7 @@ export class LessonGeneratorService {
 	mockExercise_TranslateSentence: Exercise = {
 		type: ExerciseType.TranslateTheSentence,
 		question: 'I love climbing mountains',
-		answer: 'אני אוהב לטפס על הרים',
+		answer: 'אני אוהב לטפס על הרים.',
 	};
 
 	mockExercise_TranslateSentence_2: Exercise = {
@@ -62,7 +62,7 @@ export class LessonGeneratorService {
 
 	mockExercise_TranslateSentence_ENG: Exercise = {
 		type: ExerciseType.TranslateTheSentence,
-		question: 'מטוסים מהירים יותר ממכוניות',
+		question: 'מטוסים מהירים יותר ממכוניות.',
 		answer: 'Planes are faster than cars.',
 	};
 
@@ -114,7 +114,7 @@ export class LessonGeneratorService {
 	mockExercise_ReorderSentence_ENG: Exercise = {
 		type: ExerciseType.ReorderSentence,
 		answer: 'The fish are swimming in our pond',
-		translation: 'הדגים שוחים בנחל שלנו',
+		translation: 'הדגים שוחים בנחל. הנחל הזה שלנו.',
 	};
 	//
 	mockExercise_MatchTheCategory: Exercise = {
@@ -313,8 +313,8 @@ export class LessonGeneratorService {
 		let randomIndex: number = Math.floor(Math.random() * CONVERSATION_STARTERS.length);
 		const conversationStarter = CONVERSATION_STARTERS[randomIndex];
 
-		randomIndex = Math.floor(Math.random() * MISTAKE_TYPES.length);
-		const mistakeType = MISTAKE_TYPES[randomIndex];
+		randomIndex = Math.floor(Math.random() * REPLY_MISTAKE_TYPES.length);
+		const mistakeType = REPLY_MISTAKE_TYPES[randomIndex];
 
 		// Parameters for novice difficulty
 		if (difficulty == Difficulty.Novice) {
@@ -417,6 +417,10 @@ export class LessonGeneratorService {
 		const translationLanguage =
 			paragraphLanguage == Language.English ? Language.Hebrew : Language.English;
 
+    // Sets mistake type for the wrong paragraph summary
+    let randomIndex = Math.floor(Math.random() * SUMMARY_MISTAKE_TYPES.length);
+    const mistakeType = SUMMARY_MISTAKE_TYPES[randomIndex];
+
 		// Parameters for novice difficulty
 		if (difficulty == Difficulty.Novice) {
 			paragraphLengthLimit = 100;
@@ -430,7 +434,7 @@ export class LessonGeneratorService {
 			paragraphLengthLimit = 250;
 		}
 
-		return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. Paragraph will have up to ${paragraphLengthLimit} words. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: ${topic}. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_${translationLanguage} }`;
+		return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. Paragraph will have up to ${paragraphLengthLimit} words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a ${mistakeType} mistake. summaries are in ${paragraphLanguage}. Translation string is up to 50 words. Focus on topic: ${topic}. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_${translationLanguage} }`;
 	}
 
 	/**
