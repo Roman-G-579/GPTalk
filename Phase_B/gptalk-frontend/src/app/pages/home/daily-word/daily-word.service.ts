@@ -38,6 +38,8 @@ export class DailyWordService {
 				this.dailyWord.set(data);
 				this.language.set(data.language);
 				this.translationLanguage.set(data.translationLanguage);
+        console.log(this.language())
+        console.log(this.translationLanguage())
 				this.isLoading.set(false);
 			},
 			error: (err: unknown) => {

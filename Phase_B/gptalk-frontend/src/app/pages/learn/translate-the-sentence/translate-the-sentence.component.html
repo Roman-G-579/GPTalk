@@ -5,7 +5,7 @@
       <div
         #inputArea
         [contentEditable]="!isExerciseDone()"
-        [dir]="utilHtml.langDirection(lessonLanguage)"
+        [class.hebrew-text]="lessonLanguage() === 'Hebrew'"
         autofocus
         class="sentence-input-area flex-grow-1 flex-wrap"
         id="inputArea"
@@ -34,12 +34,14 @@
       }
     </div>
 
-    <div class="hint-wrapper flex justify-content-start mt-2" [dir]="utilHtml.langDirection(lessonLanguage)">
+    <div class="hint-wrapper flex justify-content-start mt-2" [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
       <p>{{hintText() ? 'Hint: ' + hintText() : ''}}</p>
     </div>
       <div class="translation-wrapper flex justify-content-center flex-column text-center "
            [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
       >
           <p><b>Translation:</b></p>
-          <p>{{exerciseData().answer}}</p>
+          <p [class.hebrew-text]="lessonLanguage() === 'English'">
+            {{exerciseData().answer}}
+          </p>
       </div>

@@ -1,5 +1,4 @@
 <div class="paragraph-wrapper flex justify-content-center gap-3 mb-4"
-     [dir]="utilHtml.langDirection(lessonLanguage)"
      [class.latin-text] = "lessonLanguage() !== 'Hebrew'"
      [class.hebrew-text] = "lessonLanguage() === 'Hebrew'"
 >
@@ -31,6 +30,8 @@
     [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
   >
     <p><b>Translation:</b></p>
-    <p>{{exerciseData().translation}}</p>
+    <p [class.hebrew-text]="lessonLanguage() === 'English'">
+      {{exerciseData().translation}}
+    </p>
   </div>
 

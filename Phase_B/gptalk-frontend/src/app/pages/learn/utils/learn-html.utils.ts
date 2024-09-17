@@ -26,16 +26,6 @@ export class LearnHtmlUtils {
 	}
 
 	/**
-	 * Returns 'rtl' to alter the text direction of the element that called the function
-	 * if the given language is a right-to-left one (hebrew)
-	 * @returns DOM directionality
-	 * @param language the current lesson's language
-	 */
-	static langDirection(language: WritableSignal<Language>) {
-		return language() === Language.Hebrew ? 'rtl' : 'ltr';
-	}
-
-	/**
 	 * Compares the user's input and the actual answer, and highlights words
 	 * that do not match the exercise's answer
 	 * @param inputText the text entered by the user

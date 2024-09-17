@@ -1,4 +1,4 @@
-<div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [dir]="utilHtml.langDirection(lessonLanguage)">
+<div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
   <!--   Chosen words   -->
   @for (word of chosenWords(); track word; let idx = $index) {
     <p-button
@@ -48,5 +48,5 @@
     <p><b>Answer:</b></p>
     <p>{{exerciseData().answer}}</p>
     <p><b>Translation:</b></p>
-    <p>{{exerciseData().translation}}</p>
+    <p [class.hebrew-text]="lessonLanguage() === 'English'">{{exerciseData().translation}}</p>
   </div>

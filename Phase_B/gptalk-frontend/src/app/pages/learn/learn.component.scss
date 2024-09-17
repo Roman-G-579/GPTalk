@@ -44,7 +44,9 @@
   & button {
     font-size: 36px;
     word-wrap: break-word;
-    text-transform: capitalize;
+    ::ng-deep .p-button-label:first-letter {
+      text-transform: uppercase;
+    }
   }
 
   & .next-btn-wrapper {

@@ -19,10 +19,13 @@
   }
 }
 
-.hebrew-text p:first-letter{
+.hebrew-text {
+  direction: rtl;
+  & p:first-letter {
   font-size: 4.5rem;
   float: right;
   margin-top: .5rem;
   margin-left: 0.4rem;
   line-height: .7;
+  }
 }

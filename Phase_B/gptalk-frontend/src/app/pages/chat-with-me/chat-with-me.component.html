@@ -3,7 +3,7 @@
   <app-language-select (languageSelectionEvent)="setLanguage($event)"></app-language-select>
 } @else {
 	<div class="messages-wrapper">
-    <div class="messages" [dir]="utilHtml.langDirection(language)">
+    <div class="messages" [class.hebrew-text]="language() === 'Hebrew'">
       @for (message of conversation(); track message) {
         <div
           class="message text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round"
@@ -37,7 +37,7 @@
 			class="input p-3 md:p-4 w-full lg:p-6 flex flex-column sm:flex-row align-items-center border-top-1 surface-border gap-3"
 		>
 			<input
-        [dir]="utilHtml.langDirection(language)"
+        [class.hebrew-text]="language() === 'Hebrew'"
 				id="message"
 				type="text"
 				pInputText
