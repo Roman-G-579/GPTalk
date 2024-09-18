@@ -111,7 +111,7 @@ describe('LessonGeneratorService', () => {
 
 			// Check the output format
 			expect(result).toMatch(
-				`generate an object in English, Novice difficulty. 'answer' is the sentence, 'translation' is its Hebrew translation, 'choices' is 3 random words, not found in "answer". Focus on topic: technology. {"answer": "", "choices:" [], "translation": ""}`,
+				`generate an object in English, Novice difficulty. 'answer' is the sentence, 'translation' is its Hebrew translation, 'choices' is 3 random words. Every word in 'choices' must not fit the sentence in 'answer'. Focus on topic: technology. {"answer": "", "choices:" [], "translation": ""}`,
 			);
 		});
 	});
@@ -159,7 +159,7 @@ describe('LessonGeneratorService', () => {
 			const result = lessonGeneratorService.generateMatchTheWords(language, difficulty, topic);
 
 			expect(result).toMatch(
-				`Generate an array of word pairs in English, Novice difficulty. 4 pairs. Focus on topic: technology. Follow this json structure: "correctPairs": { ["word","Hebrew_translation"] }`,
+				`Generate an array of word pairs in English, Novice difficulty. 4 pairs. Make sure there are no repeat words. Focus on topic: technology. Follow this json structure: "correctPairs": { ["word","Hebrew_translation"] }`,
 			);
 		});
 	});
@@ -179,7 +179,7 @@ describe('LessonGeneratorService', () => {
 			const result = lessonGeneratorService.generateMatchTheCategory(language, difficulty, topic);
 
 			expect(result).toMatch(
-				`Generate 2 distinct categories and 4 words for each, in English, Novice difficulty. Focus on topic: technology Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`,
+				`Generate 2 distinct categories and 4 words for each, in English, Novice difficulty. Focus on topic: technology. The 2 categories must be different from each other in sch a way that each word only belongs to one of them. Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`,
 			);
 		});
 	});
@@ -192,9 +192,13 @@ describe('LessonGeneratorService', () => {
 				topic,
 			);
 
-			expect(result).toMatch(
-				`generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: technology. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_Hebrew }`,
-			);
+      const possibleStrings = [
+        `generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a relevancy mistake. summaries are in English. Translation string is up to 50 words. Focus on topic: technology. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_Hebrew }`,
+        `generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a incorrect key points mistake. summaries are in English. Translation string is up to 50 words. Focus on topic: technology. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_Hebrew }`,
+        `generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a misinterpretation mistake. summaries are in English. Translation string is up to 50 words. Focus on topic: technology. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_Hebrew }`,
+      ];
+
+      expect(possibleStrings).toContain(result);
 		});
 	});
 
