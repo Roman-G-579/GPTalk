@@ -4,11 +4,16 @@
 	padding: 1.5rem 2.5rem;
 }
 
+.prompt-btn-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+}
 ::ng-deep .prompt-btn {
   background: transparent;
   color: var(--primary-clr);
   border: var(--primary-clr);
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: normal;
 }
 
@@ -64,4 +69,25 @@
 	& span {
 		font-size: 1.5rem;
 	}
+}
+
+@media (max-width: 1024px) {
+  .messages-wrapper {
+    height: 100vh;
+  }
+
+  ::ng-deep ng-lottie {
+    width: 10rem;
+  }
+
+  .prompt-btn-wrapper {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 0.5rem;
+    margin-top: 4rem;
+  }
+  ::ng-deep .prompt-btn {
+    font-size: 0.8rem;
+    min-height: 72px;
+  }
 }

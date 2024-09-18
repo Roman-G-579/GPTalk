@@ -18,3 +18,9 @@
 
   }
 }
+
+@media (max-width: 1024px) {
+  .translation-wrapper p {
+    font-size: var(--tm);
+  }
+}

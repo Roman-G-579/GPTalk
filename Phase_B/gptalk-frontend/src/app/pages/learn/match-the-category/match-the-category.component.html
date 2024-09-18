@@ -1,12 +1,14 @@
-    <div class="match-the-category-wrapper flex justify-content-center flex-row text-center mb-2 gap-4 ">
+<main>
+    <div class="match-the-category-wrapper flex justify-content-center flex-row text-center mb-2 lg:gap-4 gap-1 ">
       <!-- Category 1 container -->
-      <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(0)">
+      <div class="container p-2 lg:w-15rem drop-column" pDroppable (onDrop)="drop(0)" (click)="drop(0)">
         <p class="text-center surface-border border-bottom-1 font-bold">{{exerciseData().cat_a}}</p>
         <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().cat1"
             class="p-2 border-round shadow-1"
             pDraggable
+            (click)="!isExerciseDone() && dragStart(word)"
             (onDragStart)="!isExerciseDone() && dragStart(word)"
             (onDragEnd)="dragEnd()">
             {{word}}
@@ -15,12 +17,13 @@
       </div>
 
       <!-- Word Bank -->
-      <div class="p-2 border-3 surface-border border-round h-auto w-15rem">
+      <div class="container p-2 border-3 surface-border border-round h-auto lg:w-15rem">
         <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().wordBank"
             class="p-2 border-round shadow-1"
             pDraggable
+            (click)="!isExerciseDone() && dragStart(word)"
             (onDragStart)="dragStart(word)"
             (onDragEnd)="dragEnd()">
             {{word}}
@@ -29,13 +32,14 @@
       </div>
 
       <!-- Category 2 container -->
-      <div class="p-2 w-15rem drop-column" pDroppable (onDrop)="drop(1)">
+      <div class="container p-2 lg:w-15rem drop-column" pDroppable (onDrop)="drop(1)" (click)="drop(1)">
         <p class="text-center surface-border border-bottom-1 font-bold">{{exerciseData().cat_b}}</p>
         <ul class="list-none flex flex-column gap-2 p-0 m-0">
           <li
             *ngFor="let word of categoryMatches().cat2"
             class="p-2 border-round shadow-1"
             pDraggable
+            (click)="!isExerciseDone() && dragStart(word)"
             (onDragStart)="!isExerciseDone() && dragStart(word)"
             (onDragEnd)="dragEnd()">
             {{word}}
@@ -66,3 +70,4 @@
         <p><b>{{exerciseData().cat_a}}:</b> {{exerciseData().words_a?.join(', ')}}</p>
         <p><b>{{exerciseData().cat_b}}:</b> {{exerciseData().words_b?.join(', ')}}</p>
       </div>
+</main>

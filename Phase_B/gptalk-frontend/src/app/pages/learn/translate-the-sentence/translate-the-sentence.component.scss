@@ -26,3 +26,18 @@
 .hint-wrapper, .sentence-wrapper {
   font-size: 26px;
 }
+
+@media (max-width: 1024px) {
+  .sentence-wrapper, .hint-wrapper {
+    font-size: var(--tm);
+  }
+
+  .sentence-input-area {
+    font-size: var(--tm);
+    max-width: 100%;
+  }
+
+  .translation-wrapper p {
+    font-size: var(--tm);
+  }
+}

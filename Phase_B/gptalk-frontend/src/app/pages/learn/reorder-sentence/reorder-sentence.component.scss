@@ -1,3 +1,5 @@
-.buttons-group {
-  height: 70px;
+@media (max-width: 1024px) {
+  .translation-wrapper p {
+    font-size: var(--tm);
+  }
 }

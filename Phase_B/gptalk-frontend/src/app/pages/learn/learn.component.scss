@@ -5,6 +5,7 @@
   font-family: Poppins, sans-serif;
   color: var(--primary-clr);
   --t: 1.6rem; // standard text size
+  --tm: 1.2rem; // mobile-friendly text size
   --t_large: 1.8rem;
 }
 
@@ -42,7 +43,7 @@
   transition: all 0.25s ease;
 
   & button {
-    font-size: 36px;
+    font-size: 2.25rem;
     word-wrap: break-word;
     ::ng-deep .p-button-label:first-letter {
       text-transform: uppercase;
@@ -95,4 +96,32 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .wrapper {
+    margin-top: 2rem;
+  }
 
+  .heading-wrapper {
+    font-size: 1.5rem;
+  }
+
+  ::ng-deep .buttons-group{
+    & button {
+      font-size: 1.3rem;
+    }
+
+    & .next-btn-wrapper button {
+      width: 30vw;
+    }
+  }
+
+  .wrapper {
+    height: 88dvh;
+  }
+}
+
+@media (max-width: 380px) {
+  .wrapper {
+    height: 120dvh;
+  }
+}

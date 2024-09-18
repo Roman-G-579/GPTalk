@@ -122,7 +122,7 @@ export class LessonGeneratorService {
 		type: ExerciseType.MatchTheCategory,
 		cat_a: 'חיות',
 		cat_b: 'פירות',
-		words_a: ['כלב', 'חתול', 'זאב', 'סוס'],
+		words_a: ['כלב', 'ארמדילו', 'חזיר בר אירופי', 'ליוייתן'],
 		words_b: ['תפוח', 'בננה', 'ענבים', 'תפוז'],
 	};
 
@@ -131,7 +131,7 @@ export class LessonGeneratorService {
 		cat_a: 'Air vehicles',
 		cat_b: 'Land vehicles',
 		words_a: ['helicopter', 'airplane', 'glider', 'hot air balloon'],
-		words_b: ['car', 'bike', 'truck', 'snowmobile'],
+		words_b: ['car', 'bike', 'truck', 'snowmobileeeeeeeeee'],
 	};
 
 	mockExercise_SummarizeTheParagraph: Exercise = {
@@ -191,7 +191,7 @@ export class LessonGeneratorService {
 		for (let i = 0; i < amount; i++) {
 			// Choose a random exercise index
 			const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-			// const randomIndex: number = 4;
+			// const randomIndex: number = i;
 
 			// The Chosen function
 			const generatorFunc = exerciseGenerators[randomIndex];
@@ -469,6 +469,6 @@ export class LessonGeneratorService {
 		return this.http.post(href, { userPrompt: promptString });
 
 		// MOCK DATA
-		// return of(cloneDeep(this.mockExercise_MatchTheWords));
+		// return of(cloneDeep(this.mockExercise_MatchTheCategory_ENG));
 	}
 }

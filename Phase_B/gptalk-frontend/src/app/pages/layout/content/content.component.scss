@@ -10,3 +10,9 @@ main {
   border-radius: 6px;
   padding: 4rem 2rem;
 }
+
+@media (max-width: 1024px) {
+  main {
+    padding: 1rem 0.5rem;
+  }
+}

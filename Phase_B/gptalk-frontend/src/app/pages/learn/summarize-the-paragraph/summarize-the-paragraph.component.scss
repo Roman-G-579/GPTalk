@@ -1,5 +1,6 @@
 .paragraph-wrapper {
   padding: 8px;
+  font-size: 24px;
   border-style: solid;
   border-color: var(--surface-300);
   border-radius: 10px;
@@ -27,5 +28,32 @@
   margin-top: .5rem;
   margin-left: 0.4rem;
   line-height: .7;
+  }
+}
+
+@media (max-width: 1024px) {
+
+  .paragraph-wrapper {
+    padding: 4px;
+    & p {
+      font-size: 0.9rem;
+    }
+
+  }
+
+  ::ng-deep .buttons-group button {
+    font-size: 0.8rem;
+
+    span {
+      font-weight: normal;
+    }
+  }
+
+  .translation-wrapper p {
+    font-size: 0.8rem;
+  }
+
+  main {
+    height: 70vh;
   }
 }

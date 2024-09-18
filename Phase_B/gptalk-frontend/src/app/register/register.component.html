@@ -24,9 +24,9 @@
     ></path>
   </svg>
   <div class="form-wrapper">
-    <form class="register-content flex flex-column md:flex-row" [formGroup]="registerForm">
+    <form class="register-content lg:flex flex-column lg:flex-row" [formGroup]="registerForm">
     <!--  LEFT PANEL-->
-        <div class="w-3 flex flex-column justify-content-between">
+        <div class="left-panel-wrapper w-3 flex flex-column justify-content-between">
           <div>
             <p-image
               class="img-logo"
@@ -199,7 +199,7 @@
             </ng-template>
           </p-stepperPanel>
         </p-stepper>
-
+      <p class="text-login-link-mobile">Already have an account? <a href="/login">Login</a></p>
       </form>
   </div>
 </div>

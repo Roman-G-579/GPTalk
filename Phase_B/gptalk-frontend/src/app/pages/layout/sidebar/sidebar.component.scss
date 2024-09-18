@@ -12,7 +12,7 @@
 }
 
 img {
-  width: 17rem;
+  width: 120%;
 }
 
 nav {
@@ -47,5 +47,58 @@ nav {
 
   & span, & i {
     color: var(--accent-text-clr);
+  }
+}
+
+.mobile-logo {
+    visibility: hidden;
+
+}
+
+::ng-deep .p-sidebar {
+  background-color: var(--primary-clr);
+  padding: 1rem 1rem;
+
+  img {
+    width: 70%;
+  }
+}
+
+::ng-deep .sidebar-btn {
+  background-color: var(--primary-clr);
+  color: var(--primary-text-clr);
+  border: none;
+  visibility: hidden;
+  padding: 0 2rem;
+  align-items: end;
+}
+
+@media (max-width: 1300px) {
+  .logo {
+    width: 10vw;
+    content: url('/assets/GPTalk_logo_white.svg');
+  }
+  .content {
+    nav {
+      font-size: 2vw;
+
+      i {
+        display: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  :host {
+    padding: 0;
+  }
+
+  ::ng-deep .sidebar-btn, .mobile-logo  {
+    visibility: visible;
+  }
+
+  .content {
+    display: none;
   }
 }

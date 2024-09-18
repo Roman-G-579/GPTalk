@@ -1,7 +1,7 @@
 @if (lessonLanguage() === Language.NOT_SELECTED && !isLessonOver()) {
     <app-language-select (languageSelectionEvent)="callGenerator($event)"></app-language-select>
 } @else {
-<div class="wrapper w-full w-10">
+<div class="wrapper w-full w-12 lg:w-10">
   @if(isLoading()) {
     <div class="loading-wrapper">
       <ng-lottie [options]="loadingOptions"></ng-lottie>
@@ -36,15 +36,14 @@
     </div>
 
     <!--  Exercise-specific instructions -->
-<!--    @if (!isExerciseDone()) {-->
       <div class="instructions-wrapper flex justify-content-center">
         <!-- bypassSecurity pipe is used to utilize the string's HTML tags if they exist in the string     -->
         <p
           [innerHTML]="exerciseData().instructions ? exerciseData().instructions : '' | bypassSecurity "
           [style.visibility]="!isExerciseDone() && !isLessonOver() ? 'visible' : 'hidden'"
+          class="text-center"
         ></p>
       </div>
-<!--    }-->
   }
 </div>
 }

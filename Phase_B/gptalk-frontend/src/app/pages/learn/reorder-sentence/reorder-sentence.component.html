@@ -1,4 +1,4 @@
-<div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
+<div class="buttons-group gap-2 flex flex-wrap lg:flex-grow-1 flex-grow-0  justify-content-center mb-4" [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
   <!--   Chosen words   -->
   @for (word of chosenWords(); track word; let idx = $index) {
     <p-button
@@ -14,10 +14,10 @@
 </div>
 
 <!--  Choices  -->
-<div class="buttons-group flex overflow-hidden gap-4 mb-6">
+<div class="buttons-group flex flex-wrap lg:flex-grow-1 flex-grow-0 justify-content-center overflow-hidden lg:gap-4 mb-4 gap-1">
   @for (choice of exerciseData().choices; track choice; let idx = $index) {
     <p-button
-      class="flex-grow-1 flex flex-column justify-content-center"
+      class="flex flex-column"
       [styleClass]=
         "isExerciseDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect')
                :

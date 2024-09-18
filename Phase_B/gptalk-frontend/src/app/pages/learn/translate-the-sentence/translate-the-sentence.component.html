@@ -1,5 +1,9 @@
     <div class="sentence-wrapper flex justify-content-center mb-4">
-      <p style="text-transform: capitalize;">{{exerciseData().question}}</p>
+      <p
+        [class.hebrew-text]="lessonLanguage() === 'English'"
+        style="text-transform: capitalize;">
+        {{exerciseData().question}}
+      </p>
     </div>
     <div class="flex justify-content-center">
       <div
@@ -41,7 +45,7 @@
            [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
       >
           <p><b>Translation:</b></p>
-          <p [class.hebrew-text]="lessonLanguage() === 'English'">
+          <p [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
             {{exerciseData().answer}}
           </p>
       </div>

@@ -23,3 +23,9 @@ img {
   width: 7rem;
   margin-bottom: 1rem;
 }
+
+@media (max-width: 1024px) {
+  img {
+    width: 10rem;
+  }
+}

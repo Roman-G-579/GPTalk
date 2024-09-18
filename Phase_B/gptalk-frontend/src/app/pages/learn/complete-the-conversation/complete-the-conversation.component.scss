@@ -45,3 +45,24 @@
   place-self: auto;
   background: var(--blue-500);
 }
+
+
+@media (max-width: 1024px) {
+  .right, .left {
+    width: 80%;
+    font-size: var(--tm);
+  }
+
+  .chat-input-field {
+    font-size: var(--tm);
+  }
+
+  .translation-wrapper {
+    text-align: center;
+
+    & p {
+      font-size: 1rem;
+    }
+  }
+
+}

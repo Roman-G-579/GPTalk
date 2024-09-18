@@ -4,7 +4,7 @@
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 1600 800"
 		preserveAspectRatio="none"
-		class="fixed left-0 top-0 min-h-screen min-w-screen"
+		class="fixed left-0 top-0 lg:min-h-screen min-h-full min-w-screen"
 	>
 		<rect width="1600" height="800" fill="#282960"></rect>
 		<path
@@ -31,9 +31,16 @@
 			alt="GPTalk logo"
 			width="250"
 		/>
+
 		<p-divider layout="vertical" />
 		<ng-container>
 			<form [formGroup]="loginForm" (ngSubmit)="login()">
+        <p-image
+          class="img-logo-mobile"
+          src="/assets/GPTalk_Logo_Wide_Dark.svg"
+          alt="GPTalk logo"
+          width="300px"
+        />
         <h1>Login</h1>
 				<p-floatLabel>
 					<input id="email" type="email" pInputText formControlName="email" />

@@ -1,29 +1,30 @@
-<div class="paragraph-wrapper flex justify-content-center gap-3 mb-4"
-     [class.latin-text] = "lessonLanguage() !== 'Hebrew'"
-     [class.hebrew-text] = "lessonLanguage() === 'Hebrew'"
->
-  <p style="font-size: 24px">{{exerciseData().prompt}} </p>
-</div>
+<main>
+  <div class="paragraph-wrapper flex justify-content-center gap-3 mb-4"
+       [class.latin-text] = "lessonLanguage() !== 'Hebrew'"
+       [class.hebrew-text] = "lessonLanguage() === 'Hebrew'"
+  >
+    <p>{{exerciseData().prompt}} </p>
+  </div>
 
-<div class="buttons-group p-fluid grid-12 gap-2 mb-3">
-  @for (choice of exerciseData().choices; track choice) {
-    <div class="col-12">
-      <p-button
-        [styleClass]="
+  <div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+    @for (choice of exerciseData().choices; track choice) {
+      <div class="col-12">
+        <p-button
+          [styleClass]="
             isExerciseDone() ? (
               utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
               :
               'btn-incorrect'
             ) : ''
             "
-        id="{{choice}}"
-        label="{{choice}}"
-        [raised]="true"
-        severity="secondary"
-        (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
-    </div>
-  }
-</div>
+          id="{{choice}}"
+          label="{{choice}}"
+          [raised]="true"
+          severity="secondary"
+          (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
+      </div>
+    }
+  </div>
 
   <div
     class="translation-wrapper flex-row justify-content-center"
@@ -34,4 +35,6 @@
       {{exerciseData().translation}}
     </p>
   </div>
+</main>
+
 

@@ -36,3 +36,25 @@
 .buttons-group {
  height: 70px;
 }
+
+@media (max-width: 1024px) {
+  main {
+    height: 60vh;
+  }
+  .match-the-category-wrapper {
+    font-size: 0.8rem;
+    height: 55vh;
+  }
+
+  li {
+    overflow-wrap: break-word;
+  }
+
+  .container {
+    min-width: 33%;
+  }
+
+  .answer-wrapper {
+    margin-top: 3rem;
+  }
+}
