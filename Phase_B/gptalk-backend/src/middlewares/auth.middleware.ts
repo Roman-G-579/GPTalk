@@ -16,7 +16,7 @@ interface AuthenticatedRequest extends Request {
 /**
  * Middleware to authenticate users using JWT strategy and passport.
  * Adds the user to the request object, calculates their total experience (exp) and languages, and logs their visit.
- * 
+ *
  * @param req - The HTTP request object, extended to include the authenticated user.
  * @param res - The HTTP response object used to send any error or unauthorized status.
  * @param next - The next middleware function in the Express pipeline.
@@ -59,7 +59,7 @@ export const authMiddleware = async (
 /**
  * Logs the user's visit to the system if they haven't already visited today.
  * Creates a log entry if no visit is found for the current day.
- * 
+ *
  * @param user - The authenticated user object.
  * @returns Creates a visit log entry for the user if they haven't visited today.
  */

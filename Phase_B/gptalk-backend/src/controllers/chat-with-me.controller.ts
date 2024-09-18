@@ -11,7 +11,7 @@ const openai = new OpenAi({ apiKey: Config.OPENAI_API_KEY }); // Initialize Open
 /**
  * Middleware to handle chat interactions between the user and the AI language tutor.
  * The user provides a prompt, and the AI responds based on the selected language.
- * 
+ *
  * @param req - The HTTP request object containing the user prompt, selected language, and conversation history.
  * @param res - The HTTP response object used to send the AI's response.
  * @param next - The next middleware function in the Express pipeline.
@@ -53,7 +53,7 @@ export async function chatWithMeMiddleware(req: Request, res: Response, next: Ne
 /**
  * Middleware to grade a chat conversation between the user and the AI language tutor.
  * The AI grades the user's performance based on their responses and provides feedback.
- * 
+ *
  * @param req - The HTTP request object containing the conversation history and selected language.
  * @param res - The HTTP response object used to send the grading result.
  * @param next - The next middleware function in the Express pipeline.
@@ -103,7 +103,7 @@ export async function gradeChatMiddleware(req: Request, res: Response, next: Nex
 
 /**
  * Saves the result of a conversation (including experience points) to the database.
- * 
+ *
  * @param expReward - The experience points earned from the conversation.
  * @param user - The user object (includes user ID).
  * @param language - The language in which the conversation took place.
@@ -121,7 +121,7 @@ async function saveToDb(expReward: number, user: User, language: LanguageEnum) {
 /**
  * Calculates the session experience points (exp) based on the length of the conversation.
  * The longer the conversation, the larger the experience bonus.
- * 
+ *
  * @param grade - The grade value given by the chatbot (1 to 100).
  * @param convLen - The length of the conversation (number of exchanged messages).
  * @returns Returns the calculated experience points for the session.

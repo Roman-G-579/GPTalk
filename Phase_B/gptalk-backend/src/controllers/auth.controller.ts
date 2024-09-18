@@ -9,7 +9,7 @@ import { calculateTotalExp, calculateUserLanguages } from './user-profile.contro
 /**
  * Middleware to authenticate a user by email and password.
  * Generates a JWT token if authentication is successful.
- * 
+ *
  * @param req - The HTTP request object containing the email and password in the body.
  * @param res - The HTTP response object used to send the token and user details.
  * @param next - The next middleware function in the Express pipeline.
@@ -61,7 +61,7 @@ export async function loginMiddleware(req: Request, res: Response, next: NextFun
 
 /**
  * Middleware to retrieve the authenticated user's data based on their JWT token.
- * 
+ *
  * @param req - The HTTP request object, containing the user info from the token.
  * @param res - The HTTP response object used to send the user's information.
  * @param next - The next middleware function in the Express pipeline.

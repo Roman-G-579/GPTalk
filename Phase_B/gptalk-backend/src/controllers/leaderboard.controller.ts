@@ -3,9 +3,9 @@ import { ResultModel } from '../models/result.interface';
 import { PipelineStage } from 'mongoose';
 
 /**
- * Fetches and sorts users in the database by their total experience points (exp) 
+ * Fetches and sorts users in the database by their total experience points (exp)
  * in the given language, and returns the top users.
- * 
+ *
  * @param req - The HTTP request object, including the language in the request header.
  * @param res - The HTTP response object used to send the top users data.
  * @param next - The next middleware function in the Express pipeline.
@@ -82,7 +82,7 @@ export async function getTopUsers(req: Request, res: Response, next: NextFunctio
 /**
  * Retrieves the top 3 users from the user experience array.
  * If there are fewer than 3 users, null values are added to fill the array.
- * 
+ *
  * @param userExp - The array of user experience data.
  * @returns Returns an array of the top 3 users or null if fewer users are available.
  */
@@ -100,7 +100,7 @@ function getTop3Users(userExp: Object[]) {
 /**
  * Retrieves users ranked 4th to 10th from the user experience array.
  * If there are fewer than 7 users in this range, null values are added to fill the array.
- * 
+ *
  * @param userExp - The array of user experience data.
  * @returns Returns an array of users ranked 4th to 10th or null if fewer users are available.
  */

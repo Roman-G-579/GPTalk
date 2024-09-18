@@ -8,7 +8,7 @@ import { UserModel } from '../models/user.interface';
 import { VisitLogModel } from '../models/visit-log.interface';
 import { Result, ResultModel } from '../models/result.interface';
 import { UserProfile } from '../models/user-profile.interface';
-import { LessonModel } from '../models/lesson.interface';	
+import { LessonModel } from '../models/lesson.interface';
 import { Language } from '../models/language.interface';
 import { UserAchievement } from '../models/user-achievment.interface';
 import { RankEnum } from '../models/enums/rank.enum';
