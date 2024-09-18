@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -37,28 +38,38 @@ export class LoginComponent {
 	errorMessage: string = '';
 	loading = signal(false);
 
+	// Dependency injection for required services
 	private readonly fb = inject(FormBuilder);
 	private readonly authService = inject(AuthService);
 	private readonly router = inject(Router);
 	private readonly toastr = inject(ToastrService);
 
+	// Initializes the form with email and password fields and validation rules
 	loginForm = this.fb.group({
 		email: ['', [Validators.required, Validators.email]],
 		password: ['', Validators.required],
 	});
 
+	// Method to handle the login process
 	login() {
 		this.loading.set(true);
 		if (this.loginForm.valid) {
+			// Extracts form values
 			const { email, password } = this.loginForm.value;
+
+			// Ensures both email and password are present before proceeding
 			if (!email || !password) {
 				return;
 			}
+
+			// Calls the AuthService login method and subscribes to the response
 			this.authService.login(email, password).subscribe({
 				next: (res) => {
 					this.loading.set(false);
+          // Saves the authentication token in local storage
 					localStorage.setItem('token', res.token);
 					this.router.navigate(['/pages']).then(() => {
+						// Navigates to the '/pages' route upon successful login
 						this.toastr.success('Logged in successfully', 'Success 🎉');
 					});
 				},
