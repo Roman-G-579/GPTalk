@@ -27,8 +27,9 @@
       }
     </div>
 
-    @if (isExerciseDone() && penalties()) {
-      <div class="flex flex-column text-center justify-content-center">
+      <div
+        class="flex flex-column text-center justify-content-center"
+        [style.visibility]="isExerciseDone() && penalties() ? 'visible' : 'hidden'"
+      >
         <p>Total incorrect matches: {{penalties()}}</p>
       </div>
-    }

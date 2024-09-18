@@ -3,3 +3,16 @@
   min-height: 100vh;
   grid-template-columns: 15vw auto;
 }
+
+@media (max-width: 1024px) {
+  .layout {
+    display: block;
+
+      app-sidebar {
+      }
+      app-content {
+        width: 100%;
+      }
+      //grid-template-columns: 0 auto;
+  }
+}

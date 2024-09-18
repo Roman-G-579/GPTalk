@@ -1,11 +1,15 @@
 ::ng-deep .daily-word {
   border-radius: 15px;
+  width: 50rem;
   & .p-panel-content, .p-panel-header {
     border: 1px solid var(--primary-clr);
     background-color: var(--background-clr);
   }
 }
 
+.word-of-the-day-wrapper p {
+  font-size: 1.5rem;
+}
 
 .loading-wrapper {
   height: 50%;

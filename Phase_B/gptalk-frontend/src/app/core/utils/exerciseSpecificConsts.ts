@@ -1,3 +1,31 @@
+// The heading strings of the available exercise types
+import { ExerciseType } from '../enums/exercise-type.enum';
+
+export const HEADINGS_MAP: { [key in ExerciseType]: string } = {
+	0: 'Fill in the blank',
+	1: 'Choose the correct translation',
+	2: 'Translate the sentence',
+	3: 'Complete the conversation',
+	4: 'Match the words',
+	5: 'Arrange the words to form a correct sentence',
+	6: 'Match the words to their correct category',
+	7: 'Summarize the paragraph',
+	8: 'Choose the tense',
+};
+
+// The instruction strings of the available exercise types
+export const INSTRUCTIONS_MAP: { [key in ExerciseType]: string } = {
+	0: 'Click on an answer or type it and hit the <i>enter</i> key to submit',
+	1: 'Click on the correct translation of the given word',
+	2: `Write the given sentence in the chosen language`,
+	3: `Click on an answer or type it and hit the <i>enter</i> key to submit`,
+	4: `Match the words in a given language to their English translations`,
+	5: `Click the words sequentially to place them onto the board. Click submit when finished.`,
+	6: 'Drag and drop the words to their category container. Click submit when finished.',
+	7: 'Click on the option that best summarizes the given paragraph',
+	8: 'Click on the correct grammatical tense for the given sentence',
+};
+
 // Constants used by the completeTheConversation exercise
 
 export const CONVERSATION_STARTERS = [
@@ -8,7 +36,7 @@ export const CONVERSATION_STARTERS = [
 	'suggestion',
 ];
 
-export const MISTAKE_TYPES = [
+export const REPLY_MISTAKE_TYPES = [
 	'grammatical',
 	'relevancy',
 	'spelling',
@@ -16,6 +44,8 @@ export const MISTAKE_TYPES = [
 	'wrong tense',
 	'wrong aspect',
 ];
+
+export const SUMMARY_MISTAKE_TYPES = ['incorrect key points', 'misinterpretation', 'relevancy'];
 
 // Constants used by the ChooseTheTense exercise
 

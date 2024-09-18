@@ -51,6 +51,7 @@ export async function fetchDailyWord(req: Request, res: Response, next: NextFunc
 			result = new DailyWordModel({
 				word: generatedResult.word,
 				language: generatedResult.language,
+				translationLanguage: generatedResult.translationLanguage,
 				definition: generatedResult.definition,
 				example: generatedResult.example,
 				translation: generatedResult.translation,
@@ -72,6 +73,10 @@ async function generateDailyWord() {
 		let randomIndex = Math.floor(Math.random() * languagesArr.length);
 		const language = languagesArr[randomIndex];
 
+		// If the word is in english, translation language is Hebrew. Otherwise, it's English.
+		const translationLanguage =
+			language == LanguageEnum.English ? LanguageEnum.Hebrew : LanguageEnum.English;
+
 		// Picks a random syntactic  term of the word
 		randomIndex = Math.floor(Math.random() * SYNTACTIC_TERMS.length);
 		const syntacticTerm = SYNTACTIC_TERMS[randomIndex];
@@ -80,7 +85,7 @@ async function generateDailyWord() {
 		randomIndex = Math.floor(Math.random() * TOPICS.length);
 		const topic = TOPICS[randomIndex];
 
-		const content = `Return a JSON in consisting of 4 keys: { 1. word: ${syntacticTerm} related to ${topic} in ${language}, followed by the word's transliteration, followed by syntactic term in english in brackets. 2.definition: definition in english 3.example: string in ${language} 4.translation: example translation to english}`;
+		const content = `Generate a random word: a ${syntacticTerm} related to ${topic}. Write the result as a JSON object with the following 4 keys: 1. word: ${syntacticTerm} related to ${topic} in ${language}. this must be followed by the word's transliteration in brackets. After that, it must include the word's syntactic term in english in square brackets. 2.definition: definition in ${translationLanguage}. 3.example: string in ${language} 4.translation: example translation to ${translationLanguage}`;
 		const completion = await openai.chat.completions.create({
 			messages: [
 				{ role: 'system', content: `You are a word-of-the-day generator.` },
@@ -93,6 +98,7 @@ async function generateDailyWord() {
 
 		let result = JSON.parse(completion.choices[0].message.content);
 		result.language = language; // Adds the word's language to the result object
+		result.translationLanguage = translationLanguage; // Adds the word's translation language to the result object
 		return result;
 	} catch (err) {
 		throw err;

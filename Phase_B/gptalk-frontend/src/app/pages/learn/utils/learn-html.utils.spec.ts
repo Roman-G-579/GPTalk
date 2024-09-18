@@ -42,20 +42,6 @@ describe('LearnHtmlUtils', () => {
 		});
 	});
 
-	describe('langDirection', () => {
-		it('should return "rtl" for Hebrew language', () => {
-			const languageSignal: WritableSignal<Language> = signal(Language.Hebrew);
-
-			expect(LearnHtmlUtils.langDirection(languageSignal)).toBe('rtl');
-		});
-
-		it('should return "ltr" for non-Hebrew languages', () => {
-			const languageSignal: WritableSignal<Language> = signal(Language.English);
-
-			expect(LearnHtmlUtils.langDirection(languageSignal)).toBe('ltr');
-		});
-	});
-
 	describe('highlightMistakes', () => {
 		let exercise: WritableSignal<Exercise> = signal({
 			type: ExerciseType.TranslateTheSentence,

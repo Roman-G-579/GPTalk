@@ -1,7 +1,29 @@
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
+<p-sidebar [(visible)]="sidebarVisible" styleClass="w-15rem">
+  <ng-template pTemplate="header">
+    <img src="assets/GPTalk_Logo_Wide.svg" alt="" />
+  </ng-template>
+  <nav style="font-size: var(--tm);">
+    @for (page of pages; track page) {
+      <a
+        routerLinkActive="active"
+        (click)="navigate(page)"
+        style="cursor: pointer;"
+      >
+        <i [class]="page.icon"></i>
+        <span>{{ page.name }}</span>
+      </a>
+    }
+  </nav>
+</p-sidebar>
+<div class="mobile-logo flex justify-content-between align-items-center">
+  <p-button (onClick)="sidebarVisible = true" icon="pi pi-bars" styleClass="sidebar-btn"/>
+  <img src="assets/GPTalk_logo_white.svg" style="width: 25px; margin-right: 0.7rem; margin-bottom: -0.5rem" alt="" />
+</div>
+
 <div class="content">
-	<img src="assets/GPTalk_Logo_Wide.svg" alt="" />
+	<img class="logo" src="assets/GPTalk_Logo_Wide.svg" alt="" />
 	<nav>
 		@for (page of pages; track page) {
       <a
@@ -18,7 +40,7 @@
 
 <p-confirmDialog #cd>
   <ng-template pTemplate="headless" let-message>
-    <div class="flex flex-column align-items-center p-5 surface-overlay border-round max-w-30rem text-center text-xl">
+    <div class="flex flex-column align-items-center p-5 surface-overlay border-round lg:max-w-30rem max-w-20rem text-center lg:text-xl">
       <p class="mb-0" [innerHTML]="message.message"></p>
       <div class="flex align-items-center gap-2 mt-4">
         <button

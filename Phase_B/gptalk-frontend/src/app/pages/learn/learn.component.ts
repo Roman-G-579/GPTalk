@@ -43,7 +43,7 @@ export class LearnComponent implements OnInit {
 	private readonly primengConfig = inject(PrimeNGConfig);
 	protected readonly Language = Language;
 
-	EXERCISE_AMOUNT = 3;
+	EXERCISE_AMOUNT = 5;
 
 	isLoading = signal<boolean>(true);
 	isExerciseDone = this.lrn.isExerciseDone;

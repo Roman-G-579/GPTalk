@@ -1,5 +1,5 @@
 main {
-	padding: 3rem 2.5rem;
+	padding: 3rem 1rem;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -8,14 +8,20 @@ main {
 .statistics {
 	display: flex;
   justify-content: space-evenly;
+  gap: 1rem;
 
 	& .stat-block {
 		display: flex;
 		align-items: center;
+    //width: 33%;
 		padding: 2rem;
     gap: 1rem;
     border-radius: 6px;
 		border: 2px solid var(--background-over-block-border-clr);
+
+    & img {
+      width: 6rem;
+    }
 
 		& div {
 			display: flex;
@@ -31,4 +37,61 @@ main {
       }
 		}
 	}
+}
+
+@media (max-width: 1400px) {
+  .statistics {
+
+    & .stat-block {
+      padding-left: 0;
+      & img {
+        width: 3rem;
+      }
+      & div {
+        p {
+          font-size: 1.5rem;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .statistics {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    & .stat-block {
+      width: 100%;
+      justify-content: center;
+      padding-left: 2rem;
+
+      & img {
+        width: 6rem;
+      }
+    }
+
+  }
+
+  .stat-block {
+    flex-direction: row; /* Stack the image and text vertically */
+
+    p {
+      font-size: 1.8rem;
+    }
+
+    small {
+      font-size: 1.2rem;
+    }
+  }
+
+  h1, h2 {
+    font-size: 2rem;
+  }
+
+  h4 {
+    font-size: 1.2rem;
+  }
 }

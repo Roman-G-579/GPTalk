@@ -4,6 +4,7 @@ import { Button } from 'primeng/button';
 import { LearnHtmlUtils } from '../utils/learn-html.utils';
 import { LearnVerificationUtils } from '../utils/learn-verification.utils';
 import { LearnService } from '../learn.service';
+import { Language } from '../../../core/enums/language.enum';
 
 @Component({
 	selector: 'app-summarize-the-paragraph',
@@ -23,4 +24,5 @@ export class SummarizeTheParagraphComponent {
 	lessonLanguage = this.lrn.lessonLanguage;
 	isExerciseDone = this.lrn.isExerciseDone;
 	isCorrectAnswer = this.lrn.isCorrectAnswer;
+	protected readonly Language = Language;
 }

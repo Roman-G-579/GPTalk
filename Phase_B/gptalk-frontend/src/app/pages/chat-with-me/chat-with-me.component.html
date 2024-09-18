@@ -3,7 +3,11 @@
   <app-language-select (languageSelectionEvent)="setLanguage($event)"></app-language-select>
 } @else {
 	<div class="messages-wrapper">
-    <div class="messages" [dir]="utilHtml.langDirection(language)">
+    <div
+      class="messages"
+      [class.hebrew-text]="language() === 'Hebrew'"
+      style="overflow-y: scroll; height: 100%;" #scrollMe [scrollTop]="scrollMe.scrollHeight"
+    >
       @for (message of conversation(); track message) {
         <div
           class="message text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round"
@@ -21,7 +25,7 @@
     </div>
     @if (!conversation().length){
       <p class="text-center">Pick a topic to get started, or type manually:</p>
-      <div class="input w-full flex flex-row justify-content-center align-items-center gap-4 mt-2">
+      <div class="prompt-btn-wrapper input w-full justify-content-center align-items-center mt-2">
       @for (promptBtn of promptButtons; track promptBtn) {
         <p-button
           styleClass="prompt-btn"
@@ -37,7 +41,7 @@
 			class="input p-3 md:p-4 w-full lg:p-6 flex flex-column sm:flex-row align-items-center border-top-1 surface-border gap-3"
 		>
 			<input
-        [dir]="utilHtml.langDirection(language)"
+        [class.hebrew-text]="language() === 'Hebrew'"
 				id="message"
 				type="text"
 				pInputText
@@ -72,7 +76,7 @@
 
   <p-confirmDialog #cd>
     <ng-template pTemplate="headless" let-message>
-        <div class="flex flex-column align-items-center p-5 surface-overlay border-round max-w-30rem text-center">
+        <div class="flex flex-column align-items-center p-5 surface-overlay border-round max-w-20rem lg:max-w-30rem text-center">
             <div class="border-circle bg-contrast inline-flex justify-content-center align-items-center h-6rem w-6rem">
                 <i class="pi pi-graduation-cap text-5xl"></i>
             </div>

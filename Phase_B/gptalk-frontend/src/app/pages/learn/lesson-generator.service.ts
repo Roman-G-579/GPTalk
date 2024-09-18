@@ -11,7 +11,8 @@ import { ExerciseType } from '../../core/enums/exercise-type.enum';
 import { cloneDeep } from 'lodash';
 import {
 	CONVERSATION_STARTERS,
-	MISTAKE_TYPES,
+	REPLY_MISTAKE_TYPES,
+	SUMMARY_MISTAKE_TYPES,
 	TENSE_TYPES,
 } from '../../core/utils/exerciseSpecificConsts';
 
@@ -33,7 +34,7 @@ export class LessonGeneratorService {
 		type: ExerciseType.FillInTheBlank,
 		answer: 'Planes are faster than cars',
 		choices: ['cat', 'table', 'cloud'],
-		translation: 'מטוסים מהירים יותר ממכוניות',
+		translation: 'מטוסים מהירים יותר ממכוניות.',
 	};
 
 	mockExercise_TranslateWord: Exercise = {
@@ -51,7 +52,7 @@ export class LessonGeneratorService {
 	mockExercise_TranslateSentence: Exercise = {
 		type: ExerciseType.TranslateTheSentence,
 		question: 'I love climbing mountains',
-		answer: 'אני אוהב לטפס על הרים',
+		answer: 'אני אוהב לטפס על הרים.',
 	};
 
 	mockExercise_TranslateSentence_2: Exercise = {
@@ -62,7 +63,7 @@ export class LessonGeneratorService {
 
 	mockExercise_TranslateSentence_ENG: Exercise = {
 		type: ExerciseType.TranslateTheSentence,
-		question: 'מטוסים מהירים יותר ממכוניות',
+		question: 'מטוסים מהירים יותר ממכוניות.',
 		answer: 'Planes are faster than cars.',
 	};
 
@@ -114,14 +115,14 @@ export class LessonGeneratorService {
 	mockExercise_ReorderSentence_ENG: Exercise = {
 		type: ExerciseType.ReorderSentence,
 		answer: 'The fish are swimming in our pond',
-		translation: 'הדגים שוחים בנחל שלנו',
+		translation: 'הדגים שוחים בנחל. הנחל הזה שלנו.',
 	};
 	//
 	mockExercise_MatchTheCategory: Exercise = {
 		type: ExerciseType.MatchTheCategory,
 		cat_a: 'חיות',
 		cat_b: 'פירות',
-		words_a: ['כלב', 'חתול', 'זאב', 'סוס'],
+		words_a: ['כלב', 'ארמדילו', 'חזיר בר אירופי', 'ליוייתן'],
 		words_b: ['תפוח', 'בננה', 'ענבים', 'תפוז'],
 	};
 
@@ -130,7 +131,7 @@ export class LessonGeneratorService {
 		cat_a: 'Air vehicles',
 		cat_b: 'Land vehicles',
 		words_a: ['helicopter', 'airplane', 'glider', 'hot air balloon'],
-		words_b: ['car', 'bike', 'truck', 'snowmobile'],
+		words_b: ['car', 'bike', 'truck', 'snowmobileeeeeeeeee'],
 	};
 
 	mockExercise_SummarizeTheParagraph: Exercise = {
@@ -190,7 +191,7 @@ export class LessonGeneratorService {
 		for (let i = 0; i < amount; i++) {
 			// Choose a random exercise index
 			const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-			// const randomIndex: number = 4;
+			// const randomIndex: number = i;
 
 			// The Chosen function
 			const generatorFunc = exerciseGenerators[randomIndex];
@@ -242,7 +243,7 @@ export class LessonGeneratorService {
 			numOfAnswers = 5;
 		}
 
-		return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its ${translationLanguage} translation, 'choices' is ${numOfAnswers} random words, not found in "answer". Focus on topic: ${topic}. {"answer": "", "choices:" [], "translation": ""}`;
+		return `generate an object in ${language}, ${Difficulty[difficulty]} difficulty. 'answer' is the sentence, 'translation' is its ${translationLanguage} translation, 'choices' is ${numOfAnswers} random words. Every word in 'choices' must not fit the sentence in 'answer'. Focus on topic: ${topic}. {"answer": "", "choices:" [], "translation": ""}`;
 	}
 
 	/**
@@ -313,8 +314,8 @@ export class LessonGeneratorService {
 		let randomIndex: number = Math.floor(Math.random() * CONVERSATION_STARTERS.length);
 		const conversationStarter = CONVERSATION_STARTERS[randomIndex];
 
-		randomIndex = Math.floor(Math.random() * MISTAKE_TYPES.length);
-		const mistakeType = MISTAKE_TYPES[randomIndex];
+		randomIndex = Math.floor(Math.random() * REPLY_MISTAKE_TYPES.length);
+		const mistakeType = REPLY_MISTAKE_TYPES[randomIndex];
 
 		// Parameters for novice difficulty
 		if (difficulty == Difficulty.Novice) {
@@ -359,7 +360,7 @@ export class LessonGeneratorService {
 			numOfPairs = 6;
 		}
 
-		return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Focus on topic: ${topic}. Follow this json structure: "correctPairs": { ["word","${secondWordLanguage}_translation"] }`;
+		return `Generate an array of word pairs in ${language}, ${Difficulty[difficulty]} difficulty. ${numOfPairs} pairs. Make sure there are no repeat words. Focus on topic: ${topic}. Follow this json structure: "correctPairs": { ["word","${secondWordLanguage}_translation"] }`;
 	}
 
 	/**
@@ -398,11 +399,7 @@ export class LessonGeneratorService {
 	 * @param topic a topic that is included in the prompt to improve result diversity
 	 */
 	generateMatchTheCategory(language: Language, difficulty: Difficulty, topic: string): string {
-		// If the lesson's language is English, the translation is to Hebrew.
-		// Otherwise, the translation is to  English
-		// const translationLanguage = language == Language.English ? Language.Hebrew : Language.English;
-
-		return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topic: ${topic} Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
+		return `Generate 2 distinct categories and 4 words for each, in ${language}, ${Difficulty[difficulty]} difficulty. Focus on topic: ${topic}. The 2 categories must be different from each other in sch a way that each word only belongs to one of them. Ensure the response is strictly in the following JSON format: { "cat_a": "", "cat_b": "", "words_a": [], "words_b": [] }. Do not include any additional keys.`;
 	}
 
 	/**
@@ -420,6 +417,10 @@ export class LessonGeneratorService {
 		const translationLanguage =
 			paragraphLanguage == Language.English ? Language.Hebrew : Language.English;
 
+		// Sets mistake type for the wrong paragraph summary
+		let randomIndex = Math.floor(Math.random() * SUMMARY_MISTAKE_TYPES.length);
+		const mistakeType = SUMMARY_MISTAKE_TYPES[randomIndex];
+
 		// Parameters for novice difficulty
 		if (difficulty == Difficulty.Novice) {
 			paragraphLengthLimit = 100;
@@ -433,7 +434,7 @@ export class LessonGeneratorService {
 			paragraphLengthLimit = 250;
 		}
 
-		return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. Paragraph will have up to ${paragraphLengthLimit} words. reply1 is a valid summary of the paragraph, reply2 is the wrong summary. Focus on topic: ${topic}. { "prompt": paragraph, "choices": [reply1,reply2] "translation": correct_reply_in_${translationLanguage} }`;
+		return `generate paragraph ${paragraphLanguage}, fitting for ${Difficulty[difficulty]} difficulty. Paragraph will have up to ${paragraphLengthLimit} words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a ${mistakeType} mistake. summaries are in ${paragraphLanguage}. Translation string is up to 50 words. Focus on topic: ${topic}. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_${translationLanguage} }`;
 	}
 
 	/**
@@ -468,6 +469,6 @@ export class LessonGeneratorService {
 		return this.http.post(href, { userPrompt: promptString });
 
 		// MOCK DATA
-		// return of(cloneDeep(this.mockExercise_MatchTheWords));
+		// return of(cloneDeep(this.mockExercise_MatchTheCategory_ENG));
 	}
 }

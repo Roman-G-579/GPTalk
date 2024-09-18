@@ -18,7 +18,7 @@ export async function chatWithMeMiddleware(req: Request, res: Response, next: Ne
 			{ role: 'user', content },
 			{
 				role: 'system',
-				content: `Engage in a conversation with the user in ${language}. Correct their mistakes and provide explanations or comments about their responses when needed, but do not ask a question in every response. Aim to have a balanced dialogue, alternating between questions and statements or feedback.`,
+				content: `Engage in a conversation with the user in ${language}. Correct their mistakes and provide explanations or comments about their responses when needed. Only ask a question in every third response. Aim to have a balanced dialogue, alternating between questions and statements or feedback.`,
 			},
 		];
 		const completion = await openai.chat.completions.create({

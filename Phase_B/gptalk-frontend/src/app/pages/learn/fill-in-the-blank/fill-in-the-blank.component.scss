@@ -16,3 +16,18 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .sentence-wrapper {
+    font-size: var(--tm);
+
+    & .fill-in-the-blank-input-field {
+      font-size: var(--tm);
+      width: 15vw;
+    }
+  }
+
+  .translation-wrapper p {
+    font-size: var(--tm);
+  }
+}
+

@@ -9,6 +9,10 @@
   grid-column: 1;
 }
 
+.img-logo-mobile {
+  display: none;
+}
+
 .form-wrapper {
 	position: relative;
 	background-color: #fff;
@@ -46,5 +50,35 @@ p-dialog {
   &.p-dialog .p-dialog-content:last-of-type {
     border-radius: 6px !important;
     padding: 4rem;
+  }
+}
+
+@media (max-width: 1024px) {
+
+  .wrapper {
+    .img-logo, p-divider {
+      display: none;
+    }
+  }
+
+  .img-logo-mobile {
+    display: flex;
+  }
+
+  .form-wrapper {
+    background-color: rgba(255, 255, 255, 0.7);
+    height: 70vh;
+    padding: 1rem 1rem;
+  }
+
+  form {
+    h1, small {
+      text-align: center;
+    }
+  }
+
+  p-floatLabel {
+    display: flex;
+    justify-content: center;
   }
 }

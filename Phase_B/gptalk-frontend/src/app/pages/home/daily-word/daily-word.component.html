@@ -1,5 +1,5 @@
 <main>
-  <div class="word-of-the-day-wrapper grid">
+  <div class="word-of-the-day-wrapper flex justify-content-center">
 
     @if(isLoading()) {
       <div class="loading-wrapper">
@@ -8,12 +8,12 @@
       </div>
 
     } @else if (!isLoading()) {
-    <p-panel class="daily-word col-9 w-30rem ">
+    <p-panel class="daily-word">
       <ng-template pTemplate="header">
-        <div class="flex align-items-center gap-2">
+        <div class="flex align-items-center gap-2 text-2xl">
           @if(dailyWord().word !== "") {
             <p-avatar
-              [image]="languageIconRecord[dailyWord().language]"
+              [image]="languageIconRecord[language()]"
               size="normal"
               shape="square" />
             <span class="font-bold">
@@ -23,13 +23,13 @@
         </div>
       </ng-template>
       @if(dailyWord().word !== "") {
-        <p class="mb-2">
+        <p class="mb-2" [class.hebrew-text]="translationLanguage() === 'Hebrew'">
         {{dailyWord().definition}}
         </p>
-        <p class="font-italic">
-          {{dailyWord().example}}
+        <p class="font-italic" [class.hebrew-text]="language() === 'Hebrew'">
+          "{{dailyWord().example}}"
         </p>
-        <p>
+        <p [class.hebrew-text]="translationLanguage() === 'Hebrew'">
           ({{dailyWord().translation}})
         </p>
       }

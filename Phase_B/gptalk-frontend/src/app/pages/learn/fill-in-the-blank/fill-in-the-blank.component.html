@@ -1,4 +1,4 @@
-  <div class="sentence-wrapper flex flex-wrap gap-3 mb-2" [dir]="utilHtml.langDirection(lessonLanguage)">
+  <div class="sentence-wrapper flex flex-wrap gap-3 mb-2" [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
     <p>{{exerciseData().sentenceBeforeBlank}}</p>
     <input
       #inputField
@@ -41,8 +41,12 @@
     }
   </div>
 
-  @if (isExerciseDone()) {
-    <div class="translation-wrapper flex justify-content-center">
-      <p><b>Translation:</b> {{exerciseData().translation}}</p>
+    <div
+      class="translation-wrapper flex flex-column justify-content-center"
+      [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
+    >
+      <p><b>Translation:</b></p>
+      <p [class.hebrew-text]="lessonLanguage() === 'English'">
+        {{exerciseData().translation}}
+      </p>
     </div>
-  }

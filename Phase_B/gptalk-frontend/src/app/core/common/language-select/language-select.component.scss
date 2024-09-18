@@ -32,3 +32,26 @@
 		}
 	}
 }
+
+@media (max-width: 1024px) {
+  .language-wrapper {
+    height: 100vh;
+  }
+  .language-wrapper h1 {
+    font-size: 1.5rem;
+  }
+  .languages {
+    gap: 2rem;
+    padding: 0;
+    justify-content: center;
+    margin-top: 2rem;
+
+    & .language span {
+      margin-top: 0;
+    }
+  }
+
+  img {
+    width: 9rem;
+  }
+}

@@ -1,0 +1,9 @@
+@media (max-width: 1024px) {
+  ::ng-deep .buttons-group button {
+    font-size: 0.9rem;
+
+    span {
+      font-weight: normal;
+    }
+  }
+}

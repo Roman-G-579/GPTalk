@@ -1,5 +1,4 @@
-<!--TODO: adjust design to handle longer sentences-->
-<div class="buttons-group h-5rem gap-2 flex justify-content-center mb-4" [dir]="utilHtml.langDirection(lessonLanguage)">
+<div class="buttons-group gap-2 flex flex-wrap lg:flex-grow-1 flex-grow-0  justify-content-center mb-4" [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
   <!--   Chosen words   -->
   @for (word of chosenWords(); track word; let idx = $index) {
     <p-button
@@ -15,10 +14,10 @@
 </div>
 
 <!--  Choices  -->
-<div class="buttons-group flex overflow-hidden gap-4 mb-6">
+<div class="buttons-group flex flex-wrap lg:flex-grow-1 flex-grow-0 justify-content-center overflow-hidden lg:gap-4 mb-4 gap-1">
   @for (choice of exerciseData().choices; track choice; let idx = $index) {
     <p-button
-      class="flex-grow-1 flex flex-column justify-content-center"
+      class="flex flex-column"
       [styleClass]=
         "isExerciseDone() ? (isCorrectAnswer() ? 'btn-correct' : 'btn-incorrect')
                :
@@ -32,19 +31,22 @@
 </div>
 
 <!--  Submit button  -->
-<div class="buttons-group write-sentence-submit-btn flex justify-content-center">
-  @if (!isExerciseDone()) {
-    <p-button
+  <div class="buttons-group write-sentence-submit-btn flex justify-content-center">
+    @if (!isExerciseDone()) {
+      <p-button
       id="reorderSentenceSubmitBtn"
       label="Submit"
       severity="primary"
       (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(chosenWords().join(' '), exerciseData))"/>
-  }
-</div>
-
-@if (isExerciseDone()) {
-  <div class="translation-wrapper flex flex-column text-center justify-content-center">
-    <p><b>Answer:</b> {{exerciseData().answer}}</p>
-    <p><b>Translation:</b> {{exerciseData().translation}}</p>
+    }
   </div>
-}
+
+  <div
+    class="translation-wrapper flex flex-column text-center justify-content-center"
+    [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
+  >
+    <p><b>Answer:</b></p>
+    <p>{{exerciseData().answer}}</p>
+    <p><b>Translation:</b></p>
+    <p [class.hebrew-text]="lessonLanguage() === 'English'">{{exerciseData().translation}}</p>
+  </div>

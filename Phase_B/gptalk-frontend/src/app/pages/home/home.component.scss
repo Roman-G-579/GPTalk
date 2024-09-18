@@ -41,5 +41,52 @@
   }
 }
 
+/* Media query for screens 1024px and below */
+@media (max-width: 1024px) {
+  .content {
+    font-size: 1.4rem; /* Reduce font size slightly */
+    //gap: 0.8rem; /* Adjust the gap */
 
+    app-daily-word {
+      width: 90%;
+      ::ng-deep .word-of-the-day-wrapper p {
+         font-size: 1.3rem;
+      }
+    }
+  }
+
+  .statistics-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+
+    & .stat-block div {
+      align-items: center;
+    }
+  }
+
+  .stat-block {
+    flex-direction: column; /* Stack the image and text vertically */
+
+    img {
+      width: 3rem;
+    }
+
+    p {
+      font-size: 1.8rem;
+    }
+
+    small {
+      font-size: 1.2rem;
+    }
+  }
+
+  h1, h2 {
+    font-size: 2rem;
+  }
+
+  h4 {
+    font-size: 1.2rem;
+  }
+}
 

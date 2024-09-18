@@ -5,11 +5,12 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { LearnService } from '../../learn/learn.service';
+import { SidebarModule } from 'primeng/sidebar';
 
 @Component({
 	selector: 'app-sidebar',
 	standalone: true,
-	imports: [CommonModule, RouterLink, RouterLinkActive, ConfirmDialogModule],
+	imports: [CommonModule, RouterLink, RouterLinkActive, ConfirmDialogModule, SidebarModule],
 	providers: [ConfirmationService],
 	templateUrl: './sidebar.component.html',
 	styleUrl: './sidebar.component.scss',
@@ -20,6 +21,8 @@ export class SidebarComponent {
 	private readonly router = inject(Router);
 	private readonly confirmationService = inject(ConfirmationService);
 	protected readonly lrn = inject(LearnService);
+
+	sidebarVisible = false;
 
 	pages = [
 		{
@@ -72,6 +75,7 @@ export class SidebarComponent {
 			this.showConfirmation(page);
 		} else {
 			if (page.name !== 'Log Out') {
+				this.sidebarVisible = false;
 				this.router.navigate([page.route]).then();
 			} else {
 				this.logout();
@@ -95,6 +99,7 @@ export class SidebarComponent {
 					});
 					this.lrn.endLesson();
 				}
+				this.sidebarVisible = false;
 				this.router.navigateByUrl(page.route).then();
 			},
 			reject: () => {},

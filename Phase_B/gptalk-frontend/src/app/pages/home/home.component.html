@@ -32,7 +32,7 @@
 
     <ng-container *ngIf="util.calculateLevel(myProfile.totalExp) as level">
       <p>Your current level: {{level}}</p>
-      <p>Experience points needed for next level: {{util.calculateExpForNextLevel(level) - myProfile.totalExp}}</p>
+      <p class="text-center">Experience points needed for next level: {{util.calculateExpForNextLevel(level) - myProfile.totalExp}}</p>
       <p>Achievements awarded: {{myProfile.achievements.length}}</p>
     </ng-container>
   </div>

@@ -1,0 +1,9 @@
+.translate-word-wrapper {
+  font-size: 2.25rem;
+}
+
+@media (max-width: 1024px) {
+  .translate-word-wrapper {
+    font-size: var(--t_large);
+  }
+}
