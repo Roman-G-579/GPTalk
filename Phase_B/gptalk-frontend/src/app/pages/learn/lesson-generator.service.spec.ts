@@ -192,9 +192,13 @@ describe('LessonGeneratorService', () => {
 				topic,
 			);
 
-			expect(result).toMatch(
-				`generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a misinterpretation mistake. summaries are in English. Translation string is up to 50 words. Focus on topic: technology. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_Hebrew }`,
-			);
+      const possibleStrings = [
+        `generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a relevancy mistake. summaries are in English. Translation string is up to 50 words. Focus on topic: technology. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_Hebrew }`,
+        `generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a incorrect key points mistake. summaries are in English. Translation string is up to 50 words. Focus on topic: technology. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_Hebrew }`,
+        `generate paragraph English, fitting for Novice difficulty. Paragraph will have up to 100 words. summary1 is a valid summary of the paragraph. summary2 is the wrong summary, containing a misinterpretation mistake. summaries are in English. Translation string is up to 50 words. Focus on topic: technology. { "prompt": paragraph, "choices": [summary1,summary2] "translation": correct_reply_in_Hebrew }`,
+      ];
+
+      expect(possibleStrings).toContain(result);
 		});
 	});
 
