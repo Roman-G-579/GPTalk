@@ -66,7 +66,7 @@ export class LoginComponent {
 			this.authService.login(email, password).subscribe({
 				next: (res) => {
 					this.loading.set(false);
-          // Saves the authentication token in local storage
+					// Saves the authentication token in local storage
 					localStorage.setItem('token', res.token);
 					this.router.navigate(['/pages']).then(() => {
 						// Navigates to the '/pages' route upon successful login
