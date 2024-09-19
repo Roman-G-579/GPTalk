@@ -6,9 +6,8 @@ import { Language } from '../../core/enums/language.enum';
 import { Difficulty } from '../../core/enums/difficulty.enum';
 import { Exercise } from '../../core/interfaces/exercise.interface';
 import { LessonGeneratorUtils as genUtil } from './utils/lesson-generator.utils';
-import { forkJoin, map, Observable, of } from 'rxjs';
+import { forkJoin, map, Observable } from 'rxjs';
 import { ExerciseType } from '../../core/enums/exercise-type.enum';
-import { cloneDeep } from 'lodash';
 import {
 	CONVERSATION_STARTERS,
 	REPLY_MISTAKE_TYPES,
@@ -23,139 +22,6 @@ export class LessonGeneratorService {
 	private readonly apiUrl = environment.apiUrl;
 	private readonly http = inject(HttpClient);
 
-	mockExercise_FillInTheBlank: Exercise = {
-		type: ExerciseType.FillInTheBlank,
-		answer: 'הטיסה ממריאה מחר בבוקר',
-		choices: ['חתול', 'קפה', 'לרוץ'],
-		translation: 'The flight takes off tomorrow',
-	};
-
-	mockExercise_FillInTheBlank_ENG: Exercise = {
-		type: ExerciseType.FillInTheBlank,
-		answer: 'Planes are faster than cars',
-		choices: ['cat', 'table', 'cloud'],
-		translation: 'מטוסים מהירים יותר ממכוניות.',
-	};
-
-	mockExercise_TranslateWord: Exercise = {
-		type: ExerciseType.TranslateWord,
-		choices: ['מכונית', 'ספר', 'שולחן', 'תפוח'],
-		translations: ['car', 'book', 'table', 'apple'],
-	};
-
-	mockExercise_TranslateWord_ENG: Exercise = {
-		type: ExerciseType.TranslateWord,
-		choices: ['מכונית', 'ספר', 'שולחן', 'תפוח'],
-		translations: ['car', 'book', 'table', 'apple'],
-	};
-
-	mockExercise_TranslateSentence: Exercise = {
-		type: ExerciseType.TranslateTheSentence,
-		question: 'I love climbing mountains',
-		answer: 'אני אוהב לטפס על הרים.',
-	};
-
-	mockExercise_TranslateSentence_2: Exercise = {
-		type: ExerciseType.TranslateTheSentence,
-		question: 'the museum is located near the ancient ruins.',
-		answer: 'המוזיאון נמצא ליד חורבות עתיקות',
-	};
-
-	mockExercise_TranslateSentence_ENG: Exercise = {
-		type: ExerciseType.TranslateTheSentence,
-		question: 'מטוסים מהירים יותר ממכוניות.',
-		answer: 'Planes are faster than cars.',
-	};
-
-	mockExercise_CompleteTheConversation: Exercise = {
-		type: ExerciseType.CompleteTheConversation,
-		prompt: 'מתי אתה מתכנן לסיים את הפרויקט?',
-		choices: ['אני מתכנן לסיים את הפרויקט בסוף השבוע.', 'אני מתכננים לסיים את הפרויקט בסוף השבוע.'],
-		translation:
-			'When do you plan to finish the project? / I plan to finish the project by the end of the week.',
-	};
-
-	mockExercise_CompleteTheConversation_ENG: Exercise = {
-		type: ExerciseType.CompleteTheConversation,
-		prompt: 'How do I get to the train station?',
-		choices: [
-			'The quickest way to get there is either by bus or by taxi',
-			'The bus or the taxi is faster to get it.',
-		],
-		translation:
-			'כיצד אני מגיע לתחנת הרכבת? / הדרך המהירה ביותר להגיע לשם היא בעזרת אוטובוס או מונית.',
-	};
-
-	// mockExercise_MatchTheWords: Exercise = {
-	//   type: ExerciseType.MatchTheWords,
-	//   "correctPairs": [
-	//     ["מכונית", "car"],
-	//     ["בית", "house"],
-	//     ["חתול", "cat"],
-	//   ]
-	// }
-
-	mockExercise_MatchTheWords: Exercise = {
-		type: ExerciseType.MatchTheWords,
-		correctPairs: [
-			['מכונית', 'car'],
-			['בית', 'house'],
-			['חתול', 'cat'],
-			['עץ', 'tree'],
-			['ספר', 'book'],
-		],
-	};
-
-	mockExercise_ReorderSentence: Exercise = {
-		type: ExerciseType.ReorderSentence,
-		answer: 'הילד הלך לבית הספר עם חבריו.',
-		translation: 'The boy went to school with his friends.',
-	};
-
-	mockExercise_ReorderSentence_ENG: Exercise = {
-		type: ExerciseType.ReorderSentence,
-		answer: 'The fish are swimming in our pond',
-		translation: 'הדגים שוחים בנחל. הנחל הזה שלנו.',
-	};
-	//
-	mockExercise_MatchTheCategory: Exercise = {
-		type: ExerciseType.MatchTheCategory,
-		cat_a: 'חיות',
-		cat_b: 'פירות',
-		words_a: ['כלב', 'ארמדילו', 'חזיר בר אירופי', 'ליוייתן'],
-		words_b: ['תפוח', 'בננה', 'ענבים', 'תפוז'],
-	};
-
-	mockExercise_MatchTheCategory_ENG: Exercise = {
-		type: ExerciseType.MatchTheCategory,
-		cat_a: 'Air vehicles',
-		cat_b: 'Land vehicles',
-		words_a: ['helicopter', 'airplane', 'glider', 'hot air balloon'],
-		words_b: ['car', 'bike', 'truck', 'snowmobileeeeeeeeee'],
-	};
-
-	mockExercise_SummarizeTheParagraph: Exercise = {
-		type: ExerciseType.SummarizeTheParagraph,
-		prompt:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. ',
-		choices: ['correct answer', 'wrong answer'],
-		translation: 'תשובה נכונה',
-	};
-
-	mockExercise_SummarizeTheParagraph_HE: Exercise = {
-		type: ExerciseType.SummarizeTheParagraph,
-		prompt:
-			"בראשית ברא ה' את השמיים ואת הארץ. והארץ הייתה תוהו ובהו וחושך על-פני תהום. ורוח ה' מרחפת על פני המים. ויאמר ה' יהי אור: ויהי אור. וירא ה' את האור, כי טוב: ויבדל ה' בין האור ובין החושך. ויקרא ה' לאור יום, ולחושך קרא לילה, ויהי ערב ויהי בוקר יום אחד ",
-		choices: ['ברוך השם', 'חלאס להספים אותי'],
-		translation: 'In the beginning.....',
-	};
-
-	mockExercise_ChooseTheTense: Exercise = {
-		type: ExerciseType.ChooseTheTense,
-		question: 'We will travel abroad',
-		answer: 'future',
-		translation: 'אנחנו נטייל מחוץ לארץ',
-	};
 	/**
 	 * Generates the specified amount of random exercises by calling OpenAI's API
 	 *
@@ -191,7 +57,6 @@ export class LessonGeneratorService {
 		for (let i = 0; i < amount; i++) {
 			// Choose a random exercise index
 			const randomIndex: number = Math.floor(Math.random() * exerciseGenerators.length);
-			// const randomIndex: number = i;
 
 			// The Chosen function
 			const generatorFunc = exerciseGenerators[randomIndex];
@@ -418,7 +283,7 @@ export class LessonGeneratorService {
 			paragraphLanguage == Language.English ? Language.Hebrew : Language.English;
 
 		// Sets mistake type for the wrong paragraph summary
-		let randomIndex = Math.floor(Math.random() * SUMMARY_MISTAKE_TYPES.length);
+		const randomIndex = Math.floor(Math.random() * SUMMARY_MISTAKE_TYPES.length);
 		const mistakeType = SUMMARY_MISTAKE_TYPES[randomIndex];
 
 		// Parameters for novice difficulty
@@ -467,8 +332,5 @@ export class LessonGeneratorService {
 
 		// API CONNECTION
 		return this.http.post(href, { userPrompt: promptString });
-
-		// MOCK DATA
-		// return of(cloneDeep(this.mockExercise_MatchTheCategory_ENG));
 	}
 }
