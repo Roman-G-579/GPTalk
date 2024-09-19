@@ -1,0 +1,106 @@
+<!-- eslint-disable @angular-eslint/template/elements-content -->
+@if (language() === Language.NOT_SELECTED) {
+  <app-language-select (languageSelectionEvent)="setLanguage($event)"></app-language-select>
+} @else {
+	<div class="messages-wrapper">
+    <div
+      class="messages"
+      [class.hebrew-text]="language() === 'Hebrew'"
+      style="overflow-y: scroll; height: 100%;" #scrollMe [scrollTop]="scrollMe.scrollHeight"
+    >
+      @for (message of conversation(); track message) {
+        <div
+          class="message text-700 inline-block font-medium border-1 surface-border p-3 white-space-normal border-round"
+          [class.user]="message.role === 'user'"
+          [class.system]="message.role === 'system'"
+        >
+          <span dir="auto">{{ message.content }}</span>
+        </div>
+      } @empty {
+        <div class="no-messages">
+          <ng-lottie [options]="noMessagesOptions"></ng-lottie>
+          <span dir="ltr">Let's start our chat!</span>
+        </div>
+      }
+    </div>
+    @if (!conversation().length){
+      <p class="text-center">Pick a topic to get started, or type manually:</p>
+      <div class="prompt-btn-wrapper input w-full justify-content-center align-items-center mt-2">
+      @for (promptBtn of promptButtons; track promptBtn) {
+        <p-button
+          styleClass="prompt-btn"
+          label="{{promptBtn.value}}"
+          [raised]="true"
+          severity="secondary"
+          (click)="sendInitialPrompt(promptBtn.prompt)"
+        />
+      }
+      </div>
+    }
+		<div
+			class="input p-3 md:p-4 w-full lg:p-6 flex flex-column sm:flex-row align-items-center border-top-1 surface-border gap-3"
+		>
+			<input
+        [class.hebrew-text]="language() === 'Hebrew'"
+				id="message"
+				type="text"
+				pInputText
+				[placeholder]="'Type a message in ' + language()"
+				class="flex-1 w-full sm:w-auto border-round"
+				[(ngModel)]="textContent"
+				(keydown.enter)="textContent && chat()"
+			/>
+			<div class="flex w-full sm:w-auto gap-3">
+				<button
+					pButton
+          pRipple
+					label="Send"
+					icon="pi pi-send"
+					class="w-full sm:w-auto"
+					severity="contrast"
+					[disabled]="loading()"
+					(click)="textContent && chat()"
+				></button>
+				<button
+					pButton
+          pRipple
+					label="Grade Me!"
+					icon="pi pi-graduation-cap"
+					class="w-full sm:w-auto"
+					severity="success"
+					(click)="grade()"
+				></button>
+			</div>
+		</div>
+	</div>
+
+  <p-confirmDialog #cd>
+    <ng-template pTemplate="headless" let-message>
+        <div class="flex flex-column align-items-center p-5 surface-overlay border-round max-w-20rem lg:max-w-30rem text-center">
+            <div class="border-circle bg-contrast inline-flex justify-content-center align-items-center h-6rem w-6rem">
+                <i class="pi pi-graduation-cap text-5xl"></i>
+            </div>
+            <span class="font-bold text-2xl block mb-2 mt-2">
+                {{ message.header }}
+            </span>
+            <p class="mb-0" [innerHTML]="message.message"></p>
+            <div class="flex align-items-center gap-2 mt-4">
+                <button
+                    pButton
+                    label="New Chat"
+                    severity="contrast"
+                    (click)="cd.accept()"
+                    class="w-8rem">
+                </button>
+                <button
+                    pButton
+                    label="Home"
+                    severity="contrast"
+                    (click)="cd.reject()"
+                    class="p-button-outlined w-8rem ">
+                </button>
+            </div>
+        </div>
+    </ng-template>
+</p-confirmDialog>
+}

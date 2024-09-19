@@ -1,0 +1,23 @@
+<div class="translate-word-wrapper flex justify-content-center gap-3 mb-2">
+  <p>{{exerciseData().question}} </p>
+</div>
+
+<div class="buttons-group p-fluid grid-12 gap-2 mb-3">
+  @for (choice of exerciseData().choices; track choice) {
+    <div class="col-12">
+      <p-button
+        [styleClass]="
+            isExerciseDone() ? (
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+        id="{{choice}}"
+        label="{{choice}}"
+        [raised]="true"
+        severity="secondary"
+        (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
+    </div>
+  }
+</div>

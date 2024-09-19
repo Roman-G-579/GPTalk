@@ -1,0 +1,127 @@
+:host {
+  display: grid;
+  justify-items: center;
+  min-height: 100dvh;
+  font-family: Poppins, sans-serif;
+  color: var(--primary-clr);
+  --t: 1.6rem; // standard text size
+  --tm: 1.2rem; // mobile-friendly text size
+  --t_large: 1.8rem;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  height: 91dvh; /* Full viewport height */
+  justify-content: space-between; /* Ensures content is spaced with the button at the bottom */
+}
+
+.heading-wrapper {
+  font-size: 2.6rem;
+}
+
+.loading-wrapper {
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & p {
+    font-size: 1rem;
+  }
+}
+
+::ng-deep .translation-wrapper p {
+  font-size: var(--t_large);
+}
+
+
+// Button customization
+::ng-deep .buttons-group {
+  transition: all 0.25s ease;
+
+  & button {
+    font-size: 2.25rem;
+    word-wrap: break-word;
+    ::ng-deep .p-button-label:first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  & .next-btn-wrapper {
+    //margin-top: 15px;
+    margin-right: 5px;
+    min-height: 70px;
+
+    display: flex;
+    justify-content: flex-end; /* Align button to the right */
+    position: relative;
+    bottom: 0;
+    //max-width: 300px;
+
+    & button {
+      width: 20vw;
+    }
+  }
+  & .btn-disabled {
+    pointer-events: none;
+  }
+
+  & .btn-correct,
+  & .btn-incorrect,
+  & .btn-actual-correct {
+    @extend .btn-disabled;
+  }
+
+  & .btn-correct {
+    background: var(--accent-text-clr);
+    border-color: var(--accent-text-clr);
+  }
+
+  & .btn-incorrect {
+    background: var(--secondary-text-clr);
+    border-color: var(--secondary-text-clr);
+  }
+
+  & .btn-actual-correct {
+    background: var(--yellow-400);
+    border-color: var(--yellow-400);
+  }
+
+  & .btn-selected {
+    background: var(--blue-400);
+    border-color: var(--blue-400);
+  }
+}
+
+@media (max-width: 1024px) {
+  .wrapper {
+    margin-top: 2rem;
+  }
+
+  .heading-wrapper {
+    font-size: 1.5rem;
+  }
+
+  ::ng-deep .buttons-group{
+    & button {
+      font-size: 1.3rem;
+    }
+
+    & .next-btn-wrapper button {
+      width: 30vw;
+    }
+  }
+
+  .wrapper {
+    height: 88dvh;
+  }
+}
+
+@media (max-width: 380px) {
+  .wrapper {
+    height: 120dvh;
+  }
+}

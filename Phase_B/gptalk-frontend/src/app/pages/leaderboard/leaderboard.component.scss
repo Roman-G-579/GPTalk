@@ -1,0 +1,181 @@
+main {
+	display: flex;
+	align-items: flex-start;
+	flex-direction: column;
+	height: 100%;
+	gap: 2.5rem;
+	padding: 1rem 3rem;
+
+
+  ::ng-deep.lang-dropdown {
+    background-color: transparent;
+    & div {
+      color: var(--primary-clr);
+    }
+  }
+
+	& .top-3 {
+		display: flex;
+		align-self: center;
+		gap: 2em;
+
+		& .placement {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			background: var(--background-over-block-clr);
+			border-radius: 6px;
+			padding: 1.5rem 4rem;
+			width: 31%;
+
+			& .content {
+				display: flex;
+				align-items: center;
+				gap: 1.5rem;
+
+				& .details {
+					& p {
+						font-size: 1.5rem;
+						font-weight: 600;
+					}
+				}
+			}
+		}
+	}
+
+	& .leaderboard-table {
+		width: 100%;
+		& .header {
+			background: var(--background-over-block-clr);
+			border-radius: 6px;
+
+			& tr {
+				display: flex;
+				justify-content: space-between;
+				width: 100%;
+				padding: 1rem 2rem;
+
+				& th {
+					width: 100%;
+				}
+			}
+		}
+
+		& .body {
+			display: flex;
+			flex-direction: column;
+			gap: 1.5rem;
+			padding: 1rem 2rem;
+
+			& tr {
+				display: flex;
+				justify-content: space-between;
+				gap: 1.5rem;
+				width: 100%;
+
+				& td {
+					width: 100%;
+					display: flex;
+					justify-content: center;
+
+					& .place {
+						$size: 2.5rem;
+						font-weight: 600;
+						border-radius: 50%;
+						border: 1px solid var(--background-over-block-border-clr);
+						background-color: var(--background-over-block-clr);
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						height: $size;
+						width: $size;
+					}
+				}
+			}
+		}
+	}
+}
+
+h1 {
+	align-self: flex-start;
+}
+
+.loading {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 1300px) {
+  .top-3 {
+    gap: 1.5rem; // Adjust gap between top 3 users
+
+    .placement {
+      width: auto; // Make placement width auto to fit the screen width
+      padding: 1rem; // Reduce padding inside placement
+
+      & .content {
+        app-user-avatar {
+          display: none;
+        }
+
+        & .details {
+          & p {
+            font-size: 1rem;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1024px) {
+  .full-name-wrapper {
+    font-size: 0.2rem;
+  }
+
+  main {
+    padding: 0;
+
+    .top-3 {
+      gap: 1em;
+
+      .placement {
+        width: auto; // Make placement width auto to fit the screen width
+        padding: 1rem; // Reduce padding inside placement
+      }
+    }
+
+    .leaderboard-table {
+      .header {
+        tr {
+          padding: 0.5rem; // Reduce padding inside header cells
+          gap: 1.2rem;
+
+          th {
+            text-align: center; // Center text in header cells
+          }
+        }
+      }
+
+      .body {
+        padding: 0.5rem;
+        tr {
+          gap: 2rem;
+          td {
+            font-size: .9rem;
+          }
+        }
+      }
+    }
+  }
+
+  .lang-dropdown {
+     ::ng-deep .p-dropdown {
+      width: 100%; // Make dropdown full width on smaller screens
+    }
+  }
+}

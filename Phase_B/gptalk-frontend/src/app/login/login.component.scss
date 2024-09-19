@@ -1,0 +1,84 @@
+:host {
+	display: grid;
+	place-items: center;
+	min-height: 100dvh;
+}
+
+.wrapper {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.img-logo-mobile {
+  display: none;
+}
+
+.form-wrapper {
+	position: relative;
+	background-color: #fff;
+	width: fit-content;
+	display: flex;
+  gap: 2rem;
+	padding: 6rem 4rem;
+	border-radius: 6px;
+
+	& form {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+
+		& h1 {
+			color: var(--primary-clr) !important;
+		}
+	}
+}
+
+.loading {
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  display: grid;
+  place-items: center;
+}
+
+p-dialog {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+::ng-deep .loading-dialog {
+  &.p-dialog .p-dialog-content:last-of-type {
+    border-radius: 6px !important;
+    padding: 4rem;
+  }
+}
+
+@media (max-width: 1024px) {
+
+  .wrapper {
+    .img-logo, p-divider {
+      display: none;
+    }
+  }
+
+  .img-logo-mobile {
+    display: flex;
+  }
+
+  .form-wrapper {
+    background-color: rgba(255, 255, 255, 0.7);
+    height: 70vh;
+    padding: 1rem 1rem;
+  }
+
+  form {
+    h1, small {
+      text-align: center;
+    }
+  }
+
+  p-floatLabel {
+    display: flex;
+    justify-content: center;
+  }
+}

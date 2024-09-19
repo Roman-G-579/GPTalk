@@ -1,0 +1,18 @@
+:host {
+  display: block;
+  background-color: var(--primary-clr);
+  padding: 10px;
+}
+
+main {
+  background-color: var(--background-clr);
+  height: 100%;
+  border-radius: 6px;
+  padding: 4rem 2rem;
+}
+
+@media (max-width: 1024px) {
+  main {
+    padding: 1rem 0.5rem;
+  }
+}

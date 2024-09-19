@@ -1,0 +1,9 @@
+# Exclude development and build artifacts
+node_modules/
+dist/
+
+# Exclude Cypress configuration
+cypress.config.ts
+
+# Exclude VSCode configuration
+.vscode/

@@ -1,0 +1,57 @@
+    <!--    Chat bubbles-->
+    <div class="chat-wrapper flex flex-column  mb-4">
+      <div class="bubble left  justify-content-start mb-4"
+           [class.hebrew-text]="lessonLanguage() === 'Hebrew'">
+        {{exerciseData().prompt}}
+      </div>
+
+        <div class="bubble right justify-content-end">
+          <input
+            [class.hebrew-text]="lessonLanguage() === 'Hebrew'"
+            class="chat-input-field flex-grow-1 flex-wrap"
+            pAutoFocus
+            [autofocus]="true"
+            [readOnly]="isExerciseDone()"
+            id="chatInputForm"
+            title="Input Field"
+            [value]="isExerciseDone() ? exerciseData().answer : ''"
+            [formControl]="inputForm"
+            (keyup.enter)="inputForm.value ?
+            lrn.setExerciseResult(vrf.verifyAnswer(inputForm.value,exerciseData)) : null"
+          />
+        </div>
+    </div>
+
+    <!--  answer choices  -->
+    <div class="buttons-group p-fluid flex flex-wrap  justify-content-center gap-2 mb-2">
+      @for (choice of exerciseData().choices; track choice) {
+<!--        <div class="completion-btn col-12">-->
+          <p-button
+            [class.hebrew-text]="lessonLanguage() === 'Hebrew'"
+            [styleClass]="
+            isExerciseDone() ? (
+              utilHtml.elemContainsAnswer(choice, exerciseData) ? ( isCorrectAnswer() ? 'btn-correct' : 'btn-actual-correct' )
+              :
+              'btn-incorrect'
+            ) : ''
+            "
+            id="{{choice}}"
+            label="{{choice}}"
+            [raised]="true"
+            severity="secondary"
+            (onClick)="lrn.setExerciseResult(vrf.verifyAnswer(choice,exerciseData))"/>
+<!--        </div>-->
+      }
+    </div>
+
+      <div
+        class="translation-wrapper flex-row justify-content-center"
+        [style.visibility]="isExerciseDone() ? 'visible' : 'hidden'"
+      >
+        <p><b>Translation:</b></p>
+        <p
+          [class.hebrew-text]="lessonLanguage() === 'English'"
+        >
+          {{exerciseData().translation?.replace('&', '-')}}
+        </p>
+      </div>

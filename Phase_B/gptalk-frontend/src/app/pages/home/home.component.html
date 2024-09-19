@@ -1,0 +1,40 @@
+<main *ngIf="myProfile$ | async as myProfile">
+  <div class="content">
+    <h1>Good {{getTimeOfDay()}} {{myProfile.firstName}}!</h1>
+    <h4 style="font-weight: normal">Pick one of the options on the left to get started</h4>
+
+    <div class="statistics-wrapper mt-6 mb-6">
+      <div class="stat-block">
+        <img src="assets/profile/streak.png" alt="streak" style="width: 4rem;">
+        <div>
+          <small>Current Streak</small>
+          <p>{{ myProfile.streak }} Days</p>
+        </div>
+      </div>
+      <div class="stat-block">
+        <img src="assets/profile/lessons-completed.png" alt="lessons" style="width: 4rem;">
+        <div>
+          <small>Lessons Completed</small>
+          <p>{{ myProfile.lessonsCompleted }}</p>
+        </div>
+      </div>
+      <div class="stat-block">
+        <img src="assets/profile/total-exp.png" alt="exp" style="width: 4rem;">
+        <div>
+          <small>Total EXP Earned</small>
+          <p>{{ myProfile.totalExp }}</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-center">Word of the day:</h2>
+    <app-daily-word></app-daily-word>
+
+    <ng-container *ngIf="util.calculateLevel(myProfile.totalExp) as level">
+      <p>Your current level: {{level}}</p>
+      <p class="text-center">Experience points needed for next level: {{util.calculateExpForNextLevel(level) - myProfile.totalExp}}</p>
+      <p>Achievements awarded: {{myProfile.achievements.length}}</p>
+    </ng-container>
+  </div>
+</main>
+

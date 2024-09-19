@@ -1,0 +1,68 @@
+.chat-wrapper {
+  font-size: var(--t);
+}
+
+.chat-input-field {
+  padding: 5px;
+  font-size: var(--t);
+  font-family: Poppins, sans-serif;
+  border-color: transparent;
+  border-width: 0;
+  resize: none;
+  text-wrap: wrap;
+  overflow: auto;
+  background-color: transparent;
+  color: white;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.bubble {
+  --radius: 1em;  /* the radius */
+  --tailSize: 1.5em; /* the size of the tail */
+
+  padding: 1em;
+  border-inline: var(--tailSize) solid #0000;
+  border-radius: calc(var(--radius) + var(--tailSize))/var(--radius);
+  mask:
+    radial-gradient(100% 100% at var(--_p) 0,#0000 99%,#000 102%)
+    var(--_p) 100%/var(--tailSize) var(--tailSize) no-repeat,
+    linear-gradient(#000, #000) padding-box;
+  color: #fff;
+}
+.left {
+  --_p: 0;
+  border-bottom-left-radius: 0 0;
+  place-self: start;
+  background: var(--blue-400);
+}
+.right {
+  display: flex;
+  --_p: 100%;
+  border-bottom-right-radius: 0 0;
+  place-self: auto;
+  background: var(--blue-500);
+}
+
+
+@media (max-width: 1024px) {
+  .right, .left {
+    width: 80%;
+    font-size: var(--tm);
+  }
+
+  .chat-input-field {
+    font-size: var(--tm);
+  }
+
+  .translation-wrapper {
+    text-align: center;
+
+    & p {
+      font-size: 1rem;
+    }
+  }
+
+}

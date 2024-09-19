@@ -1,0 +1,43 @@
+.sentence-input-area {
+  padding: 5px;
+  font-size: var(--t);
+  font-family: Poppins, sans-serif;
+  border-color: var(--gray-700);
+  border-radius: 15px;
+  border-width: 4px;
+  background: var(--gray-200);
+  max-width: 70vw;
+  height: 6em;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.buttons-group {
+  justify-content: center;
+  position: relative;
+  height: 50px;
+}
+
+#hintBtn {
+  position: absolute;
+  right: 5px;
+}
+
+.hint-wrapper, .sentence-wrapper {
+  font-size: 26px;
+}
+
+@media (max-width: 1024px) {
+  .sentence-wrapper, .hint-wrapper {
+    font-size: var(--tm);
+  }
+
+  .sentence-input-area {
+    font-size: var(--tm);
+    max-width: 100%;
+  }
+
+  .translation-wrapper p {
+    font-size: var(--tm);
+  }
+}

@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  title: GPTalk Backend
+  description: Backend API for GPTalk
+  contact:
+    name: Oneill19
+    email: oneill.p.19@gmail.com
+    url: https://github.com/oneill19
+  license:
+    name: MIT
+    url: https://github.com/Oneill19/GPTalk/blob/main/README.md
+  version: 1.0.0
+tags:
+  - name: General
+    description: general requests
+  - name: Users
+    description: user management
+paths:
+  /api/ping:
+    get:
+      description: ping to check if the server is running
+      access: public
+      tags:
+        - General
+      responses:
+        '200':
+          description: successful response
+  /api/user/add:
+    post:
+      description: add a user to the database
+      access: public
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: user object
+  /api/user/get/{id}:
+    get:
+      description: get a user from the database by the id
+      access: public
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: user mongo id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: user
+  /api/user/edit/{id}:
+    patch:
+      description: edit a user in the database by the id
+      access: public
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: user mongo id
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: successful edit
+  /api/user/delete/{id}:
+    delete:
+      description: delete a user from the database
+      access: public
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          description: user mongo id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: successful delete
+  /api/register:
+    post:
+      description: Register a new user
+      access: public
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistration'
+      responses:
+        '200':
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                  email:
+                    type: string
+                  firstName:
+                    type: string
+                  lastName:
+                    type: string
+  /api/auth/login:
+    post:
+      description: Login a user
+      access: public
+      tags:
+        - Users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+  /api/auth/protected:
+    get:
+      description: A protected endpoint that requires JWT authentication
+      access: private
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Protected resource access successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        _id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        password:
+          type: string
+    UserRegistration:
+      type: object
+      required:
+        - username
+        - email
+        - password
+        - firstName
+        - lastName
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    UserLogin:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

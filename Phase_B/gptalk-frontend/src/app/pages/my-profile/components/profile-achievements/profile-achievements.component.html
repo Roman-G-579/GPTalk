@@ -1,0 +1,21 @@
+<main>
+	<h1>Achievements</h1>
+	<div class="achievements">
+		@for (achievement of achievements(); track achievement) {
+			<div class="achievement-block">
+				<img [src]="achievement.icon" alt="" />
+				<div class="flex flex-column gap-1">
+					<p>{{ achievement.title }}</p>
+					<p-progressBar
+						[value]="
+							(achievement.progress / achievement.goal) * 100 <= 100
+								? formatToTwoDecimalPlaces((achievement.progress / achievement.goal) * 100)
+								: 100
+						"
+					></p-progressBar>
+					<small style="align-self: flex-end;">{{ achievement.progress }}/{{ achievement.goal }}</small>
+				</div>
+			</div>
+		}
+	</div>
+</main>
