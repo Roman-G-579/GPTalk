@@ -2,10 +2,13 @@
   GPTalk - AI Powered Language Learning Application
 </h1>
 
-![Picture1](https://github.com/user-attachments/assets/aed93f01-abf3-455d-8bb8-28bc669f869c)
-![Picture2](https://github.com/user-attachments/assets/6f5d47c3-cb04-41b2-ab7c-f8cb4c6f7c0b)
-![Picture3](https://github.com/user-attachments/assets/f5c80d01-30b9-44e9-a542-022cb5af0d78)
+<div align="middle">
+  <img src="https://github.com/user-attachments/assets/aed93f01-abf3-455d-8bb8-28bc669f869c" width="250" alt="GPTalk gif 1"/>
+  <img src="https://github.com/user-attachments/assets/6f5d47c3-cb04-41b2-ab7c-f8cb4c6f7c0b" width="250" alt="GPTalk gif 2"/>
+  <img src="https://github.com/user-attachments/assets/f5c80d01-30b9-44e9-a542-022cb5af0d78" width="250" alt="GPTalk gif 3"/>
+</div>
 
+-----
 
 [![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)](https://angular.dev/)
 [![SASS](https://img.shields.io/badge/SASS-CC6699?style=for-the-badge&logo=sass&logoColor=white)](https://sass-lang.com/)
